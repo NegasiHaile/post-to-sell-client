@@ -1,13 +1,19 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
-import { createWrapper, HYDRATE } from 'next-redux-wrapper';
-import cartReducer from './reducers/cart';
-import userReducer from './reducers/user';
+import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import cartReducer from "./reducers/cart";
+import userReducer from "./reducers/user";
+import authReducer from "./reducers/auth";
+import profileReducer from "./reducers/profile";
+import productReducer from "./reducers/product";
 
 //COMBINING ALL REDUCERS
 const combinedReducer = combineReducers({
   cart: cartReducer,
-  user: userReducer
+  user: userReducer,
+  auth: authReducer,
+  profile: profileReducer,
+  product: productReducer,
 });
 
 // BINDING MIDDLEWARE
@@ -29,8 +35,8 @@ const makeStore = ({ isServer }) => {
     const storage = require("redux-persist/lib/storage").default;
 
     const persistConfig = {
-      key: "shoppingcart",
-      whitelist: ["cart", "user"], // only counter will be persisted, add other reducers if needed
+      key: "postToSell",
+      whitelist: ["cart", "user", "auth", "profile"], // only counter will be persisted, add other reducers if needed
       storage, // if needed, use a safer storage
     };
 
@@ -48,4 +54,4 @@ const makeStore = ({ isServer }) => {
 };
 
 // export an assembled wrapper
-export const wrapper = createWrapper(makeStore, {debug: true});
+export const wrapper = createWrapper(makeStore, { debug: true });
