@@ -27,7 +27,7 @@ const Product = ({ product }) => {
 
   return (
     <Layout>
-      <Breadcrumb currentPage={product.name} />
+      <Breadcrumb currentPage={`Products / ${product.name}`} />
 
       <section className="product-single">
         <div className="container">
@@ -43,7 +43,7 @@ const Product = ({ product }) => {
             </div>
 
             <Description product={product} show={showBlock === 'description'} />
-            <Reviews product={product} show={showBlock === 'reviews'} />
+            {/* <Reviews product={product} show={showBlock === 'reviews'} /> */}
           </div>
         </div>
       </section>
