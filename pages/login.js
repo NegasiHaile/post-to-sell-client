@@ -4,11 +4,16 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { server } from "../utils/server";
 import { postData } from "../utils/services";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
+import { setProfile } from "../store/actions/profileActions";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const [signingIn, setSigningIn] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
-  //const { register, handleSubmit, errors } = useForm();
+
   const {
     register,
     handleSubmit,
@@ -19,26 +24,39 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     setSigningIn(true);
     try {
-      const res = await postData(`${server}/api/login`, {
-        email: data.email,
+      const res = await axios.post(`${server}/api/users/signin`, {
+        email: data.username,
         password: data.password,
       });
       setResult({
         state: "success",
         message: "succefully signed in!",
       });
+      const responseData = res.data;
+      const authData = {
+        accesstoken: responseData.accesstoken,
+        refreshtoken: responseData.refreshtoken,
+        id: responseData.profile._id,
+        role: responseData.profile.role,
+        accountStatus: responseData.profile.accountStatus,
+      };
+      dispatch(setProfile(responseData.profile));
+      dispatch(signinSuccess(authData));
       setSigningIn(false);
     } catch (error) {
+      console.log("error: ", error);
       setResult({
         state: "error",
-        message: error.message
-          ? error.message
-          : "something went wrong while signing in!",
+        message:
+          error.response && error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : "something went wrong while signing in!",
       });
+      dispatch(signoutSuccess());
       setSigningIn(false);
     }
   };
-
+  console.log("result", result);
   return (
     <Layout>
       <section className="form-page">
@@ -143,7 +161,7 @@ const LoginPage = () => {
                 className="btn btn--rounded btn--yellow btn-submit"
                 disabled={signingIn}
               >
-                {signingIn?"Signing in":"Sign in"}
+                {signingIn ? "Signing in" : "Sign in"}
               </button>
 
               <p className="form__signup-link">
