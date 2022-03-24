@@ -1,3 +1,4 @@
 const dev = process.env.NODE_ENV !== 'production';
+const PORT = process.env.PORT || 5000;
 
-export const server = dev ? 'http://localhost:3000' : 'https://next-ecommerce-front.vercel.app';
+export const server = dev ? `http://localhost:${PORT}` : 'https://next-ecommerce-front.vercel.app';
