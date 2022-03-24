@@ -2385,10 +2385,10 @@ h1,h2,h3,h4,h5 {
 
 .back-button-section {
   padding: 30px 0;
-  margin-bottom: 30px;
+  //margin-bottom: 30px;
   @include breakpoint(phone) {
-    margin-bottom: 50px;
-    padding: 50px 0;
+    //margin-bottom: 50px;
+    //padding: 50px 0;
   }
   a {
     color: black;
@@ -2409,7 +2409,7 @@ h1,h2,h3,h4,h5 {
 
 .form-block {
   width: 100%;
-  margin: 0 auto;
+  margin: 0 auto;  
   @include breakpoint(phone) {
     width: 448px;
   }
@@ -2433,7 +2433,18 @@ h1,h2,h3,h4,h5 {
 
 .form {
   .form__input-row {
+    margin-bottom: 15px;    
+    &.form__input-row--two {
+      display: flex;
+      justify-content: space-between;
+      .form__col {
+        width: 49%;
+      }
+    }
+  }
+  .form__input-row-full-width {
     margin-bottom: 15px;
+    width: 100%;
     &.form__input-row--two {
       display: flex;
       justify-content: space-between;
@@ -2457,6 +2468,25 @@ h1,h2,h3,h4,h5 {
     &.form__input--sm {
       height: 49px;
       padding: 0 28px;
+    }
+  }
+  .form__input-textarea {
+    height: 87px;
+    width: 100%;
+    font-weight: 500;
+    color: #808080;
+    padding: 0 22px;
+    border-radius: 40px;
+    border: 1px solid #D8D8D8;
+    @include breakpoint(phone) {
+      height: 90px;
+      padding: 0 40px;
+      padding-top: 25px;
+    }
+    &.form__input--sm {
+      height: 89px;
+      padding: 0 28px;
+      padding-top: 20px;
     }
   }
   .select-wrapper {
@@ -2800,6 +2830,188 @@ h1,h2,h3,h4,h5 {
     color: red;
     &:before {
       background-color: red;
+    }
+  }
+}
+
+
+//////////////////////////////////////////////////////////////
+/// new add product page
+//////////////////////////////////////////////////////////////
+
+
+.add-product-page {
+  margin-bottom: 30px;
+  @include breakpoint(phone) {
+    margin-bottom: 50px;
+  }
+  .product-single__description {
+    max-width: 938px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    @include breakpoint(phone) {
+      display: flex;
+      justify-content: space-between;
+    }
+    .product-description-block {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 60px;
+      @include breakpoint(phone) {
+        width: 48%;
+        margin-bottom: 0;
+      }
+      i {
+        display: block;
+        font-size: 30px;
+        margin-bottom: 30px;
+        @include breakpoint(phone) {
+          font-size: 38px;
+          margin-bottom: 48px;
+        }
+      }
+      h4 {
+        color: #000;
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 25px;
+        @include breakpoint(phone) {
+          margin-bottom: 35px;
+          font-size: 16px;
+        }
+      }
+      p {
+        color: #000;
+        font-size: 13px;
+        line-height: 145%;
+        text-align: left;
+        @include breakpoint(phone) {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .product-single__content {
+    margin-bottom: 50px;
+    @include breakpoint(phone) {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 100px;
+    }
+  }
+  .product-gallery {
+    @include breakpoint(phone) {
+      margin-right: 110px;
+    }
+    .product-gallery__thumbs {
+      height: 300px;
+      @include breakpoint(phone) {
+        height: 491px;
+      }
+    }
+    .product-gallery__thumb {
+      @include breakpoint(phone) {
+        height: calc(100%/5 - 15px);
+      }
+    }
+  }
+  .product-content {
+    flex: 1;
+  }
+  .product-single__reviews {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    .reviews-list {
+      width: 100%;
+      margin-left: auto;
+      @include breakpoint(phone) {
+        width: 48%;
+      }
+    }
+  }
+  .add-product-page-header-select {
+    .add-product-page-header-select-btns {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 50px;
+      .btn {
+        margin: 0 15px;
+        padding: 8px 22px;
+        @include breakpoint(phone) {
+          padding: 12px 28px;
+        }
+        &.btn--active {
+          border: 1px solid var(--color-orange);
+        }
+      }
+    }
+  }
+}
+
+.add-product-form-page {
+  padding-bottom: 20px;
+  display: flex;
+  flex-grow: 1;
+}
+
+.add-product-form-inputs-wrapper {
+  margin-bottom: 10px;
+  flex-direction: column;
+  @include breakpoint(phone) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  
+  }
+}
+
+.add-product-input-margin {
+  @include breakpoint(phone) {
+    margin-right: 20;  
+  }
+}
+
+.add-product-form-block {
+  width: 100%;
+  margin: 0 auto;  
+ /*  @include breakpoint(phone) {
+    width: 100%;
+  } */
+  .form-block__title {
+    font-size: 22px;
+    font-weight: 600;
+    padding: 0 50px;
+    line-height: 150%;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .form-block__description {
+    font-size: 14px;
+    line-height: 165%;
+    text-align: center;
+  }
+  .form {
+    margin-top: 40px;
+  }
+}
+
+.add-product-page-blocks-wrapper {
+  margin-bottom: 10px;
+  flex-direction: column;
+  @include breakpoint(phone) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  
+  }
+  .add-product-page-left-blocks {
+    flex-grow: 1; 
+    @include breakpoint(phone) {
+      flex-grow: 3;       
+    }
+  }
+  .add-product-page-right-blocks {
+    @include breakpoint(phone) {
+      flex-grow: 2;       
     }
   }
 }
