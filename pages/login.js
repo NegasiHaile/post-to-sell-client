@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Head from "next/head";
 import Layout from "../layouts/Main";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -9,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
 import { setProfile } from "../store/actions/profileActions";
 
-const LoginPage = () => {
+const LoginPage = ({ title = "Login to post to sell" }) => {
   const dispatch = useDispatch();
   const [signingIn, setSigningIn] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
@@ -59,6 +60,9 @@ const LoginPage = () => {
   console.log("result", result);
   return (
     <Layout>
+      <Head>
+        <title>{title}</title>{" "}
+      </Head>
       <section className="form-page">
         <div className="container">
           <div className="back-button-section">

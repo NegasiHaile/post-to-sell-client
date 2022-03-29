@@ -59,7 +59,7 @@ const Header = ({ isErrorPage }) => {
           <a>
             <h1 className="site-logo">
               <Logo />
-              E-Shop
+              Post-To-Sell
             </h1>
           </a>
         </Link>
