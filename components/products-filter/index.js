@@ -33,12 +33,17 @@ const handle = (props) => {
   );
 };
 
-const ProductsFilter = () => {
+const ProductsFilter = ({
+  categories,
+  categoriesloading,
+  loadCategories,
+  productCountByCategory,
+}) => {
   const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const addQueryParams = () => {
-    console.log('addQueryParams')
+    console.log("addQueryParams");
     // query params changes
   };
 
@@ -60,11 +65,16 @@ const ProductsFilter = () => {
         }`}
       >
         <div className="products-filter__block">
-          <button type="button">Product type</button>
+          <button type="button">Product Category</button>
           <div className="products-filter__block__content">
-            {productsTypes.map((type) => (
-              <Checkbox key={type.id} name="product-type" label={type.name} />
-            ))}
+            {productCountByCategory &&
+              productCountByCategory.map((category) => (
+                <Checkbox
+                  key={category.id}
+                  name="product-type"
+                  label={category.name}
+                />
+              ))}
           </div>
         </div>
 

@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const userCntrlr = {
   // User registration
   signUp: async (req, res) => {
-    try {
+    console.log('sign up controller 1')
+   /*  try {
       const { fName, lName, email, phone, contacts, password } = req.body; // accept values from the client.
 
       const user = await Users.findOne({ email });
@@ -50,7 +51,7 @@ const userCntrlr = {
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
-    }
+    } */
   },
 
   // Register Intenal user of the system: - admin

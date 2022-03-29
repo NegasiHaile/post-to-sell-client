@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const fileupload = require("express-fileupload");
+//var bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -16,11 +17,25 @@ app
   .prepare()
   .then(() => {
     const server = express();
+    //server.use(bodyParser.json())
+    //server.use(express.json());
+    //server.use(cookieParser());
+    //parse application/x-www-form-urlencoded
+    //server.use(bodyParser.urlencoded({ extended: false }));
 
-    server.use(express.json());
+    // parse application/json
+    //server.use(bodyParser.json());
+    //server.use(cors());
+    //server.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+    //server.use(express.json());
     server.use(cookieParser());
     server.use(cors());
-    server.use("/uploads", express.static(path.join(__dirname, "uploads")));
+    server.use(
+      fileupload({
+        useTempFiles: true,
+      })
+    );
 
     const URI = process.env.MONGODB_URL;
     mongoose.connect(
@@ -35,13 +50,13 @@ app
       }
     );
 
-    const showRoutes = require("./routes2/index.js");
+    //const showRoutes = require("./routes2/index.js");
 
-    server.use("/api", showRoutes(server));
+    //server.use("/api", showRoutes(server));
 
     // Root APIs
     server.use("/api/users", require("./routes/userRoutes"));
-    server.use("/api/products", require("./routes/productRoutes"));
+    //server.use("/api/products", require("./routes/productRoutes"));
 
     server.get("*", (req, res) => {
       return handle(req, res);

@@ -48,7 +48,6 @@ export default Product;
 
 import { useState, useEffect } from "react";
 import Layout from "../../layouts/Main";
-import { useSelector } from "react-redux";
 import CheckoutStatus from "../../components/checkout-status";
 import CheckoutItems from "../../components/checkout/items";
 
@@ -56,7 +55,7 @@ import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
 import { postData } from "../../utils/services";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProductItemLoading from "../../components/product-item/add-product-preview";
 
 const categorys = [
@@ -90,20 +89,12 @@ const contactAddress = {
   telegramUsername: "minoty",
 };
 
-const CheckoutPage = () => {
-  const priceTotal = useSelector((state) => {
-    const cartItems = state.cart.cartItems;
-    let totalPrice = 0;
-    if (cartItems.length > 0) {
-      cartItems.map((item) => (totalPrice += item.price * item.count));
-    }
-
-    return totalPrice;
-  });
-
+const AddProductPage = () => {
   const dispatch = useDispatch();
-  const [signingIn, setSigningIn] = useState(false);
+  const auth = useSelector((state) => state.auth);
+  const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
+
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: "",
@@ -111,6 +102,9 @@ const CheckoutPage = () => {
     address: "",
     telegramUsername: "",
   });
+
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
 
   const {
     register,
@@ -122,38 +116,69 @@ const CheckoutPage = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    setSigningIn(true);
-    try {
-      const res = await axios.post(`${server}/api/users/signin`, {
-        email: data.username,
-        password: data.password,
-      });
-      setResult({
-        state: "success",
-        message: "succefully signed in!",
-      });
-      const responseData = res.data;
-      const authData = {
+    console.log("data", data);
+    if (selectedFile) {
+      setAddingProduct(true);
+      try {
+        var formData = new FormData();
+        formData.append("images", [
+          selectedFile,
+          selectedFile,
+          selectedFile,
+          selectedFile,
+          selectedFile,
+        ]);
+        formData.append("userId", auth.user.id);
+        formData.append("productName", data.productName);
+        formData.append("category", data.category);
+        formData.append("subCategory", data.subCategory);
+        formData.append("price", data.price);
+        formData.append("discription", data.discription);
+        formData.append("postType", "postType");
+        formData.append("contacts", [
+          { phoneNumber: data.phoneNumber },
+          { email: data.email },
+          { address: data.address },
+          { telegramUsername: data.telegramUsername },
+        ]);
+        const res = await axios.post(`${server}/api/products/add`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: auth.user.accesstoken,
+          },
+        });
+        setResult({
+          state: "success",
+          message: "succefully signed in!",
+        });
+        const responseData = res.data;
+        /* const authData = {
         accesstoken: responseData.accesstoken,
         refreshtoken: responseData.refreshtoken,
         id: responseData.profile._id,
         role: responseData.profile.role,
         accountStatus: responseData.profile.accountStatus,
-      };
-      dispatch(setProfile(responseData.profile));
-      dispatch(signinSuccess(authData));
-      setSigningIn(false);
-    } catch (error) {
-      console.log("error: ", error);
+      }; */
+        /* dispatch(setProfile(responseData.profile));
+      dispatch(signinSuccess(authData)); */
+        setAddingProduct(false);
+      } catch (error) {
+        console.log("error: ", error);
+        setResult({
+          state: "error",
+          message:
+            error.response && error.response.data && error.response.data.msg
+              ? error.response.data.msg
+              : "something went wrong while signing in!",
+        });
+        /* dispatch(signoutSuccess()); */
+        setAddingProduct(false);
+      }
+    } else {
       setResult({
         state: "error",
-        message:
-          error.response && error.response.data && error.response.data.msg
-            ? error.response.data.msg
-            : "something went wrong while signing in!",
+        message: "primary image is required!",
       });
-      dispatch(signoutSuccess());
-      setSigningIn(false);
     }
   };
   console.log("result", result);
@@ -180,9 +205,6 @@ const CheckoutPage = () => {
   };
 
   const watchAllFields = watch();
-
-  const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState();
 
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
@@ -221,11 +243,11 @@ const CheckoutPage = () => {
             <div className="checkout__col-6">
               <div className="block">
                 <h3 className="block__title">Product Detail</h3>
-                <form className="form" onSubmit={handleSubmit(onSubmit)}>
+                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Product Name"
                         type="text"
@@ -253,7 +275,7 @@ const CheckoutPage = () => {
                       <div className="select-wrapper select-form">
                         <select
                           placeholder="Product Category"
-                          disabled={signingIn}
+                          disabled={addingProduct}
                           className="form__input form__input--sm"
                           name="category"
                           {...register("category", {
@@ -291,7 +313,7 @@ const CheckoutPage = () => {
                       <div className="select-wrapper select-form">
                         <select
                           placeholder="Product subcategory"
-                          disabled={signingIn}
+                          disabled={addingProduct}
                           className="form__input form__input--sm"
                           name="subCategory"
                           {...register("subCategory", {
@@ -326,7 +348,7 @@ const CheckoutPage = () => {
 
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Product Price"
                         type="number"
@@ -352,7 +374,7 @@ const CheckoutPage = () => {
                     <div className="form__col">
                       <textarea
                         rows={4}
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input-textarea form__input--sm"
                         placeholder="Enter product discription here..."
                         type="text"
@@ -381,14 +403,14 @@ const CheckoutPage = () => {
               </div>
               <div className="block">
                 <h3 className="block__title">Contact Address Detail</h3>
-                <form className="form" onSubmit={handleSubmit(onSubmit)}>
+                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
                   <div className="checkbox-wrapper">
                     <label
                       htmlFor="check-signed-in"
                       className={`checkbox checkbox--sm`}
                     >
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         type="checkbox"
                         name="keepSigned"
                         id="check-signed-in"
@@ -406,7 +428,7 @@ const CheckoutPage = () => {
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Phone Number"
                         type="number"
@@ -432,7 +454,7 @@ const CheckoutPage = () => {
 
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Email (optional)"
                         type="text"
@@ -459,7 +481,7 @@ const CheckoutPage = () => {
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Physical Address"
                         type="text"
@@ -477,7 +499,7 @@ const CheckoutPage = () => {
                     </div>
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         placeholder="Telegram Username"
                         type="text"
@@ -498,9 +520,9 @@ const CheckoutPage = () => {
                   {/* <button
                     type="submit"
                     className="btn btn--rounded btn--yellow btn-submit"
-                    disabled={signingIn}
+                    disabled={addingProduct}
                   >
-                    {signingIn ? "Signing in" : "Sign in"}
+                    {addingProduct ? "Signing in" : "Sign in"}
                   </button> */}
                 </form>
               </div>
@@ -510,7 +532,7 @@ const CheckoutPage = () => {
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         style={{ paddingTop: "13px" }}
                         type="file"
@@ -521,7 +543,7 @@ const CheckoutPage = () => {
                     </div>
                     <div className="form__col">
                       <input
-                        disabled={signingIn}
+                        disabled={addingProduct}
                         className="form__input form__input--sm"
                         style={{ paddingTop: "13px" }}
                         type="file"
@@ -607,7 +629,11 @@ const CheckoutPage = () => {
               {/* <button type="button" className="btn btn--rounded btn--border">
                 Continue shopping
               </button> */}
-              <button type="button" className="btn btn--rounded btn--yellow">
+              <button
+                onClick={handleSubmit(onSubmit)}
+                type="button"
+                className="btn btn--rounded btn--yellow"
+              >
                 Submit Form
               </button>
             </div>
@@ -618,4 +644,4 @@ const CheckoutPage = () => {
   );
 };
 
-export default CheckoutPage;
+export default AddProductPage;
