@@ -42,8 +42,8 @@ const ProductsFilter = ({
   const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const addQueryParams = () => {
-    console.log("addQueryParams");
+  const addQueryParams = (values) => {
+    console.log("addQueryParams", values.target);
     // query params changes
   };
 
@@ -69,11 +69,14 @@ const ProductsFilter = ({
           <div className="products-filter__block__content">
             {productCountByCategory &&
               productCountByCategory.map((category) => (
-                <Checkbox
-                  key={category.id}
-                  name="product-type"
-                  label={category.name}
-                />
+                <>
+                  <Checkbox
+                    key={category.id}
+                    name="product-type"
+                    label={category.name}
+                    label2={`(${category.count})`}
+                  />
+                </>
               ))}
           </div>
         </div>
