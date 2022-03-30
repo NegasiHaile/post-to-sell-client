@@ -3,7 +3,12 @@ import ProductItem from "./../../product-item";
 import ProductsLoading from "./loading";
 import { server } from "../../../utils/server";
 
-const ProductsContent = ({ products, productloading, loadProducts }) => {
+const ProductsContent = ({
+  products,
+  isFiltered,
+  productloading,
+  loadProducts,
+}) => {
   //const fetcher = (url) => fetch(url).then((res) => res.json());
   //const { data, error } = useSwr("/api/products", fetcher);
 
@@ -36,17 +41,37 @@ const ProductsContent = ({ products, productloading, loadProducts }) => {
 
       {products && (
         <section className="products-list">
-          {products.map((item) => (
-            <ProductItem
-              discount={item.price}
-              key={item._id}
-              id={item._id}
-              price={item.price}
-              currentPrice={item.price}
-              productImage={`${server}/${item.images[0]}`}
-              name={item.productName}
-            />
-          ))}
+          {products.length > 0 ? (
+            products.map((item) => (
+              <ProductItem
+                discount={item.price}
+                tag={item.tag}
+                key={item._id}
+                id={item._id}
+                price={item.price}
+                currentPrice={item.currentPrice}
+                productImage={`${server}/${item.images[0]}`}
+                name={item.productName}
+              />
+            ))
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                /* marginLeft: "50%",
+                marginTop: "150px", */
+              }}
+            >
+              <h2 className="message">
+                {isFiltered
+                  ? "No product found with this filter!"
+                  : "No product found!"}
+              </h2>
+            </div>
+          )}
         </section>
       )}
     </>

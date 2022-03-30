@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import productsTypes from "./../../utils/data/products-types";
 import productsColors from "./../../utils/data/products-colors";
 import productsSizes from "./../../utils/data/products-sizes";
+import { displayMoney } from "./../../utils/helpers";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -38,6 +39,9 @@ const ProductsFilter = ({
   categoriesloading,
   loadCategories,
   productCountByCategory,
+  addArrayFilter,
+  priceRange,
+  addPriceFilter,
 }) => {
   const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -75,6 +79,13 @@ const ProductsFilter = ({
                     name="product-type"
                     label={category.name}
                     label2={`(${category.count})`}
+                    onChange={(value) => {
+                      addArrayFilter(
+                        "categories",
+                        category.id,
+                        value.target.checked
+                      );
+                    }}
                   />
                 </>
               ))}
@@ -85,24 +96,32 @@ const ProductsFilter = ({
           <button type="button">Price</button>
           <div className="products-filter__block__content">
             <Range
-              min={0}
-              max={20}
-              defaultValue={[3, 10]}
-              tipFormatter={(value) => `${value}%`}
+              min={priceRange[0]}
+              max={priceRange[1]}
+              defaultValue={priceRange}
+              tipFormatter={(value) => `${displayMoney(value)}`}
+              onChange={(value) => addPriceFilter(value)}
             />
           </div>
         </div>
 
         <div className="products-filter__block">
           <button type="button">Size</button>
-          <div className="products-filter__block__content checkbox-square-wrapper">
-            {productsSizes.map((type) => (
-              <Checkbox
-                type="square"
-                key={type.id}
-                name="product-size"
-                label={type.label}
-              />
+          <div className="products-filter__block__content">
+            {productsSizes.map((productsSize) => (
+              <div className="checkbox-square-wrapper">
+                {productsSize.map((type) => (
+                  <Checkbox
+                    type="square"
+                    key={type.id}
+                    name="product-size"
+                    label={type.label}
+                    onChange={(value) => {
+                      addArrayFilter("sizes", type.id, value.target.checked);
+                    }}
+                  />
+                ))}
+              </div>
             ))}
           </div>
         </div>
@@ -110,15 +129,20 @@ const ProductsFilter = ({
         <div className="products-filter__block">
           <button type="button">Color</button>
           <div className="products-filter__block__content">
-            <div className="checkbox-color-wrapper">
-              {productsColors.map((type) => (
-                <CheckboxColor
-                  key={type.id}
-                  name="product-color"
-                  color={type.color}
-                />
-              ))}
-            </div>
+            {productsColors.map((productsColor) => (
+              <div className="checkbox-color-wrapper">
+                {productsColor.map((type) => (
+                  <CheckboxColor
+                    key={type.id}
+                    name="product-color"
+                    color={type.color}
+                    onChange={(value) => {
+                      addArrayFilter("colors", type.id, value.target.checked);
+                    }}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 

@@ -18,13 +18,107 @@ import {
 import { server } from "../utils/server";
 
 const countProducts = (field, value, products) => {
-  const result = 0;
+  let result = 0;
   products.map((product) => {
     if (product[field] === value) {
       result += 1;
     }
   });
   return result;
+};
+
+const getPriceRange = (products) => {
+  let max = 0;
+  let min = products.length > 0 ? products[0].currentPrice : 100000000000000;
+  products.map((product) => {
+    if (product.currentPrice > max) {
+      max = product.currentPrice;
+    }
+    if (product.currentPrice < min) {
+      min = product.currentPrice;
+    }
+  });
+  return [
+    max - min < 1 && min > 10 ? 0 : max,
+    max - min < 1 && max < 10 ? 1000 : max,
+  ];
+};
+
+const filterProducts = (products, filter) => {
+  const categories = Object.keys(filter.categories).filter(
+    (key) => filter.categories[key] === true
+  );
+  const sizes = Object.keys(filter.sizes).filter(
+    (key) => filter.sizes[key] === true
+  );
+  const colors = Object.keys(filter.colors).filter(
+    (key) => filter.colors[key] === true
+  );
+
+  const filteredProducts = products.filter((product) => {
+    let categoryPass = true;
+    let sizePass = true;
+    let colorPass = true;
+
+    if (categories.length > 0 && !categories.includes(product.category)) {
+      categoryPass = false;
+    }
+    if (sizes.length > 0) {
+      if (product.sizes && product.sizes.length > 0) {
+        sizes.map((size) => {
+          if (!product.sizes.includes(size)) {
+            sizePass = false;
+          }
+        });
+      } else {
+        sizePass = false;
+      }
+    }
+    if (colors.length > 0) {
+      if (product.colors && product.colors.length > 0) {
+        colors.map((color) => {
+          if (!product.colors.includes(color)) {
+            colorPass = false;
+          }
+        });
+      } else {
+        colorPass = false;
+      }
+    }
+
+    return categoryPass && sizePass && colorPass;
+  });
+  let sortedFilteredProducts = [];
+  if (!filter.sortBy || filter.sortBy === "") {
+    sortedFilteredProducts = filteredProducts;
+  } else if (filter.sortBy === "oldest") {
+    sortedFilteredProducts = filteredProducts.sort((a, b) =>
+      a.updatedAt > b.updatedAt ? 1 : -1
+    );
+  } else if (filter.sortBy === "latest") {
+    sortedFilteredProducts = filteredProducts.sort((a, b) =>
+      a.updatedAt > b.updatedAt ? -1 : 1
+    );
+  } else if (filter.sortBy === "price-low-high") {
+    sortedFilteredProducts = filteredProducts.sort((a, b) =>
+      a.currentPrice > b.currentPrice ? 1 : -1
+    );
+  } else if (filter.sortBy === "price-high-low") {
+    sortedFilteredProducts = filteredProducts.sort((a, b) =>
+      a.currentPrice > b.currentPrice ? -1 : 1
+    );
+  } else if (filter.sortBy === "high-rating") {
+    sortedFilteredProducts = filteredProducts.sort((a, b) =>
+      a.rate > b.rate ? -1 : 1
+    );
+  } else {
+    sortedFilteredProducts = filteredProducts;
+  }
+  const isFiltered =
+    categories.length > 0 || sizes.length > 0 || colors.length > 0;
+  const length = filteredProducts.length;
+
+  return { filteredProducts: sortedFilteredProducts, isFiltered, length };
 };
 
 const Products = () => {
@@ -45,6 +139,37 @@ const Products = () => {
       categories: state.product.categories,
     };
   });
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [filterValue, setFilterValue] = useState({
+    categories: {},
+    priceRange: [0, 1000],
+    sizes: {},
+    colors: {},
+    sortBy: "",
+  });
+  const [filteredProducts, setFilteredProducts] = useState(null);
+
+  const addArrayFilter = (filterType, field, value) => {
+    setFilterValue({
+      ...filterValue,
+      [filterType]: {
+        ...filterValue[filterType],
+        [field]: value,
+      },
+    });
+  };
+  const addPriceFilter = (value) => {
+    setFilterValue({
+      ...filterValue,
+      priceRange: value,
+    });
+  };
+  const addSortByFilter = (value) => {
+    setFilterValue({
+      ...filterValue,
+      sortBy: value,
+    });
+  };
 
   const [productCountByCategory, setProductCountByCategory] = useState([]);
 
@@ -136,7 +261,17 @@ const Products = () => {
       );
     }
   }, [products, categories]);
-  console.log("productCountByCategory", productCountByCategory);
+  useEffect(() => {
+    if (products) {
+      setPriceRange(getPriceRange(products));
+    }
+  }, [products]);
+  useEffect(() => {
+    if (products && filterValue) {
+      setFilteredProducts(filterProducts(products, filterValue));
+    }
+  }, [products, filterValue]);
+  console.log("filterValue", filterValue);
   return (
     <Layout>
       <Breadcrumb />
@@ -147,11 +282,15 @@ const Products = () => {
             categoriesloading={categoriesloading}
             loadCategories={loadCategories}
             productCountByCategory={productCountByCategory}
+            addArrayFilter={addArrayFilter}
+            priceRange={priceRange}
+            addPriceFilter={addPriceFilter}
           />
           <ProductsContent
-            products={products}
+            products={filteredProducts /* products */}
             productloading={productloading}
             loadProducts={loadProducts}
+            addSortByFilter={addSortByFilter}
           />
         </div>
       </section>
