@@ -50,6 +50,10 @@ import { useState, useEffect } from "react";
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
 import CheckoutItems from "../../components/checkout/items";
+import CheckboxColor from "../../components/products-filter/form-builder/checkbox-color";
+import Checkbox from "../../components/products-filter/form-builder/checkbox";
+import productsColors from "../../utils/data/products-colors";
+import productsSizes from "../../utils/data/products-sizes";
 
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
@@ -106,6 +110,20 @@ const AddProductPage = () => {
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
 
+  const [productVariant, setProductVariant] = useState({
+    sizes: {},
+    colors: {},
+  });
+  const addProductVariant = (variantType, field, value) => {
+    setProductVariant({
+      ...productVariant,
+      [variantType]: {
+        ...productVariant[variantType],
+        [field]: value,
+      },
+    });
+  };
+
   const {
     register,
     handleSubmit,
@@ -120,27 +138,37 @@ const AddProductPage = () => {
     if (selectedFile) {
       setAddingProduct(true);
       try {
-        var formData = new FormData();
-        formData.append("images", [
-          selectedFile,
-          selectedFile,
-          selectedFile,
-          selectedFile,
-          selectedFile,
-        ]);
-        formData.append("userId", auth.user.id);
-        formData.append("productName", data.productName);
-        formData.append("category", data.category);
-        formData.append("subCategory", data.subCategory);
-        formData.append("price", data.price);
-        formData.append("discription", data.discription);
-        formData.append("postType", "postType");
-        formData.append("contacts", [
+        const sizes = Object.keys(productVariant.sizes).filter(
+          (key) => productVariant.sizes[key] === true
+        );
+        const colors = Object.keys(productVariant.colors).filter(
+          (key) => productVariant.colors[key] === true
+        );
+        const contacts = [
           { phoneNumber: data.phoneNumber },
           { email: data.email },
           { address: data.address },
           { telegramUsername: data.telegramUsername },
-        ]);
+        ];
+        var formData = new FormData();
+        sizes.forEach((size) => formData.append("sizes", size));
+        colors.forEach((color) => formData.append("colors", color));
+        contacts.forEach((contact) => formData.append("contacts", contact));
+        formData.append("images", selectedFile);
+        formData.append("images", selectedFile);
+        formData.append("images", selectedFile);
+        formData.append("images", selectedFile);
+        formData.append("images", selectedFile);
+        formData.append("userId", auth.user.id);
+        formData.append("productName", data.productName);
+        formData.append("brand", "brand");
+        formData.append("category", data.category);
+        formData.append("subCategory", data.subCategory);
+        formData.append("currentPrice", data.price);
+        formData.append("price", data.price);
+        formData.append("discription", data.discription);
+        formData.append("postType", "postType");
+
         const res = await axios.post(`${server}/api/products/add`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -229,7 +257,7 @@ const AddProductPage = () => {
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files[0]);
   };
-
+  console.log("productVariant", productVariant);
   return (
     <Layout>
       <section className="cart">
@@ -559,6 +587,53 @@ const AddProductPage = () => {
 
             <div className="checkout__col-4">
               <div className="block">
+                <h3 className="block__title">Product colors</h3>
+                <div className="products-filter__block">
+                  <div className="products-filter__block__content">
+                    {productsColors.map((productsColor) => (
+                      <div className="checkbox-color-wrapper">
+                        {productsColor.map((type) => (
+                          <CheckboxColor
+                            key={type.id}
+                            name="product-color"
+                            color={type.color}
+                            onChange={(value) => {
+                              addProductVariant(
+                                "colors",
+                                type.color,
+                                value.target.checked
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="block">
+                <h3 className="block__title">Product sizes</h3>
+                {productsSizes.map((productsSize) => (
+                  <div className="products-filter__block__content checkbox-square-wrapper">
+                    {productsSize.map((type) => (
+                      <Checkbox
+                        type="square"
+                        key={type.id}
+                        name="product-size"
+                        label={type.label}
+                        onChange={(value) => {
+                          addProductVariant(
+                            "sizes",
+                            type.label,
+                            value.target.checked
+                          );
+                        }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              {/* <div className="block">
                 <h3 className="block__title">Payment method</h3>
                 <ul className="round-options round-options--three">
                   <li className="round-item">
@@ -602,7 +677,7 @@ const AddProductPage = () => {
                     <p>$10.00</p>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             <div className="checkout__col-2">
