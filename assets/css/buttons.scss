@@ -1,0 +1,44 @@
+.btn {
+  cursor: pointer;
+  &.btn--rounded {
+    font-size: 12px;
+    background: #fff;
+    display: inline-block;
+    border-radius: 50px;
+    padding: 11px 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    @include breakpoint(phone) {
+      font-size: 13px;
+      padding: 15px 25px;
+    }
+    &.btn--border {
+      border: 1px solid #d8d8d8;
+    }
+    &.btn--yellow {
+      background-color: var(--color-orange);
+      color: #fff;
+      color: #000000;
+    }
+    &.btn--call {
+      background-color: var(--color-call);
+      color: #fff;
+      width: 90%;
+    }
+    &.btn--telegram {
+      background-color: var(--color-telegram);
+      color: #fff;
+      width: 90%;
+    }
+    &.btn--facebook {
+      background-color: var(--color-facebook);
+      color: #fff;
+      width: 90%;
+    }
+    &.btn--whatsapp {
+      background-color: var(--color-whatsapp);
+      color: #fff;
+      width: 90%;
+    }
+  }
+}

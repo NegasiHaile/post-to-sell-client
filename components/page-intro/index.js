@@ -14,7 +14,7 @@ const PageIntro = () => {
           >
             <div className="container">
               <div className="page-intro__slide__content">
-                <h2>Post-To-Sell your products & designes! </h2>
+                <h2>Post-To-Sell your products! </h2>
                 <a href="#" className="btn-shop">
                   <i className="icon-right"></i>Shop now
                 </a>
