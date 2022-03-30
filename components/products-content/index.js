@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import List from "./list";
 
-const ProductsContent = ({ products, productloading, loadProducts }) => {
+const ProductsContent = ({
+  products,
+  productloading,
+  loadProducts,
+  addSortByFilter,
+}) => {
   const [orderProductsOpen, setOrderProductsOpen] = useState(false);
 
   return (
     <section className="products-content">
       <div className="products-content__intro">
         <h2>
-          Men's Tops <span>(133)</span>
+          {products &&
+            (products.isFiltered ? (
+              <>
+                Filtered Products <span>({products.length})</span>
+              </>
+            ) : (
+              <>
+                All Products <span>({products.length})</span>
+              </>
+            ))}
         </h2>
         <button
           type="button"
@@ -33,8 +47,13 @@ const ProductsContent = ({ products, productloading, loadProducts }) => {
           <div className="products__filter__select">
             <h4>Sort by: </h4>
             <div className="select-wrapper">
-              <select>
-                <option>Popular</option>
+              <select onChange={(value) => addSortByFilter(value.target.value)}>
+                <option value={""}>none</option>
+                <option value={"oldest"}>Sort by oldest</option>
+                <option value={"latest"}>Sort by latest</option>
+                <option value={"price-low-high"}>Sort by Price Low-High</option>
+                <option value={"price-high-low"}>Sort by Price High-Low</option>
+                <option value={"high-rating"}>Sort by high rating</option>
               </select>
             </div>
           </div>
@@ -42,7 +61,8 @@ const ProductsContent = ({ products, productloading, loadProducts }) => {
       </div>
 
       <List
-        products={products}
+        products={products ? products.filteredProducts : null}
+        isFiltered={products ? products.isFiltered : false}
         productloading={productloading}
         loadProducts={loadProducts}
       />
