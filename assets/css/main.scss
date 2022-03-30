@@ -1763,9 +1763,11 @@ h5 {
       margin-right: 110px;
     }
     .product-gallery__thumbs {
-      height: 300px;
+      height: 80px;
+      margin-top: 2px;
       @include breakpoint(phone) {
         height: 491px;
+        margin-top: 0px;
       }
     }
     .product-gallery__thumb {
@@ -1868,7 +1870,7 @@ h5 {
     display: flex;
     h4 {
       font-weight: 400;
-      color: #ff0000;
+      color: #ff2400;
       font-size: 18px;
       @include breakpoint(phone) {
         font-size: 25px;
@@ -1920,17 +1922,20 @@ h5 {
 }
 
 .product-gallery {
-  display: flex;
+  display: block;
   margin-bottom: 40px;
   @include breakpoint(phone) {
+    display: flex;
     margin-bottom: 0;
   }
   .product-gallery__thumbs {
-    display: none;
+    display: flex;
     @include breakpoint(phone) {
       width: 97px;
       display: block;
       margin-right: 28px;
+      -webkit-order: 1;
+      order: 1;
     }
   }
   .product-gallery__thumb {
@@ -1950,6 +1955,8 @@ h5 {
     @include breakpoint(phone) {
       width: 476px;
       height: 476px;
+      -webkit-order: 2;
+      order: 2;
     }
     img {
       width: 100%;
