@@ -10,6 +10,7 @@ const Header = ({ isErrorPage }) => {
   const { cartItems, user } = useSelector((state) => {
     return { cartItems: state.cart, user: state.auth.user };
   });
+  const [dropdawonOpen, setDropdawonOpen] = useState(false);
   const isUser = user && user.role === "user";
   const arrayPaths = ["/"];
   console.log("auth", isUser);
@@ -70,8 +71,6 @@ const Header = ({ isErrorPage }) => {
           <Link href="/products">
             <a>Products</a>
           </Link>
-          <a href="#">Inspiration</a>
-          <a href="#">Rooms</a>
           {isUser && (
             <>
               <Link href="/products">
@@ -110,16 +109,23 @@ const Header = ({ isErrorPage }) => {
               className="icon-search"
             ></i>
           </button>
-          <Link href="/cart">
+          {/* <Link href="/cart">
             <button className="btn-cart">
               <i className="icon-cart"></i>
               {cartItems.length > 0 && (
                 <span className="btn-cart__count">{cartItems.length}</span>
               )}
             </button>
-          </Link>
+          </Link> */}
           {isUser ? (
-            <botton></botton>
+            <div>
+              <button
+                className="site-header__btn-profile-avatar"
+                onClick={() => setDropdawonOpen(!dropdawonOpen)}
+              >
+                <i className="icon-avatar"></i>
+              </button>
+            </div>
           ) : (
             <Link href="/login">
               <button className="site-header__btn-avatar">
@@ -136,6 +142,34 @@ const Header = ({ isErrorPage }) => {
             </i>
           </button>
         </div>
+      </div>
+      <div
+        className={
+          dropdawonOpen
+            ? "user_account_dropdown_active"
+            : "user_account_dropdown"
+        }
+      >
+        <ul>
+          <Link href="/products">
+            <li>Profile</li>
+          </Link>
+          <Link href="/products">
+            <li>Settings</li>
+          </Link>
+          <Link href="/products">
+            <li>Change password</li>
+          </Link>
+          <div className="divider"></div>
+          <Link href="/users/add-product">
+            <li>Add Product</li>
+          </Link>
+          <Link href="/products">
+            <li>My Products</li>
+          </Link>
+          <div className="divider"></div>
+          <li>Lock Account </li>
+        </ul>
       </div>
     </header>
   );
