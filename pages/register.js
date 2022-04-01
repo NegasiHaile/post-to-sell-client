@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Layout from "../layouts/Main";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,7 @@ import { postData } from "../utils/services";
 import axios from "axios";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [signingUp, setSigningUp] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
   const {
@@ -32,8 +34,9 @@ const RegisterPage = () => {
         message: "succefully signed up!",
       });
       setSigningUp(false);
+      router.push("/products");
     } catch (error) {
-      console.log('error new', error.response.data.msg)
+      console.log("error new", error.response.data.msg);
       setResult({
         state: "error",
         message: error.message
