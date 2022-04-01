@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Layout from "../layouts/Main";
 import Link from "next/link";
@@ -12,6 +13,7 @@ import { setProfile } from "../store/actions/profileActions";
 
 const LoginPage = ({ title = "Login to post to sell" }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [signingIn, setSigningIn] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
 
@@ -44,6 +46,7 @@ const LoginPage = ({ title = "Login to post to sell" }) => {
       dispatch(setProfile(responseData.profile));
       dispatch(signinSuccess(authData));
       setSigningIn(false);
+      router.push("/products");
     } catch (error) {
       console.log("error: ", error);
       setResult({
