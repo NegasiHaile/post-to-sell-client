@@ -118,11 +118,15 @@ const Header = ({ isErrorPage }) => {
               )}
             </button>
           </Link>
-          <Link href="/login">
-            <button className="site-header__btn-avatar">
-              <i className="icon-avatar"></i>
-            </button>
-          </Link>
+          {isUser ? (
+            <botton></botton>
+          ) : (
+            <Link href="/login">
+              <button className="site-header__btn-avatar">
+                <i className="icon-avatar"></i>
+              </button>
+            </Link>
+          )}
           <button
             onClick={() => setMenuOpen(true)}
             className="site-header__btn-menu"
