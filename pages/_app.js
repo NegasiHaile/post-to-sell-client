@@ -89,6 +89,7 @@ export default withRedux(createStore)(withReduxSaga({ async: true })(MyApp));
 
 import React, { Fragment } from "react";
 import Router, { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 import { wrapper } from "../store";
 // global styles
@@ -98,6 +99,7 @@ import "react-rater/lib/react-rater.css";
 import "../assets/css/styles.scss";
 
 import * as gtag from "./../utils/gtag";
+import ProductPage from "./products";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -108,11 +110,17 @@ if (isProduction) {
 }
 
 const MyApp = ({ Component, pageProps }) => {
+  const user = useSelector((state) => state.auth.user);
   const router = useRouter();
+
   console.log("router.pathname", router.pathname);
-  /* if (router.pathname.startsWith("/employee") && role !== "employee") {
-    allowed = false;
-  } */
+  if (
+    (router.pathname === "/login" || router.pathname === "/register") &&
+    user
+  ) {
+    router.push("/products");
+  }
+
   return (
     <Fragment>
       <Component {...pageProps} />
