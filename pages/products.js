@@ -17,6 +17,7 @@ import {
 
 import { server } from "../utils/server";
 
+import { api_getAllProducts, api_getAllCategories } from "../api/index";
 const countProducts = (field, value, products) => {
   let result = 0;
   products.map((product) => {
@@ -181,10 +182,8 @@ const Products = () => {
     });
     dispatch(clearProducts());
     try {
-      const res = await axios.get(`${server}/api/products/list/all`);
-
+      const res = await api_getAllProducts();
       const responseData = res.data;
-      console.log("responseData", responseData);
       dispatch(setProducts(responseData));
 
       setProductLoading({
@@ -213,10 +212,9 @@ const Products = () => {
     });
     dispatch(clearCategories());
     try {
-      const res = await axios.get(`${server}/api/categories/list`);
+      const res = await api_getAllCategories();
 
       const responseData = res.data;
-      console.log("responseData", responseData);
       dispatch(setCategories(responseData));
 
       setCategoriesLoading({
@@ -271,7 +269,6 @@ const Products = () => {
       setFilteredProducts(filterProducts(products, filterValue));
     }
   }, [products, filterValue]);
-  console.log("filterValue", filterValue);
   return (
     <Layout>
       <Breadcrumb />
