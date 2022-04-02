@@ -1,43 +1,42 @@
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { EffectFade, Navigation } from "swiper";
 
+import { api_getAllBanners } from "../../api/index";
+
+import { server } from "../../utils/server";
 SwiperCore.use([EffectFade, Navigation]);
 
 const PageIntro = () => {
+  const [banners, setBanners] = useState([]);
+
+  useEffect(async () => {
+    const res = await api_getAllBanners();
+    setBanners(res.data);
+    console.log(res.data);
+  }, []);
   return (
     <section className="page-intro">
       <Swiper navigation effect="fade" className="swiper-wrapper">
-        <SwiperSlide>
-          <div
-            className="page-intro__slide"
-            style={{ backgroundImage: "url('/images/slide-1.jpg')" }}
-          >
-            <div className="container">
-              <div className="page-intro__slide__content">
-                <h2>Post-To-Sell your products! </h2>
-                <a href="#" className="btn-shop">
-                  <i className="icon-right"></i>Shop now
-                </a>
+        {banners.map((banner, index) => (
+          <SwiperSlide key={index}>
+            <div
+              className="page-intro__slide"
+              style={{
+                backgroundImage: `url('${server}/${banner.banner}')`,
+              }}
+            >
+              <div className="container">
+                <div className="page-intro__slide__content">
+                  <h2>{banner.title} </h2>
+                  <a href="#" className="btn-shop">
+                    <i className="icon-right"></i>Shop now
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div
-            className="page-intro__slide"
-            style={{ backgroundImage: "url('/images/slide-2.jpg')" }}
-          >
-            <div className="container">
-              <div className="page-intro__slide__content">
-                <h2>Make your house into a home</h2>
-                <a href="#" className="btn-shop">
-                  <i className="icon-right"></i>Shop now
-                </a>
-              </div>
-            </div>
-          </div>
-        </SwiperSlide>
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       <div className="shop-data">
