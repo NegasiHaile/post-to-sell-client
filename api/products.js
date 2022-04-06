@@ -4,6 +4,9 @@ export const api_getAllProducts = async () => {
   return await axios.get(`${server}/api/products/list/all`);
 };
 
+export const api_getAllFeaturedProducts = async () => {
+  return await axios.get(`${server}/api/products/list/all/featured`);
+};
 export const api_deleteProduct = async () => {
   return "deleted";
 };

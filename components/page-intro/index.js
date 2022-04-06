@@ -13,7 +13,6 @@ const PageIntro = () => {
   useEffect(async () => {
     const res = await api_getAllBanners();
     setBanners(res.data);
-    console.log(res.data);
   }, []);
   return (
     <section className="page-intro">
@@ -61,8 +60,8 @@ const PageIntro = () => {
             <li>
               <i className="icon-cash"></i>
               <div className="data-item__content">
-                <h4>Originality Guaranteed</h4>
-                <p>30 days warranty for each product from our store</p>
+                <h4>User to user market</h4>
+                <p>Users sell and buy their products without thrid party.</p>
               </div>
             </li>
           </ul>
