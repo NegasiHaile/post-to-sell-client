@@ -1,10 +1,37 @@
-.advert_item {
-  width: 100%;
-  max-height: 150px;
-  margin: 20px 2px;
-  img {
+.featuredProducts_adverts {
+  display: block;
+  justify-content: start;
+  .featured_products_container {
     width: 100%;
-    max-height: 200px;
-    border-radius: 3px;
+    order: 2;
+    @include breakpoint(phone) {
+      width: 75%;
+    }
+  }
+  .adverts_container {
+    flex-grow: 2;
+    @include breakpoint(phone) {
+      display: block;
+      margin-right: 30px;
+      width: 25%;
+      // background-color: #000;
+      padding: 3px;
+      border-radius: 1px;
+    }
+    .advert_item {
+      width: 100%;
+      // max-height: 150px;
+      margin: 20px 2px;
+      img {
+        width: 100%;
+        max-height: 380px;
+        border-radius: 3px;
+      }
+    }
+  }
+
+  @include breakpoint(phone) {
+    display: flex;
+    justify-content: space-between;
   }
 }

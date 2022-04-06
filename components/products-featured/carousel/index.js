@@ -5,17 +5,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { server } from "../../../utils/server";
 
-let slidesPerView = 1.3;
+let slidesPerView = 1.5;
 let centeredSlides = true;
 let spaceBetween = 30;
 if (process.browser) {
   if (window.innerWidth > 768) {
-    slidesPerView = 3;
+    slidesPerView = 2;
     spaceBetween = 35;
     centeredSlides = false;
   }
   if (window.innerWidth > 1024) {
-    slidesPerView = 4;
+    slidesPerView = 3;
     spaceBetween = 65;
     centeredSlides = false;
   }

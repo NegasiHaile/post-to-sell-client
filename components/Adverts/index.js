@@ -7,13 +7,9 @@ function Adverts() {
     const res = await api_getAllAdverts();
     setAllAdverts(res.data);
   }, []);
-  return (
-    <div>
-      {allAdverts.map((advert, index) => (
-        <AdvertItem key={index} advert={advert} />
-      ))}
-    </div>
-  );
+  return allAdverts.map((advert, index) => (
+    <AdvertItem key={index} advert={advert} />
+  ));
 }
 
 export default Adverts;

@@ -9,73 +9,19 @@ const IndexPage = () => {
     <Layout>
       <PageIntro />
 
-      <div
-        className="featuredProducts_adverts"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
-        <div
-          style={{
-            width: "84%",
-          }}
-        >
+      <div className="featuredProducts_adverts">
+        <div className="featured_products_container">
           <ProductsFeatured />
         </div>
-        <div
-          style={{
-            width: "15%",
-            // border: "solid 1px #cfcfcf",
-            marginLeft: "3px",
-            padding: "3px",
-            borderRadius: "1px",
-          }}
-        >
+        <div className="container adverts_container">
           <Adverts />
         </div>
       </div>
 
-      <section className="featured">
-        <div className="container">
-          <article
-            style={{ backgroundImage: "url(/images/featured-1.jpg)" }}
-            className="featured-item featured-item-large"
-          >
-            <div className="featured-item__content">
-              <h3>New arrivals are now in!</h3>
-              <a href="#" className="btn btn--rounded">
-                Show Collection
-              </a>
-            </div>
-          </article>
-
-          <article
-            style={{ backgroundImage: "url(/images/featured-2.jpg)" }}
-            className="featured-item featured-item-small-first"
-          >
-            <div className="featured-item__content">
-              <h3>Basic t-shirts $29,99</h3>
-              <a href="#" className="btn btn--rounded">
-                More details
-              </a>
-            </div>
-          </article>
-
-          <article
-            style={{ backgroundImage: "url(/images/featured-3.jpg)" }}
-            className="featured-item featured-item-small"
-          >
-            <div className="featured-item__content">
-              <h3>Sale this summer</h3>
-              <a href="#" className="btn btn--rounded">
-                VIEW ALL
-              </a>
-            </div>
-          </article>
-        </div>
-      </section>
       <section className="section">
         <div className="container">
           <header className="section__intro">
-            <h4>Why should you choose us?</h4>
+            <h4>Why should you Sell and Purchase here?</h4>
           </header>
 
           <ul className="shop-data-items">
@@ -125,8 +71,47 @@ const IndexPage = () => {
           </ul>
         </div>
       </section>
+      <section className="featured">
+        <div className="container">
+          <article
+            style={{ backgroundImage: "url(/images/featured-1.jpg)" }}
+            className="featured-item featured-item-large"
+          >
+            <div className="featured-item__content">
+              <h3>New arrivals are now in!</h3>
+              <a href="#" className="btn btn--rounded">
+                Show Collection
+              </a>
+            </div>
+          </article>
 
-      <Subscribe />
+          <article
+            style={{ backgroundImage: "url(/images/featured-2.jpg)" }}
+            className="featured-item featured-item-small-first"
+          >
+            <div className="featured-item__content">
+              <h3>Basic t-shirts $29,99</h3>
+              <a href="#" className="btn btn--rounded">
+                More details
+              </a>
+            </div>
+          </article>
+
+          <article
+            style={{ backgroundImage: "url(/images/featured-3.jpg)" }}
+            className="featured-item featured-item-small"
+          >
+            <div className="featured-item__content">
+              <h3>Sale this summer</h3>
+              <a href="#" className="btn btn--rounded">
+                VIEW ALL
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* <Subscribe /> */}
       <Footer />
     </Layout>
   );
