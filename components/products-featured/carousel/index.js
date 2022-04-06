@@ -25,30 +25,45 @@ const ProductsCarousel = ({ products }) => {
   if (!products) return "Loading";
 
   return (
-    <div className="products-carousel">
-      <Swiper
-        spaceBetween={spaceBetween}
-        loop={true}
-        centeredSlides={centeredSlides}
-        watchOverflow={true}
-        slidesPerView={slidesPerView}
-        className="swiper-wrapper"
-      >
+    <div className="products-content">
+      <section className="products-list">
         {products.map((item) => (
-          <SwiperSlide key={item._id}>
-            <ProductItem
-              discount={item.discount}
-              price={item.price}
-              currentPrice={item.currentPrice}
-              key={item._id}
-              id={item._id}
-              productImage={`${server}/${item.images[0]}`}
-              name={item.name}
-            />
-          </SwiperSlide>
+          <ProductItem
+            discount={item.discount}
+            price={item.price}
+            currentPrice={item.currentPrice}
+            key={item._id}
+            id={item._id}
+            productImage={`${server}/${item.images[0]}`}
+            name={item.name}
+          />
         ))}
-      </Swiper>
+      </section>
     </div>
+    // <div className="products-carousel">
+    //   <Swiper
+    //     spaceBetween={spaceBetween}
+    //     loop={true}
+    //     centeredSlides={centeredSlides}
+    //     watchOverflow={true}
+    //     slidesPerView={slidesPerView}
+    //     className="swiper-wrapper"
+    //   >
+    //     {products.map((item) => (
+    //       <SwiperSlide key={item._id}>
+    //         <ProductItem
+    //           discount={item.discount}
+    //           price={item.price}
+    //           currentPrice={item.currentPrice}
+    //           key={item._id}
+    //           id={item._id}
+    //           productImage={`${server}/${item.images[0]}`}
+    //           name={item.name}
+    //         />
+    //       </SwiperSlide>
+    //     ))}
+    //   </Swiper>
+    // </div>
   );
 };
 
