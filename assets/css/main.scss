@@ -339,6 +339,7 @@ h5 {
 
   .user_account_dropdown {
     display: none;
+    margin-top: 300px;
     ul li {
       display: none;
     }
@@ -350,7 +351,7 @@ h5 {
     background-color: #fff !important;
     padding: 8px;
     border-radius: 5px 0px 10px 10px;
-    border: 1px solid #ebe7e6;
+    border: 1px solid #ececec;
     z-index: 9999;
     @include breakpoint(tablet-lg) {
       margin-top: -30px;
@@ -360,6 +361,7 @@ h5 {
       color: #333;
       padding: 10px 15px;
       font-size: 13px;
+      transition: padding 0.5s;
     }
     ul .divider {
       border-bottom: 0.1rem solid #e0e0e0;
@@ -368,8 +370,27 @@ h5 {
     ul li:hover {
       cursor: pointer;
       background-color: #ebe7e6;
-      color: rgb(139, 139, 139);
-      border-radius: 5px;
+      color: var(--color-black);
+      border-radius: 3px;
+      padding-left: 10px;
+    }
+    ul button {
+      width: 100%;
+      text-align: start;
+      padding: 6px 10px;
+      border-radius: 3px;
+      margin-top: 5px;
+      color: #fff;
+      background-color: var(--color-call);
+      border: solid 1px var(--color-call);
+      transition: padding 0.5s;
+    }
+
+    ul button:hover {
+      background-color: #fff;
+      border: solid 1px var(--color-call);
+      color: var(--color-call);
+      padding-left: 15px;
     }
   }
 
