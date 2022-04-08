@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
 import { setProfile } from "../store/actions/profileActions";
 
-const LoginPage = ({ title = "Login to post to sell" }) => {
+const LoginPage = ({ title = "post to sell login" }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [signingIn, setSigningIn] = useState(false);

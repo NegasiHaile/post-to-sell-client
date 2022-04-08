@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signoutSuccess } from "../../store/actions/authActions";
 
+import UserAccountDropdown from "./UserAccountDropdown";
 const Header = ({ isErrorPage }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -83,8 +84,8 @@ const Header = ({ isErrorPage }) => {
               <Link href="/users/my-products">
                 <a>My Products</a>
               </Link>
-              <Link href="/users/add-product">
-                <a>Add Product</a>
+              <Link href="/users/my-adverts">
+                <a>My Adverts</a>
               </Link>
             </>
           )}
@@ -157,34 +158,8 @@ const Header = ({ isErrorPage }) => {
           </button>
         </div>
       </div>
-      <div
-        className={
-          dropdawonOpen
-            ? "user_account_dropdown_active"
-            : "user_account_dropdown"
-        }
-      >
-        <ul>
-          <Link href="/products">
-            <li>Profile</li>
-          </Link>
-          <Link href="/products">
-            <li>Settings</li>
-          </Link>
-          <Link href="/products">
-            <li>Change password</li>
-          </Link>
-          <div className="divider"></div>
-          <Link href="/users/add-product">
-            <li>Add Product</li>
-          </Link>
-          <Link href="/users/my-products">
-            <li>My Products</li>
-          </Link>
-          <div className="divider"></div>
-          <li onClick={onClickLogout}>Lock Account </li>
-        </ul>
-      </div>
+
+      <UserAccountDropdown dropdawonOpen={dropdawonOpen} onClickLogout={onClickLogout}/>
     </header>
   );
 };
