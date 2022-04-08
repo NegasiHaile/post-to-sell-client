@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import useOnClickOutside from "use-onclickoutside";
 import Logo from "../../assets/icons/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { signoutSuccess } from "../../store/actions/authActions";
 
 const Header = ({ isErrorPage }) => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { cartItems, user } = useSelector((state) => {
     return { cartItems: state.cart, user: state.auth.user };
@@ -28,6 +30,11 @@ const Header = ({ isErrorPage }) => {
     } else {
       setOnTop(false);
     }
+  };
+
+  const onClickLogout = () => {
+    dispatch(signoutSuccess());
+    router.push("/login");
   };
 
   useEffect(() => {
@@ -73,7 +80,7 @@ const Header = ({ isErrorPage }) => {
           </Link>
           {isUser && (
             <>
-              <Link href="/products">
+              <Link href="/users/my-products">
                 <a>My Products</a>
               </Link>
               <Link href="/users/add-product">
@@ -127,11 +134,18 @@ const Header = ({ isErrorPage }) => {
               </button>
             </div>
           ) : (
-            <Link href="/login">
-              <button className="site-header__btn-avatar">
-                <i className="icon-avatar"></i>
-              </button>
-            </Link>
+            <>
+              <Link href="/login">
+                <button className="site-header__btn-avatar">
+                  {/* <i className="icon-avatar"></i> */}Login
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="site-header__btn-avatar">
+                  {/* <i className="icon-avatar"></i> */}Register
+                </button>
+              </Link>
+            </>
           )}
           <button
             onClick={() => setMenuOpen(true)}
@@ -164,11 +178,11 @@ const Header = ({ isErrorPage }) => {
           <Link href="/users/add-product">
             <li>Add Product</li>
           </Link>
-          <Link href="/products">
+          <Link href="/users/my-products">
             <li>My Products</li>
           </Link>
           <div className="divider"></div>
-          <li>Lock Account </li>
+          <li onClick={onClickLogout}>Lock Account </li>
         </ul>
       </div>
     </header>

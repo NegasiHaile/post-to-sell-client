@@ -80,16 +80,17 @@ const Content = ({ product }) => {
           <div className="product-filter-item">
             <h5>Color:</h5>
             <div className="checkbox-color-wrapper">
-              {productsColors.map((type) => (
-                <CheckboxColor
-                  key={type.id}
-                  type={"radio"}
-                  name="product-color"
-                  color={type.color}
-                  valueName={type.label}
-                  onChange={onColorSet}
-                />
-              ))}
+              {product.colors &&
+                product.colors.map((type) => (
+                  <CheckboxColor
+                    key={type}
+                    type={"radio"}
+                    name="product-color"
+                    color={type}
+                    valueName={type}
+                    /* onChange={onColorSet} */
+                  />
+                ))}
             </div>
           </div>
           <div className="product-filter-item">
@@ -98,11 +99,12 @@ const Content = ({ product }) => {
             </h5>
             <div className="checkbox-color-wrapper">
               <div className="select-wrapper">
-                <select onChange={onSelectChange}>
+                <select /* onChange={onSelectChange} */>
                   <option>Choose size</option>
-                  {productsSizes.map((type) => (
-                    <option value={type.label}>{type.label}</option>
-                  ))}
+                  {product.sizes &&
+                    product.sizes.map((type) => (
+                      <option value={type}>{type}</option>
+                    ))}
                 </select>
               </div>
             </div>

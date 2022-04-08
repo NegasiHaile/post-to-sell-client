@@ -25,7 +25,7 @@ export const productsSizes = [
       label: "XXL",
     },
   ],
-  [
+  /* [
     {
       id: "1",
       label: "XS",
@@ -50,7 +50,7 @@ export const productsSizes = [
       id: "6",
       label: "XXL",
     },
-  ],
+  ], */
 ];
 
 export default productsSizes;

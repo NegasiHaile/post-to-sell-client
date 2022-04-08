@@ -6,6 +6,9 @@ const ProductsContent = ({
   productloading,
   loadProducts,
   addSortByFilter,
+  myProduct,
+  onClickEdit,
+  onClickDelete,
 }) => {
   const [orderProductsOpen, setOrderProductsOpen] = useState(false);
 
@@ -65,6 +68,9 @@ const ProductsContent = ({
         isFiltered={products ? products.isFiltered : false}
         productloading={productloading}
         loadProducts={loadProducts}
+        myProduct={myProduct}
+        onClickEdit={onClickEdit}
+        onClickDelete={onClickDelete}
       />
     </section>
   );

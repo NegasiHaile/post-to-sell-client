@@ -117,7 +117,7 @@ const ProductsFilter = ({
                     name="product-size"
                     label={type.label}
                     onChange={(value) => {
-                      addArrayFilter("sizes", type.id, value.target.checked);
+                      addArrayFilter("sizes", type.label, value.target.checked);
                     }}
                   />
                 ))}
@@ -137,7 +137,11 @@ const ProductsFilter = ({
                     name="product-color"
                     color={type.color}
                     onChange={(value) => {
-                      addArrayFilter("colors", type.id, value.target.checked);
+                      addArrayFilter(
+                        "colors",
+                        type.color,
+                        value.target.checked
+                      );
                     }}
                   />
                 ))}

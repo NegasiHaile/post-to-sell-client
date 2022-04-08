@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleFavProduct } from "./../../store/actions/userActions";
 
 const ProductItem = ({
+  product,
   discount,
   productImage,
   tag,
@@ -11,6 +12,9 @@ const ProductItem = ({
   name,
   price,
   currentPrice,
+  myProduct,
+  onClickEdit,
+  onClickDelete,
 }) => {
   const dispatch = useDispatch();
   const { favProducts } = useSelector((state) => state.user);
@@ -28,20 +32,18 @@ const ProductItem = ({
   return (
     <div className="product-item">
       <div className="product__image">
-        <button
+        {/* <button
           type="button"
           onClick={toggleFav}
-          className={`btn-heart ${isFavourite ? "btn-heart--active" : ""}`}
+          className={`btn-heart btn btn--rounded btn--call`}
         >
-          <i className="icon-heart"></i>
-        </button>
+          {myProduct ? "Delete" : <i className="icon-heart"></i>}
+        </button> */}
 
         <Link href={`/product/${id}`}>
           <a>
             <img src={productImage} alt="product" />
-            {tag && tag !== "" && (
-              <span className="product__discount">{tag}</span>
-            )}
+            {tag && tag !== "" && <a className="product__discount">{tag}</a>}
           </a>
         </Link>
       </div>
@@ -59,6 +61,29 @@ const ProductItem = ({
             <span style={{ textDecoration: "line-through" }}>${price}</span>
           )}
         </div>
+        {myProduct && (
+          <div
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <button
+              onClick={() => onClickEdit(product)}
+              className="product__discount"
+            >
+              {"Edit"}
+            </button>
+            <button
+              onClick={() => onClickDelete(product)}
+              className="product__discount"
+            >
+              {"Delete"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

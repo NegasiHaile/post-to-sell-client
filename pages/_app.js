@@ -97,6 +97,7 @@ import "swiper/css";
 import "rc-slider/assets/index.css";
 import "react-rater/lib/react-rater.css";
 import "../assets/css/styles.scss";
+import 'react-toastify/dist/ReactToastify.css';
 
 import * as gtag from "./../utils/gtag";
 import ProductPage from "./products";

@@ -8,6 +8,9 @@ const ProductsContent = ({
   isFiltered,
   productloading,
   loadProducts,
+  myProduct,
+  onClickEdit,
+  onClickDelete,
 }) => {
   //const fetcher = (url) => fetch(url).then((res) => res.json());
   //const { data, error } = useSwr("/api/products", fetcher);
@@ -44,6 +47,10 @@ const ProductsContent = ({
           {products.length > 0 ? (
             products.map((item) => (
               <ProductItem
+                product={item}
+                myProduct={myProduct}
+                onClickEdit={onClickEdit}
+                onClickDelete={onClickDelete}
                 discount={item.price}
                 tag={item.tag}
                 key={item._id}

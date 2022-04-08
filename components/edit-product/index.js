@@ -13,11 +13,17 @@ import { postData } from "../../utils/services";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import ProductItemLoading from "../../components/product-item/add-product-preview";
-import { api_getAllCategories } from "../../api/index";
+import {
+  api_getAllCategories,
+  api_deleteProductImage,
+  api_editProduct,
+  api_editProductImage,
+} from "../../api/index";
 import {
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
+import { ToastContainer, toast } from "react-toastify";
 
 const contactAddress = {
   phoneNumber: "0983339025",
@@ -40,7 +46,7 @@ const categoryParser = (categories) => {
   return result;
 };
 
-const AddProductPage = () => {
+const AddProductPage = ({ product, onClickBack }) => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const [addingProduct, setAddingProduct] = useState(false);
@@ -54,7 +60,41 @@ const AddProductPage = () => {
     telegramUsername: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState();
+  const [previousImages2, setPreviousImages2] = useState({
+    0: null,
+    1: null,
+    2: null,
+    3: null,
+    4: null,
+  });
+  const [previousImages, setPreviousImages] = useState({
+    0: {
+      preview: null,
+      file: null,
+      new: false,
+    },
+    1: {
+      preview: null,
+      file: null,
+      new: false,
+    },
+    2: {
+      preview: null,
+      file: null,
+      new: false,
+    },
+    3: {
+      preview: null,
+      file: null,
+      new: false,
+    },
+    4: {
+      preview: null,
+      file: null,
+      new: false,
+    },
+  });
+  console.log("previousImages", previousImages);
   const [preview, setPreview] = useState();
 
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
@@ -85,71 +125,59 @@ const AddProductPage = () => {
 
   const onSubmit = async (data) => {
     console.log("data", data);
-    if (selectedFile) {
-      setAddingProduct(true);
-      try {
-        const sizes = Object.keys(productVariant.sizes).filter(
-          (key) => productVariant.sizes[key] === true
-        );
-        const colors = Object.keys(productVariant.colors).filter(
-          (key) => productVariant.colors[key] === true
-        );
-        const contacts = {
-          phoneNumber: data.phoneNumber,
-          email: data.email,
-          address: data.address,
-          telegramUsername: data.telegramUsername,
-        };
-        var formData = new FormData();
-        sizes.forEach((size) => formData.append("sizes", size));
-        colors.forEach((color) => formData.append("colors", color));
-        //contacts.forEach((contact) => formData.append("contacts", contact));
-        formData.append("images", selectedFile);
-        selectedMultipleFile.map((image) => {
-          formData.append("images", image);
-        });
-        formData.append("contacts", contacts);
-        formData.append("userId", auth.user.id);
-        formData.append("productName", data.productName);
-        formData.append("brand", "brand");
-        formData.append("category", data.category);
-        formData.append("subCategory", data.subCategory);
-        formData.append("currentPrice", data.price);
-        formData.append("price", data.price);
-        formData.append("discription", data.discription);
-        formData.append("postType", "postType");
-
-        const res = await axios.post(`${server}/api/products/add`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: auth.user.accesstoken,
-          },
-        });
-        setResult({
-          state: "success",
-          message: "succefully signed in!",
-        });
-        const responseData = res.data;
-        setAddingProduct(false);
-      } catch (error) {
-        console.log("error: ", error);
-        setResult({
-          state: "error",
-          message:
-            error.response && error.response.data && error.response.data.msg
-              ? error.response.data.msg
-              : "something went wrong while signing in!",
-        });
-        setAddingProduct(false);
-      }
-    } else {
+    setAddingProduct(true);
+    setResult({ state: "success", message: "" });
+    try {
+      const sizes = Object.keys(productVariant.sizes).filter(
+        (key) => productVariant.sizes[key] === true
+      );
+      const colors = Object.keys(productVariant.colors).filter(
+        (key) => productVariant.colors[key] === true
+      );
+      const contacts = {
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        address: data.address,
+        telegramUsername: data.telegramUsername,
+      };
+      const uploadedData = {
+        contacts: contacts,
+        userId: auth.user.id,
+        productName: data.productName,
+        brand: data.brand,
+        category: data.category,
+        subCategory: data.subCategory,
+        currentPrice: data.currentPrice,
+        price: data.price,
+        discription: data.discription,
+        postType: "postType",
+        sizes: sizes,
+        colors: colors,
+      };
+      const res = await api_editProduct(product._id, uploadedData, {
+        headers: {
+          Authorization: auth.user.accesstoken,
+        },
+      });
+      setResult({
+        state: "success",
+        message: "Proudct edited succefully!",
+      });
+      const responseData = res.data;
+      setAddingProduct(false);
+      onClickBack();
+    } catch (error) {
+      console.log("error: ", error);
       setResult({
         state: "error",
-        message: "primary image is required!",
+        message:
+          error.response && error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : "something went wrong while editing product!",
       });
+      setAddingProduct(false);
     }
   };
-  console.log("result", result);
 
   const onClickUseProfileAddress = (e) => {
     setUseProfileAddress(e.target.checked);
@@ -173,27 +201,8 @@ const AddProductPage = () => {
   };
 
   const watchAllFields = watch();
+  console.log("watchAllFields", watchAllFields);
 
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-
-    // free memory when ever this component is unmounted
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  const onSelectFile = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-    setSelectedFile(e.target.files[0]);
-  };
   const onSelectMultipleFile = (e) => {
     let fileObj = [];
     let fileArray = [];
@@ -204,7 +213,6 @@ const AddProductPage = () => {
     setSelectedMultipleFile(fileObj);
     setPreviewMultiple(fileArray);
   };
-  console.log("productVariant", productVariant);
 
   const [categoriesData, setCategoriesData] = useState({});
   const [categoriesloading, setCategoriesLoading] = useState({
@@ -217,7 +225,6 @@ const AddProductPage = () => {
       categories: state.product.categories,
     };
   });
-  console.log("categoriesData", categoriesData);
   const loadCategories = async () => {
     setCategoriesLoading({
       isLoading: true,
@@ -260,13 +267,164 @@ const AddProductPage = () => {
       setCategoriesData(categoryParser(categories));
     }
   }, [categories]);
+  useEffect(() => {
+    if (product) {
+      [
+        "productName",
+        "brand",
+        "category",
+        "subCategory",
+        "currentPrice",
+        "price",
+        "discription",
+      ].map((name) => {
+        if (product[name]) {
+          setValue(name, product[name]);
+        }
+      });
+      if (product.images) {
+        let pastImages = {};
+        let pastImages2 = {};
+        product.images.map((image, index) => {
+          pastImages[index] = {
+            preview: image,
+            file: null,
+            new: false,
+          };
+          pastImages2[index] = image;
+        });
+        setPreviousImages2(pastImages2);
+        console.log("pastImages", pastImages);
+        setPreviousImages({ ...previousImages, ...pastImages });
+      }
+      ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
+        if (product.contacts && product.contacts[contact]) {
+          setValue(contact, product.contacts[contact]);
+        }
+      });
+    }
+  }, [product]);
+
+  const [productImageDelete, setProductImageDelete] = useState({
+    isLoading: false,
+    state: "success",
+    message: "",
+  });
+  const onClickDeleteImage = async (imageUrl, index) => {
+    setProductImageDelete({
+      isLoading: true,
+      state: "success",
+      message: "",
+    });
+    try {
+      const res = await api_deleteProductImage(
+        product._id,
+        imageUrl,
+        auth.user.accesstoken
+      );
+      setPreviousImages({
+        ...previousImages,
+        [index]: null,
+      });
+      setProductImageDelete({
+        isLoading: false,
+        state: "success",
+        message: "Image deleted succefully",
+      });
+    } catch (error) {
+      console.log("error: ", error);
+      setProductImageDelete({
+        isLoading: false,
+        state: "error",
+        message:
+          error.response && error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : "something went wrong while deleting product image!",
+      });
+    }
+  };
+  const onSelectImageFile = (e, id) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+    const objectUrl = URL.createObjectURL(e.target.files[0]);
+    setPreviousImages({
+      ...previousImages,
+      [id]: {
+        preview: objectUrl,
+        file: e.target.files[0],
+        new: true,
+      },
+    });
+  };
+  const [productImageUpload, setProductImageUpload] = useState({
+    isLoading: false,
+    state: "success",
+    message: "",
+  });
+  const onUploadImage = async (imageUrl, index) => {
+    setProductImageUpload({
+      isLoading: true,
+      state: "success",
+      message: "",
+    });
+    try {
+      var formData = new FormData();
+      formData.append("images", imageUrl.file);
+      formData.append("position", index);
+      formData.append("url", previousImages2[index]);
+      const res = await api_editProductImage(product._id, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: auth.user.accesstoken,
+        },
+      });
+      toast.success("🦄 Wow so easy!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      /* setPreviousImages({
+        ...previousImages,
+        [index]: null,
+      }); */
+      setProductImageUpload({
+        isLoading: false,
+        state: "success",
+        message: "Image uploaded succefully",
+      });
+    } catch (error) {
+      console.log("error: ", error);
+      toast.error('🦄 Wow so easy!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+      setProductImageUpload({
+        isLoading: false,
+        state: "error",
+        message:
+          error.response && error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : "something went wrong while uploading product image!",
+      });
+    }
+  };
 
   return (
     <Layout>
       <section className="cart">
         <div className="container">
           <div className="cart__intro">
-            <h3 className="cart__title">Add Product</h3>
+            <h3 className="cart__title">Edit Product</h3>
             <CheckoutStatus step="checkout" />
           </div>
 
@@ -301,7 +459,83 @@ const AddProductPage = () => {
                           </p>
                         )}
                     </div>
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Product Brand"
+                        type="text"
+                        name="brand"
+                        {...register("brand", {
+                          required: true,
+                          maxLength: 60,
+                        })}
+                      />
+                      {errors.brand && errors.brand.type === "required" && (
+                        <p className="message message--error">
+                          Product brand is required
+                        </p>
+                      )}
+                      {errors.brand && errors.brand.type === "maxLength" && (
+                        <p className="message message--error">
+                          Product brand must have less than 60 characters
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
+                  <div className="form__input-row form__input-row--two">
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Current Product Price"
+                        type="number"
+                        name="currentPrice"
+                        {...register("currentPrice", {
+                          required: true,
+                          minLength: 1,
+                        })}
+                      />
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "required" && (
+                          <p className="message message--error">
+                            Current Product price is required
+                          </p>
+                        )}
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "minLength" && (
+                          <p className="message message--error">
+                            Current Product price must be atleast 1 birr
+                          </p>
+                        )}
+                    </div>
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Previous Product Price"
+                        type="number"
+                        name="price"
+                        {...register("price", {
+                          required: true,
+                          minLength: 1,
+                        })}
+                      />
+                      {errors.price && errors.price.type === "required" && (
+                        <p className="message message--error">
+                          Product price is required
+                        </p>
+                      )}
+                      {errors.price && errors.price.type === "minLength" && (
+                        <p className="message message--error">
+                          Product price must be atleast 1 birr
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
@@ -338,9 +572,6 @@ const AddProductPage = () => {
                           )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
@@ -381,31 +612,8 @@ const AddProductPage = () => {
                           )}
                       </div>
                     </div>
-
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Product Price"
-                        type="number"
-                        name="price"
-                        {...register("price", {
-                          required: true,
-                          minLength: 1,
-                        })}
-                      />
-                      {errors.price && errors.price.type === "required" && (
-                        <p className="message message--error">
-                          Product price is required
-                        </p>
-                      )}
-                      {errors.price && errors.price.type === "minLength" && (
-                        <p className="message message--error">
-                          Product price must be atleast 1 birr
-                        </p>
-                      )}
-                    </div>
                   </div>
+
                   <div className="form__input-row">
                     <div className="form__col">
                       <textarea
@@ -437,6 +645,7 @@ const AddProductPage = () => {
                   </div>
                 </form>
               </div>
+
               <div className="block">
                 <h3 className="block__title">Contact Address Detail</h3>
                 <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
@@ -562,6 +771,7 @@ const AddProductPage = () => {
                   </button> */}
                 </form>
               </div>
+
               <div className="block">
                 <h3 className="block__title">Product Images</h3>
                 <form className="form">
@@ -574,7 +784,7 @@ const AddProductPage = () => {
                         type="file"
                         accept="image/*"
                         name="productImage"
-                        onChange={onSelectFile}
+                        onChange={(e) => onSelectImageFile(e, 0)}
                       />
                     </div>
                     <div className="form__col">
@@ -592,19 +802,59 @@ const AddProductPage = () => {
                   </div>
                 </form>
               </div>
+
               <div className="block">
                 <div className="add-product-gallery__thumbs">
                   {[0, 1, 2, 3].map((key) => (
-                    <div
-                      //onClick={() => onChangeFeatImage(image)}
-                      key={preview}
-                      className="add-product-gallery__thumb"
-                    >
+                    <div key={preview} className="add-product-gallery__thumb">
+                      {previousImages[key + 1].preview &&
+                        !previousImages[key + 1].new && (
+                          <button
+                            disabled={productImageDelete.isLoading}
+                            type="button"
+                            onClick={() =>
+                              onClickDeleteImage(
+                                previousImages[key + 1],
+                                key + 1
+                              )
+                            }
+                            className={`btn-delete`}
+                          >
+                            X
+                          </button>
+                        )}
+                      {previousImages[key + 1].new && (
+                        <button
+                          disabled={productImageDelete.isLoading}
+                          type="button"
+                          onClick={() =>
+                            onUploadImage(previousImages[key + 1], key + 1)
+                          }
+                          className={`btn-upload btn--rounded-upload btn--yellow-upload`}
+                        >
+                          save
+                        </button>
+                      )}
+                      <button type="button" className={`btn-add`}>
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          style={{ paddingTop: "13px", display: "none" }}
+                          type="file"
+                          accept="image/*"
+                          name="productImage"
+                          onChange={(e) => onSelectImageFile(e, key + 1)}
+                          id={`image-input${key}`}
+                        />
+                        <label for={`image-input${key}`}>+</label>
+                      </button>
                       <img
                         src={
-                          previewMultiple.length > key
-                            ? previewMultiple[key]
-                            : null /* `${server}/${image}` */
+                          previousImages[key + 1].new
+                            ? previousImages[key + 1].preview
+                            : previousImages[key + 1].preview
+                            ? `${server}/${previousImages[key + 1].preview}`
+                            : null
                         }
                         alt=""
                       />
@@ -662,29 +912,6 @@ const AddProductPage = () => {
                   </div>
                 ))}
               </div>
-              {/* <div className="block">
-                <h3 className="block__title">Payment method</h3>
-                <ul className="round-options round-options--three">
-                  <li className="round-item">
-                    <img src="/images/logos/paypal.png" alt="Paypal" />
-                  </li>
-                  <li className="round-item">
-                    <img src="/images/logos/visa.png" alt="Paypal" />
-                  </li>
-                  <li className="round-item">
-                    <img src="/images/logos/mastercard.png" alt="Paypal" />
-                  </li>
-                  <li className="round-item">
-                    <img src="/images/logos/maestro.png" alt="Paypal" />
-                  </li>
-                  <li className="round-item">
-                    <img src="/images/logos/discover.png" alt="Paypal" />
-                  </li>
-                  <li className="round-item">
-                    <img src="/images/logos/ideal-logo.svg" alt="Paypal" />
-                  </li>
-                </ul>
-              </div> */}
 
               {/* <div className="block">
                 <h3 className="block__title">Tags</h3>
@@ -723,7 +950,11 @@ const AddProductPage = () => {
                 <ProductItemLoading
                   discount={watchAllFields.price}
                   productImage={
-                    selectedFile ? preview : null /* watchAllFields */
+                    previousImages[0].new
+                      ? previousImages[0].preview
+                      : previousImages[0].preview
+                      ? `${server}/${previousImages[0].preview}`
+                      : null
                   }
                   name={watchAllFields.productName}
                   price={watchAllFields.price}
@@ -734,7 +965,11 @@ const AddProductPage = () => {
           </div>
 
           <div className="cart-actions cart-actions--checkout">
-            <a href="/cart" className="cart__btn-back">
+            <a
+              onClick={onClickBack}
+              style={{ cursor: "pointer" }}
+              className="cart__btn-back"
+            >
               <i className="icon-left"></i> Back
             </a>
             <div className="cart-actions__items-wrapper">
@@ -745,8 +980,9 @@ const AddProductPage = () => {
                 onClick={handleSubmit(onSubmit)}
                 type="button"
                 className="btn btn--rounded btn--yellow"
+                disabled={addingProduct}
               >
-                Submit Form
+                {addingProduct ? "Submiting Form" : "Submit Form"}
               </button>
             </div>
           </div>
