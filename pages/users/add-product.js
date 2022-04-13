@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
 import CheckoutItems from "../../components/checkout/items";
@@ -42,6 +44,7 @@ const categoryParser = (categories) => {
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const auth = useSelector((state) => state.auth);
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
@@ -56,10 +59,9 @@ const AddProductPage = () => {
 
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
-
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
-
+  
   const [productVariant, setProductVariant] = useState({
     sizes: {},
     colors: {},
@@ -100,21 +102,21 @@ const AddProductPage = () => {
           address: data.address,
           telegramUsername: data.telegramUsername,
         };
+
         var formData = new FormData();
         sizes.forEach((size) => formData.append("sizes", size));
         colors.forEach((color) => formData.append("colors", color));
-        //contacts.forEach((contact) => formData.append("contacts", contact));
-        formData.append("images", selectedFile);
-        selectedMultipleFile.map((image) => {
-          formData.append("images", image);
-        });
+        formData.append("images", selectedFile);       
+        for (let i = 0; i < selectedMultipleFile[0].length; i++) {
+          formData.append("images", selectedMultipleFile[0][i]);
+        }
         formData.append("contacts", contacts);
         formData.append("userId", auth.user.id);
         formData.append("productName", data.productName);
-        formData.append("brand", "brand");
+        formData.append("brand", data.brand);
         formData.append("category", data.category);
         formData.append("subCategory", data.subCategory);
-        formData.append("currentPrice", data.price);
+        formData.append("currentPrice", data.currentPrice);
         formData.append("price", data.price);
         formData.append("discription", data.discription);
         formData.append("postType", "postType");
@@ -127,10 +129,21 @@ const AddProductPage = () => {
         });
         setResult({
           state: "success",
-          message: "succefully signed in!",
+          message: "Product added succefully!",
         });
         const responseData = res.data;
         setAddingProduct(false);
+        toast.success("Product added succefully!", {
+          position: "top-right",
+          theme: "colored",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        router.push("/users/my-products");
       } catch (error) {
         console.log("error: ", error);
         setResult({
@@ -141,15 +154,34 @@ const AddProductPage = () => {
               : "something went wrong while signing in!",
         });
         setAddingProduct(false);
+        toast.error("Product added error!", {
+          position: "top-right",
+          theme: "colored",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } else {
       setResult({
         state: "error",
         message: "primary image is required!",
       });
+      toast.error("primary image is required!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
-  console.log("result", result);
 
   const onClickUseProfileAddress = (e) => {
     setUseProfileAddress(e.target.checked);
@@ -186,7 +218,6 @@ const AddProductPage = () => {
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
-
   const onSelectFile = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
@@ -195,6 +226,9 @@ const AddProductPage = () => {
     setSelectedFile(e.target.files[0]);
   };
   const onSelectMultipleFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
     let fileObj = [];
     let fileArray = [];
     fileObj.push(e.target.files);
@@ -204,7 +238,6 @@ const AddProductPage = () => {
     setSelectedMultipleFile(fileObj);
     setPreviewMultiple(fileArray);
   };
-  console.log("productVariant", productVariant);
 
   const [categoriesData, setCategoriesData] = useState({});
   const [categoriesloading, setCategoriesLoading] = useState({
@@ -217,7 +250,6 @@ const AddProductPage = () => {
       categories: state.product.categories,
     };
   });
-  console.log("categoriesData", categoriesData);
   const loadCategories = async () => {
     setCategoriesLoading({
       isLoading: true,
@@ -274,7 +306,7 @@ const AddProductPage = () => {
             <div className="checkout__col-6">
               <div className="block">
                 <h3 className="block__title">Product Detail</h3>
-                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
+                <form className="form">
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
@@ -302,6 +334,83 @@ const AddProductPage = () => {
                         )}
                     </div>
 
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Product Brand"
+                        type="text"
+                        name="brand"
+                        {...register("brand", {
+                          required: true,
+                          maxLength: 60,
+                        })}
+                      />
+                      {errors.brand && errors.brand.type === "required" && (
+                        <p className="message message--error">
+                          Product brand is required
+                        </p>
+                      )}
+                      {errors.brand && errors.brand.type === "maxLength" && (
+                        <p className="message message--error">
+                          Product brand must have less than 60 characters
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form__input-row form__input-row--two">
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Current Product Price"
+                        type="number"
+                        name="currentPrice"
+                        {...register("currentPrice", {
+                          required: true,
+                          minLength: 1,
+                        })}
+                      />
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "required" && (
+                          <p className="message message--error">
+                            Current Product price is required
+                          </p>
+                        )}
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "minLength" && (
+                          <p className="message message--error">
+                            Current Product price must be atleast 1 birr
+                          </p>
+                        )}
+                    </div>
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Previous Product Price"
+                        type="number"
+                        name="price"
+                        {...register("price", {
+                          required: true,
+                          minLength: 1,
+                        })}
+                      />
+                      {errors.price && errors.price.type === "required" && (
+                        <p className="message message--error">
+                          Product price is required
+                        </p>
+                      )}
+                      {errors.price && errors.price.type === "minLength" && (
+                        <p className="message message--error">
+                          Product price must be atleast 1 birr
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
@@ -338,9 +447,6 @@ const AddProductPage = () => {
                           )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
@@ -381,31 +487,8 @@ const AddProductPage = () => {
                           )}
                       </div>
                     </div>
-
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Product Price"
-                        type="number"
-                        name="price"
-                        {...register("price", {
-                          required: true,
-                          minLength: 1,
-                        })}
-                      />
-                      {errors.price && errors.price.type === "required" && (
-                        <p className="message message--error">
-                          Product price is required
-                        </p>
-                      )}
-                      {errors.price && errors.price.type === "minLength" && (
-                        <p className="message message--error">
-                          Product price must be atleast 1 birr
-                        </p>
-                      )}
-                    </div>
                   </div>
+
                   <div className="form__input-row">
                     <div className="form__col">
                       <textarea
@@ -439,7 +522,7 @@ const AddProductPage = () => {
               </div>
               <div className="block">
                 <h3 className="block__title">Contact Address Detail</h3>
-                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
+                <form className="form">
                   <div className="checkbox-wrapper">
                     <label
                       htmlFor="check-signed-in"
@@ -452,9 +535,6 @@ const AddProductPage = () => {
                         id="check-signed-in"
                         value={useProfileAddress}
                         onChange={(e) => onClickUseProfileAddress(e)}
-                        /* {...register("keepSigned", {
-                        required: true,
-                      })} */
                       />
                       <span className="checkbox__check"></span>
                       <p>Use my profile address</p>
@@ -552,14 +632,6 @@ const AddProductPage = () => {
                         )}
                     </div>
                   </div>
-
-                  {/* <button
-                    type="submit"
-                    className="btn btn--rounded btn--yellow btn-submit"
-                    disabled={addingProduct}
-                  >
-                    {addingProduct ? "Signing in" : "Sign in"}
-                  </button> */}
                 </form>
               </div>
               <div className="block">
@@ -595,16 +667,12 @@ const AddProductPage = () => {
               <div className="block">
                 <div className="add-product-gallery__thumbs">
                   {[0, 1, 2, 3].map((key) => (
-                    <div
-                      //onClick={() => onChangeFeatImage(image)}
-                      key={preview}
-                      className="add-product-gallery__thumb"
-                    >
+                    <div key={preview} className="add-product-gallery__thumb">
                       <img
                         src={
                           previewMultiple.length > key
                             ? previewMultiple[key]
-                            : null /* `${server}/${image}` */
+                            : null
                         }
                         alt=""
                       />
@@ -722,9 +790,7 @@ const AddProductPage = () => {
                 <h3 className="block__title">Product Preview</h3>
                 <ProductItemLoading
                   discount={watchAllFields.price}
-                  productImage={
-                    selectedFile ? preview : null /* watchAllFields */
-                  }
+                  productImage={selectedFile ? preview : null}
                   name={watchAllFields.productName}
                   price={watchAllFields.price}
                   currentPrice={watchAllFields.price}
@@ -734,19 +800,16 @@ const AddProductPage = () => {
           </div>
 
           <div className="cart-actions cart-actions--checkout">
-            <a href="/cart" className="cart__btn-back">
+            <a href="/products" className="cart__btn-back">
               <i className="icon-left"></i> Back
             </a>
             <div className="cart-actions__items-wrapper">
-              {/* <button type="button" className="btn btn--rounded btn--border">
-                Continue shopping
-              </button> */}
               <button
                 onClick={handleSubmit(onSubmit)}
                 type="button"
                 className="btn btn--rounded btn--yellow"
               >
-                Submit Form
+                {addingProduct ? "Submiting Form" : "Submit Form"}
               </button>
             </div>
           </div>
