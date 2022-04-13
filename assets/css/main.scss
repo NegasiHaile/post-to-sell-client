@@ -2570,14 +2570,14 @@ h5 {
     font-weight: 500;
     color: #808080;
     padding: 0 22px;
-    border-radius: 40px;
+    border-radius: 10px;
     border: 1px solid #d8d8d8;
     @include breakpoint(phone) {
       height: 56px;
       padding: 0 40px;
     }
     &.form__input--sm {
-      height: 49px;
+      height: 39px;
       padding: 0 28px;
     }
   }
@@ -2587,7 +2587,7 @@ h5 {
     font-weight: 500;
     color: #808080;
     padding: 0 22px;
-    border-radius: 40px;
+    border-radius: 10px;
     border: 1px solid #d8d8d8;
     @include breakpoint(phone) {
       height: 90px;
