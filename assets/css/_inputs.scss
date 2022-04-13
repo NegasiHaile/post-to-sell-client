@@ -1,0 +1,19 @@
+.form__input-file {
+  height: 30px;
+  width: 100%;
+  font-weight: 500;
+  color: #e94040;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #4609ec;
+  @include breakpoint(phone) {
+    height: 30px;
+    padding: 10px;
+    padding-bottom: 30px;
+  }
+  &.form__input--sm {
+    height: 30px;
+    padding: 10px;
+    padding-bottom: 30px;
+  }
+}
