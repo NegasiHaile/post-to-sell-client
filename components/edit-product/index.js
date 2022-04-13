@@ -23,7 +23,7 @@ import {
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 
 const contactAddress = {
   phoneNumber: "0983339025",
@@ -399,7 +399,7 @@ const AddProductPage = ({ product, onClickBack }) => {
       });
     } catch (error) {
       console.log("error: ", error);
-      toast.error('🦄 Wow so easy!', {
+      toast.error("🦄 Wow so easy!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -407,7 +407,7 @@ const AddProductPage = ({ product, onClickBack }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
       setProductImageUpload({
         isLoading: false,
         state: "error",

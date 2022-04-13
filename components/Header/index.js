@@ -89,9 +89,9 @@ const Header = ({ isErrorPage }) => {
               </Link>
             </>
           )}
-          <button className="site-nav__btn">
+          {/* <button className="site-nav__btn">
             <p>Account</p>
-          </button>
+          </button> */}
         </nav>
 
         <div className="site-header__actions">
@@ -137,15 +137,23 @@ const Header = ({ isErrorPage }) => {
           ) : (
             <>
               <Link href="/login">
-                <button className="site-header__btn-avatar">
+                <button
+                  className="site-header__btn-avatar"
+                  style={{
+                    backgroundColor: "#c22146",
+                    padding: "3px 10px",
+                    borderRadius: "3px",
+                    color: "#fff",
+                  }}
+                >
                   {/* <i className="icon-avatar"></i> */}Login
                 </button>
               </Link>
-              <Link href="/register">
-                <button className="site-header__btn-avatar">
-                  {/* <i className="icon-avatar"></i> */}Register
+              {/* <Link href="/register">
+                <button className="site-nav__btn">
+                  Register
                 </button>
-              </Link>
+              </Link> */}
             </>
           )}
           <button
@@ -159,7 +167,10 @@ const Header = ({ isErrorPage }) => {
         </div>
       </div>
 
-      <UserAccountDropdown dropdawonOpen={dropdawonOpen} onClickLogout={onClickLogout}/>
+      <UserAccountDropdown
+        dropdawonOpen={dropdawonOpen}
+        onClickLogout={onClickLogout}
+      />
     </header>
   );
 };
