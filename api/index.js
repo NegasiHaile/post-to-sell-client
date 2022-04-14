@@ -11,7 +11,12 @@ import {
 import { api_getAllCategories } from "./categories.js"; //all categories APIs
 import { api_getAllBanners } from "./banners"; //banners APIs
 import { api_getAllUsers } from "./users"; // users APIs
-import { api_getAllAdverts, api_addAdvert } from "./adverts"; // adverts APIs
+import {
+  api_addAdvert,
+  api_getAllAdverts,
+  api_getAllUserAdverts,
+  api_deleteAdvert,
+} from "./adverts"; // adverts APIs
 
 // ## Exporting API Functions
 export {
@@ -26,4 +31,9 @@ export {
 export { api_getAllCategories }; //categories
 export { api_getAllBanners }; // banner
 export { api_getAllUsers }; // users
-export { api_getAllAdverts, api_addAdvert }; // adverts
+export {
+  api_addAdvert,
+  api_getAllAdverts,
+  api_getAllUserAdverts,
+  api_deleteAdvert,
+}; // adverts

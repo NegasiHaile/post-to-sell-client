@@ -1,33 +1,20 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const AdvertLoading = ({
-  discount,
-  advertBanner,
-  name,
-  price,
-  currentPrice,
-}) => {
+const AdvertLoading = ({ advertBanner }) => {
   const [isFavourite, setIsFavourite] = useState(false);
 
   const toggleFav = () => {
     setIsFavourite(!isFavourite);
   };
   return (
-    <a
-      href="https://www.horizontechict.com/"
-      target="_blank"
-      className="advert-item advert-item--loading"
-    >
-      <div className="advert__image">
-        {advertBanner && (
-          <span>
-            <img src={advertBanner} alt="advert" />
-            {discount && <span className="advert__discount">{discount}%</span>}
-          </span>
-        )}
-      </div>
-    </a>
+    <div className="advert-item">
+      <a href="https://www.horizontechict.com/" target="_blank">
+        <div className="advert__image">
+          {advertBanner && <img src={advertBanner} alt="advert" />}
+        </div>
+      </a>
+    </div>
   );
 };
 

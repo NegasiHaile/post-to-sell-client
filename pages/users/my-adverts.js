@@ -1,18 +1,123 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../../layouts/Main";
-import { api_getAllAdverts } from "../../api/index";
-function MyAdverts() {
-  const [myAdverts, setMyAdverts] = useState([]);
+import { useSelector } from "react-redux";
 
-  useEffect(() => {
-    const res = api_getAllAdverts();
-    setMyAdverts(res.data);
-    console.log(myAdverts);
-  }, []);
+import { api_getAllUserAdverts, api_deleteAdvert } from "../../api/index";
+
+import { server } from "../../utils/server";
+
+import Layout from "../../layouts/Main";
+import AdvertLoading from "../../components/Adverts/peview/add-advert";
+import Modal from "../../components/modal/Modal";
+
+import { BsPencilFill, BsTrashFill } from "react-icons/bs";
+import { toast } from "react-toastify";
+
+import Link from "next/link";
+
+function MyAdverts() {
+  const { user } = useSelector((state) => {
+    return { user: state.auth.user };
+  });
+  const [myAdvertsList, setMyAdvertsList] = useState([]);
+  const [deleteAdvertStatus, setDeleteAdvertStatus] = useState({
+    state: "success",
+    message: "",
+    deleting: false,
+    advertId: "",
+  });
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(async () => {
+    if (user) {
+      getMyAdverts();
+    }
+  }, [user]);
+
+  const getMyAdverts = async () => {
+    const res = await api_getAllUserAdverts(user);
+    setMyAdvertsList(res.data);
+  };
+
+  const deleteAdvert = async () => {
+    try {
+      const res = await api_deleteAdvert(user, deleteAdvertStatus.advertId);
+      getMyAdverts();
+      setShowModal(false);
+      setDeleteAdvertStatus({ advertId: "" });
+      toast.success(res.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      setDeleteAdvertStatus({ advertId: "" });
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
   return (
     <Layout>
-      <br />
-      <div className="container">My Adverts</div>
+      <div className="container">
+        <div className="products-content">
+          <section className="my-adverts-list">
+            {myAdvertsList.map((advert, index) => (
+              <div className="advert-item-container" key={index}>
+                <AdvertLoading
+                  advertBanner={`${server}/${advert.advertBanner}`}
+                />
+                <div className="overlay">
+                  <Link href="/users/add-advert">
+                    <span>
+                      <BsPencilFill
+                        style={{ color: "#39ac73", cursor: "pointer" }}
+                      />
+                    </span>
+                  </Link>
+                  <span>
+                    <BsTrashFill
+                      onClick={() => {
+                        setShowModal(true),
+                          setDeleteAdvertStatus({ advertId: advert._id });
+                      }}
+                      style={{ color: "#ff471a", cursor: "pointer" }}
+                    />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </section>
+        </div>
+        {showModal && (
+          <Modal
+            onCloseModal={() => {
+              setShowModal(!showModal), setDeleteAdvertStatus({ advertId: "" });
+            }}
+            onConfirm={() => deleteAdvert()}
+            confirmLabel={"Delete?"}
+            confirmProcessLabel={"Deleting..."}
+            title={"Delete?"}
+            content={"Are you sure you want to delete the advert?"}
+            confirming={deleteAdvertStatus.deleting}
+            confirmResult={{
+              message: deleteAdvertStatus.message,
+              state: deleteAdvertStatus.state,
+            }}
+          />
+        )}
+      </div>
     </Layout>
   );
 }
