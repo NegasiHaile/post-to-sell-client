@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import Layout from "../../layouts/Main";
 
 import AdvertLoading from "../../components/Adverts/peview/add-advert";
+import { toast } from "react-toastify";
+
 import { api_addAdvert } from "../../api/index";
 import { useSelector } from "react-redux";
 
@@ -54,7 +56,16 @@ function Add_Advert() {
       const res = await api_addAdvert(formData, auth);
 
       setAdvert(initialState);
-      console.log(res.data.msg);
+      toast.success(res.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {}
   };
 

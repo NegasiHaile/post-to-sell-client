@@ -23,7 +23,7 @@ import {
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
-// import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const contactAddress = {
   phoneNumber: "0983339025",
@@ -94,9 +94,7 @@ const AddProductPage = ({ product, onClickBack }) => {
       new: false,
     },
   });
-  console.log("previousImages", previousImages);
   const [preview, setPreview] = useState();
-
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
 
@@ -165,6 +163,15 @@ const AddProductPage = ({ product, onClickBack }) => {
       });
       const responseData = res.data;
       setAddingProduct(false);
+      toast.success("🦄 Wow so easy!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       onClickBack();
     } catch (error) {
       console.log("error: ", error);
@@ -331,6 +338,16 @@ const AddProductPage = ({ product, onClickBack }) => {
         state: "success",
         message: "Image deleted succefully",
       });
+      toast.success("Image deleted succefully!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
       console.log("error: ", error);
       setProductImageDelete({
@@ -340,6 +357,16 @@ const AddProductPage = ({ product, onClickBack }) => {
           error.response && error.response.data && error.response.data.msg
             ? error.response.data.msg
             : "something went wrong while deleting product image!",
+      });
+      toast.error("Product image delete error!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
     }
   };
@@ -432,7 +459,7 @@ const AddProductPage = ({ product, onClickBack }) => {
             <div className="checkout__col-6">
               <div className="block">
                 <h3 className="block__title">Product Detail</h3>
-                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
+                <form className="form">
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <input
@@ -648,7 +675,7 @@ const AddProductPage = ({ product, onClickBack }) => {
 
               <div className="block">
                 <h3 className="block__title">Contact Address Detail</h3>
-                <form className="form" /*  onSubmit={handleSubmit(onSubmit)} */>
+                <form className="form">
                   <div className="checkbox-wrapper">
                     <label
                       htmlFor="check-signed-in"

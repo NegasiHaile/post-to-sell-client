@@ -97,6 +97,8 @@ import "swiper/css";
 import "rc-slider/assets/index.css";
 import "react-rater/lib/react-rater.css";
 import "../assets/css/styles.scss";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 import * as gtag from "./../utils/gtag";
 import ProductPage from "./products";
@@ -124,6 +126,7 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <Fragment>
       <Component {...pageProps} />
+      <ToastContainer /* closeButton={false} */ position="bottom-right" />
     </Fragment>
   );
 };
