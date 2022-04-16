@@ -10,6 +10,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
 import { setProfile } from "../store/actions/profileActions";
+import { toast } from "react-toastify";
 
 const LoginPage = ({ title = "post to sell login" }) => {
   const dispatch = useDispatch();
@@ -46,6 +47,16 @@ const LoginPage = ({ title = "post to sell login" }) => {
       dispatch(setProfile(responseData.profile));
       dispatch(signinSuccess(authData));
       setSigningIn(false);
+      toast.success("Signed in succefully!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       router.push("/products");
     } catch (error) {
       console.log("error: ", error);
@@ -58,6 +69,16 @@ const LoginPage = ({ title = "post to sell login" }) => {
       });
       dispatch(signoutSuccess());
       setSigningIn(false);
+      toast.error("Sign in error!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   console.log("result", result);

@@ -17,6 +17,7 @@ import {
   api_getAllCategories,
   api_deleteProductImage,
   api_editProduct,
+  api_addProductImage,
   api_editProductImage,
 } from "../../api/index";
 import {
@@ -24,6 +25,34 @@ import {
   setCategories,
 } from "../../store/actions/productActions";
 import { toast } from "react-toastify";
+
+const initialImagesState = {
+  0: {
+    preview: null,
+    image: null,
+    file: null,
+  },
+  1: {
+    preview: null,
+    image: null,
+    file: null,
+  },
+  2: {
+    preview: null,
+    image: null,
+    file: null,
+  },
+  3: {
+    preview: null,
+    image: null,
+    file: null,
+  },
+  4: {
+    preview: null,
+    image: null,
+    file: null,
+  },
+};
 
 const contactAddress = {
   phoneNumber: "0983339025",
@@ -46,9 +75,12 @@ const categoryParser = (categories) => {
   return result;
 };
 
-const AddProductPage = ({ product, onClickBack }) => {
+const AddProductPage = ({ oldProduct, onClickBack }) => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+
+  const [product, setProduct] = useState(oldProduct);
+
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
 
@@ -60,40 +92,8 @@ const AddProductPage = ({ product, onClickBack }) => {
     telegramUsername: "",
   });
 
-  const [previousImages2, setPreviousImages2] = useState({
-    0: null,
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-  });
-  const [previousImages, setPreviousImages] = useState({
-    0: {
-      preview: null,
-      file: null,
-      new: false,
-    },
-    1: {
-      preview: null,
-      file: null,
-      new: false,
-    },
-    2: {
-      preview: null,
-      file: null,
-      new: false,
-    },
-    3: {
-      preview: null,
-      file: null,
-      new: false,
-    },
-    4: {
-      preview: null,
-      file: null,
-      new: false,
-    },
-  });
+  const [previousImages, setPreviousImages] = useState(initialImagesState);
+  console.log("previousImages", previousImages);
   const [preview, setPreview] = useState();
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
@@ -291,17 +291,13 @@ const AddProductPage = ({ product, onClickBack }) => {
       });
       if (product.images) {
         let pastImages = {};
-        let pastImages2 = {};
         product.images.map((image, index) => {
           pastImages[index] = {
-            preview: image,
+            preview: `${server}/${image}`,
+            image,
             file: null,
-            new: false,
           };
-          pastImages2[index] = image;
         });
-        setPreviousImages2(pastImages2);
-        console.log("pastImages", pastImages);
         setPreviousImages({ ...previousImages, ...pastImages });
       }
       ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
@@ -329,10 +325,9 @@ const AddProductPage = ({ product, onClickBack }) => {
         imageUrl,
         auth.user.accesstoken
       );
-      setPreviousImages({
-        ...previousImages,
-        [index]: null,
-      });
+      const newProduct = res.data ? res.data.data : null;
+      console.log("newProduct", newProduct);
+      reRenderImagePreview(newProduct);
       setProductImageDelete({
         isLoading: false,
         state: "success",
@@ -378,9 +373,9 @@ const AddProductPage = ({ product, onClickBack }) => {
     setPreviousImages({
       ...previousImages,
       [id]: {
+        ...previousImages[id],
         preview: objectUrl,
         file: e.target.files[0],
-        new: true,
       },
     });
   };
@@ -396,17 +391,31 @@ const AddProductPage = ({ product, onClickBack }) => {
       message: "",
     });
     try {
+      console.log("imageUrl", imageUrl);
       var formData = new FormData();
-      formData.append("images", imageUrl.file);
-      formData.append("position", index);
-      formData.append("url", previousImages2[index]);
-      const res = await api_editProductImage(product._id, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: auth.user.accesstoken,
-        },
-      });
-      toast.success("🦄 Wow so easy!", {
+      if (imageUrl.image) {
+        formData.append("image", imageUrl.file);
+        formData.append("url", imageUrl.image);
+        formData.append("position", index);
+      } else {
+        formData.append("image", imageUrl.file);
+      }
+      const res = imageUrl.image
+        ? await api_editProductImage(product._id, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: auth.user.accesstoken,
+            },
+          })
+        : await api_addProductImage(product._id, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: auth.user.accesstoken,
+            },
+          });
+      const newProduct = res.data ? res.data.data : null;
+      reRenderImagePreview(newProduct);
+      toast.success("Image saved succefully!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -415,10 +424,6 @@ const AddProductPage = ({ product, onClickBack }) => {
         draggable: true,
         progress: undefined,
       });
-      /* setPreviousImages({
-        ...previousImages,
-        [index]: null,
-      }); */
       setProductImageUpload({
         isLoading: false,
         state: "success",
@@ -426,7 +431,7 @@ const AddProductPage = ({ product, onClickBack }) => {
       });
     } catch (error) {
       console.log("error: ", error);
-      toast.error("🦄 Wow so easy!", {
+      toast.error("Image save error!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -442,6 +447,17 @@ const AddProductPage = ({ product, onClickBack }) => {
           error.response && error.response.data && error.response.data.msg
             ? error.response.data.msg
             : "something went wrong while uploading product image!",
+      });
+    }
+  };
+
+  const reRenderImagePreview = (newProduct) => {
+    console.log("newProduct.images", newProduct.images)
+    if (newProduct && newProduct.images) {
+      console.log("newProduct.images", newProduct.images);
+      setProduct({
+        ...product,
+        images: newProduct.images,
       });
     }
   };
@@ -833,15 +849,18 @@ const AddProductPage = ({ product, onClickBack }) => {
               <div className="block">
                 <div className="add-product-gallery__thumbs">
                   {[0, 1, 2, 3].map((key) => (
-                    <div key={preview} className="add-product-gallery__thumb">
+                    <div
+                      key={`preview${key}`}
+                      className="add-product-gallery__thumb"
+                    >
                       {previousImages[key + 1].preview &&
-                        !previousImages[key + 1].new && (
+                        !previousImages[key + 1].file && (
                           <button
                             disabled={productImageDelete.isLoading}
                             type="button"
                             onClick={() =>
                               onClickDeleteImage(
-                                previousImages[key + 1],
+                                previousImages[key + 1].image,
                                 key + 1
                               )
                             }
@@ -850,7 +869,7 @@ const AddProductPage = ({ product, onClickBack }) => {
                             X
                           </button>
                         )}
-                      {previousImages[key + 1].new && (
+                      {previousImages[key + 1].file && (
                         <button
                           disabled={productImageDelete.isLoading}
                           type="button"
@@ -877,10 +896,8 @@ const AddProductPage = ({ product, onClickBack }) => {
                       </button>
                       <img
                         src={
-                          previousImages[key + 1].new
+                          previousImages[key + 1].preview
                             ? previousImages[key + 1].preview
-                            : previousImages[key + 1].preview
-                            ? `${server}/${previousImages[key + 1].preview}`
                             : null
                         }
                         alt=""
@@ -977,11 +994,7 @@ const AddProductPage = ({ product, onClickBack }) => {
                 <ProductItemLoading
                   discount={watchAllFields.price}
                   productImage={
-                    previousImages[0].new
-                      ? previousImages[0].preview
-                      : previousImages[0].preview
-                      ? `${server}/${previousImages[0].preview}`
-                      : null
+                    previousImages[0].preview ? previousImages[0].preview : null
                   }
                   name={watchAllFields.productName}
                   price={watchAllFields.price}

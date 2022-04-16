@@ -6,8 +6,13 @@ import { useForm } from "react-hook-form";
 import { server } from "../utils/server";
 import { postData } from "../utils/services";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
+import { setProfile } from "../store/actions/profileActions";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [signingUp, setSigningUp] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
@@ -33,17 +38,48 @@ const RegisterPage = () => {
         state: "success",
         message: "succefully signed up!",
       });
+      const responseData = res.data;
+      const authData = {
+        accesstoken: responseData.accesstoken,
+        refreshtoken: responseData.refreshtoken,
+        id: responseData.id,
+        role: responseData.role,
+        accountStatus: responseData.accountStatus,
+      };
+      dispatch(setProfile(responseData.profile));
+      dispatch(signinSuccess(authData));
       setSigningUp(false);
+      toast.success("Registered succefully!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       router.push("/products");
     } catch (error) {
-      console.log("error new", error.response.data.msg);
+      console.log("error", error);
       setResult({
         state: "error",
         message: error.message
           ? error.message
           : "something went wrong while signing up!",
       });
+      dispatch(signoutSuccess());
       setSigningUp(false);
+      toast.error("Registeration error!", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   console.log("result", result);
