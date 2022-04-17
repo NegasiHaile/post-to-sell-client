@@ -5,6 +5,7 @@ import Logo from "../../assets/icons/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signoutSuccess } from "../../store/actions/authActions";
+import { toast } from "react-toastify";
 
 import UserAccountDropdown from "./UserAccountDropdown";
 const Header = ({ isErrorPage }) => {
@@ -35,6 +36,16 @@ const Header = ({ isErrorPage }) => {
 
   const onClickLogout = () => {
     dispatch(signoutSuccess());
+    toast.success("Signed out succefully!", {
+      position: "top-right",
+      theme: "colored",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     router.push("/login");
   };
 

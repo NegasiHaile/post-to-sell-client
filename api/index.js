@@ -6,6 +6,7 @@ import {
   api_getAllUserProducts,
   api_deleteProductImage,
   api_editProduct,
+  api_addProductImage,
   api_editProductImage,
 } from "./products.js"; // all products APIs
 import { api_getAllCategories } from "./categories.js"; //all categories APIs
@@ -28,6 +29,7 @@ export {
   api_getAllUserProducts,
   api_deleteProductImage,
   api_editProduct,
+  api_addProductImage,
   api_editProductImage,
 }; //product
 export { api_getAllCategories }; //categories

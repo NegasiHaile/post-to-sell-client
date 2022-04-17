@@ -31,11 +31,19 @@ export const api_editProduct = async (id, data, header) => {
   );
 };
 
+export const api_addProductImage = async (id, data, header) => {  
+  return await axios.put(
+    `${server}/api/products/add/image/${id}`,
+    data,
+    header
+  );
+};
+
 export const api_editProductImage = async (id, data, header) => {
   console.log("data", data);
   return await axios.put(
     `${server}/api/products/edit/image/${id}`,
-    { ...data },
+    data,
     header
   );
 };

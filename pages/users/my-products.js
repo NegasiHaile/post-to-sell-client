@@ -342,7 +342,7 @@ const Products = () => {
   }, [products, filterValue]);
 
   return viewType === "edit" ? (
-    <EditProduct product={selectedProduct} onClickBack={onClickBack} />
+    <EditProduct oldProduct={selectedProduct} onClickBack={onClickBack} />
   ) : (
     <>
       <Layout>
