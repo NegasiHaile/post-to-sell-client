@@ -25,7 +25,7 @@ function UserAccountDropdown({ dropdawonOpen, onClickLogout }) {
           <li>My Products</li>
         </Link>
         <div className="divider"></div>
-        <Link href="/users/add-advert">
+        <Link href="/users/add-advert/0">
           <li>Add Advert</li>
         </Link>
         <Link href="/users/my-adverts">

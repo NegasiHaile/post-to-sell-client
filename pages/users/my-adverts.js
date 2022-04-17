@@ -8,9 +8,9 @@ import { server } from "../../utils/server";
 import Layout from "../../layouts/Main";
 import AdvertLoading from "../../components/Adverts/peview/add-advert";
 import Modal from "../../components/modal/Modal";
+import Toast from "../../components/Utils/Toast";
 
 import { BsPencilFill, BsTrashFill } from "react-icons/bs";
-import { toast } from "react-toastify";
 
 import Link from "next/link";
 
@@ -44,28 +44,10 @@ function MyAdverts() {
       getMyAdverts();
       setShowModal(false);
       setDeleteAdvertStatus({ advertId: "" });
-      toast.success(res.data.msg, {
-        position: "top-right",
-        theme: "colored",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("success", res.data.msg);
     } catch (error) {
       setDeleteAdvertStatus({ advertId: "" });
-      toast.error(error.response.data.msg, {
-        position: "top-right",
-        theme: "colored",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("error", error.response.data.msg);
     }
   };
   return (
@@ -77,9 +59,10 @@ function MyAdverts() {
               <div className="advert-item-container" key={index}>
                 <AdvertLoading
                   advertBanner={`${server}/${advert.advertBanner}`}
+                  link={advert.link}
                 />
                 <div className="overlay">
-                  <Link href="/users/add-advert">
+                  <Link href={`/users/add-advert/${advert._id}`}>
                     <span>
                       <BsPencilFill
                         style={{ color: "#39ac73", cursor: "pointer" }}

@@ -16,6 +16,8 @@ import {
   api_getAllAdverts,
   api_getAllUserAdverts,
   api_deleteAdvert,
+  api_editAdvert,
+  api_editAdvertBanner,
 } from "./adverts"; // adverts APIs
 
 // ## Exporting API Functions
@@ -36,4 +38,6 @@ export {
   api_getAllAdverts,
   api_getAllUserAdverts,
   api_deleteAdvert,
+  api_editAdvert,
+  api_editAdvertBanner,
 }; // adverts
