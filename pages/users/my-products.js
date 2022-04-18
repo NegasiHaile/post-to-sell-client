@@ -157,7 +157,7 @@ const Products = () => {
     priceRange: [0, 1000],
     sizes: {},
     colors: {},
-    sortBy: "",
+    sortBy: "latest",
   });
   const [filteredProducts, setFilteredProducts] = useState(null);
 
@@ -306,9 +306,9 @@ const Products = () => {
   };
 
   useEffect(() => {
-    if (!products) {
-      loadProducts();
-    }
+    /* if (!products) { */
+    loadProducts();
+    /* } */
   }, [user]);
   useEffect(() => {
     if (!categories) {

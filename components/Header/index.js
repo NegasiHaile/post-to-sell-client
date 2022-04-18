@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signoutSuccess } from "../../store/actions/authActions";
 import { toast } from "react-toastify";
+import { signOut } from "../../components/SignOut";
 
 import UserAccountDropdown from "./UserAccountDropdown";
 const Header = ({ isErrorPage }) => {
@@ -35,7 +36,8 @@ const Header = ({ isErrorPage }) => {
   };
 
   const onClickLogout = () => {
-    dispatch(signoutSuccess());
+    signOut(dispatch);
+    /* dispatch(signoutSuccess()); */
     toast.success("Signed out succefully!", {
       position: "top-right",
       theme: "colored",
@@ -170,7 +172,10 @@ const Header = ({ isErrorPage }) => {
         </div>
       </div>
 
-      <UserAccountDropdown dropdawonOpen={dropdawonOpen} onClickLogout={onClickLogout}/>
+      <UserAccountDropdown
+        dropdawonOpen={dropdawonOpen}
+        onClickLogout={onClickLogout}
+      />
     </header>
   );
 };

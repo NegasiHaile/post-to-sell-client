@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
 import { setProfile } from "../store/actions/profileActions";
 import { toast } from "react-toastify";
+import { signOut } from "../components/SignOut";
 
 const LoginPage = ({ title = "post to sell login" }) => {
   const dispatch = useDispatch();
@@ -67,7 +68,8 @@ const LoginPage = ({ title = "post to sell login" }) => {
             ? error.response.data.msg
             : "something went wrong while signing in!",
       });
-      dispatch(signoutSuccess());
+      /* dispatch(signoutSuccess()); */
+      signOut(dispatch);
       setSigningIn(false);
       toast.error("Sign in error!", {
         position: "top-right",
