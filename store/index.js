@@ -6,6 +6,7 @@ import userReducer from "./reducers/user";
 import authReducer from "./reducers/auth";
 import profileReducer from "./reducers/profile";
 import productReducer from "./reducers/product";
+import bannerReducer from "./reducers/banner";
 
 //COMBINING ALL REDUCERS
 const combinedReducer = combineReducers({
@@ -14,6 +15,7 @@ const combinedReducer = combineReducers({
   auth: authReducer,
   profile: profileReducer,
   product: productReducer,
+  banner: bannerReducer,
 });
 
 // BINDING MIDDLEWARE

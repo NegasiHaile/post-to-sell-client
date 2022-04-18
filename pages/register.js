@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { signinSuccess, signoutSuccess } from "../store/actions/authActions";
 import { setProfile } from "../store/actions/profileActions";
 import { toast } from "react-toastify";
+import { signOut } from "../components/SignOut";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -68,7 +69,8 @@ const RegisterPage = () => {
           ? error.message
           : "something went wrong while signing up!",
       });
-      dispatch(signoutSuccess());
+      signOut(dispatch);
+      /* dispatch(signoutSuccess()); */
       setSigningUp(false);
       toast.error("Registeration error!", {
         position: "top-right",

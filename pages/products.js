@@ -128,7 +128,7 @@ const Products = () => {
   const [productloading, setProductLoading] = useState({
     isLoading: false,
     state: "success",
-    message: "",
+    message: "latest",
   });
   const [categoriesloading, setCategoriesLoading] = useState({
     isLoading: false,
