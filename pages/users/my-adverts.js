@@ -53,6 +53,9 @@ function MyAdverts() {
   return (
     <Layout>
       <div className="container">
+        <br />
+        <br />
+        <p>List of my adverts</p>
         <div className="products-content">
           <section className="my-adverts-list">
             {myAdvertsList.map((advert, index) => (
