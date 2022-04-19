@@ -34,8 +34,12 @@ function MyAdverts() {
   }, [user]);
 
   const getMyAdverts = async () => {
-    const res = await api_getAllUserAdverts(user);
-    setMyAdvertsList(res.data);
+    try {
+      const res = await api_getAllUserAdverts(user);
+      setMyAdvertsList(res.data);
+    } catch (error) {
+      Toast("error", error.response.data.msg);
+    }
   };
 
   const deleteAdvert = async () => {
