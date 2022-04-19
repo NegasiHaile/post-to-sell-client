@@ -35,3 +35,119 @@
     justify-content: space-between;
   }
 }
+.categories__title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 4rem;
+  font-weight: 300;
+}
+.categories-list {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  // grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  align-items: start;
+  margin-bottom: 100px;
+}
+
+.category-item {
+  background-color: #fff;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: 0.2s;
+  // max-width: 100%;
+}
+
+.category-item:hover {
+  // transform: translateY(-0.5%);
+  box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.5);
+}
+
+.category-img {
+  display: block;
+  width: 100%;
+  height: 13rem;
+  object-fit: cover;
+}
+
+.category-content {
+  padding: 1.5rem;
+}
+
+.category-header {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #0d0d0d;
+  margin-bottom: 1.5rem;
+}
+
+.category-text {
+  font-size: 0.8rem;
+  letter-spacing: 0.1rem;
+  line-height: 1.7;
+  color: #868686;
+  margin-bottom: 1.5rem;
+}
+.category-content ul {
+  margin-bottom: 1.5rem;
+  margin-left: 1rem;
+}
+.category-content ul li {
+  font-size: 0.8rem;
+  letter-spacing: 0.1rem;
+  line-height: 1.8;
+  color: #868686;
+  list-style: disc;
+}
+.category-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #333;
+  background-color: var(--color-orange);
+  border: none;
+  border-radius: 0.4rem;
+  transition: 0.2s;
+  cursor: pointer;
+  letter-spacing: 0.1rem;
+}
+
+.category-btn span {
+  margin-left: 1rem;
+  transition: 0.2s;
+}
+
+.category-btn:hover,
+.category-btn:active {
+  background-color: #c2cffc;
+}
+
+.category-btn:hover span,
+.category-btn:active span {
+  margin-left: 1.5rem;
+}
+@media only screen and (max-width: 1200px) {
+  .categories-list {
+    grid-gap: 1.2rem;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .categories-list {
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .categories-list {
+    grid-template-columns: 1fr;
+  }
+  .category-item {
+    margin: 2rem 0rem;
+    // max-width: 100%;
+  }
+}

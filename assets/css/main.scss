@@ -1120,7 +1120,7 @@ h5 {
 .section {
   margin-bottom: 70px;
   @include breakpoint(phone) {
-    margin-bottom: 150px;
+    margin-bottom: 70px;
   }
   .section__intro {
     margin-bottom: 36px;
@@ -1670,12 +1670,12 @@ h5 {
     margin-right: 15px;
     @include breakpoint(phone) {
       margin-right: 33px;
-      margin-bottom: 55px;
+      margin-bottom: 25px;
       width: calc(100% / 3 - 33px);
     }
     @include breakpoint(tablet-lg) {
       margin-right: 63px;
-      margin-bottom: 85px;
+      margin-bottom: 30px;
       width: calc(100% / 3 - 63px);
     }
   }

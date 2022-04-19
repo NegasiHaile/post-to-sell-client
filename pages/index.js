@@ -4,20 +4,29 @@ import ProductsFeatured from "../components/products-featured";
 import Footer from "../components/footer";
 import Subscribe from "../components/subscribe";
 import Adverts from "../components/Adverts/index";
+import Category from "../components/Category/Index";
 const IndexPage = () => {
   return (
     <Layout>
       <PageIntro />
 
-      <div className="featuredProducts_adverts">
+      <div className="container featuredProducts_adverts">
         <div className="featured_products_container">
           <ProductsFeatured />
         </div>
-        <div className="container adverts_container">
+        <div className="adverts_container">
           <Adverts />
         </div>
       </div>
-
+      <section className="container">
+        <h2 className="categories__title">Categories</h2>
+        <div className="categories-list">
+          <Category image="./images/featured-1.jpg" name="Men" />
+          <Category image="./images/slide-1.jpg" name="Women" />
+          <Category image="./images/featured-2.jpg" name="House hold" />
+          <Category image="./images/slide-2.jpg" name="Devices" />
+        </div>
+      </section>
       <section className="section">
         <div className="container">
           <header className="section__intro">
@@ -71,47 +80,8 @@ const IndexPage = () => {
           </ul>
         </div>
       </section>
-      <section className="featured">
-        <div className="container">
-          <article
-            style={{ backgroundImage: "url(/images/featured-1.jpg)" }}
-            className="featured-item featured-item-large"
-          >
-            <div className="featured-item__content">
-              <h3>New arrivals are now in!</h3>
-              <a href="#" className="btn btn--rounded">
-                Show Collection
-              </a>
-            </div>
-          </article>
 
-          <article
-            style={{ backgroundImage: "url(/images/featured-2.jpg)" }}
-            className="featured-item featured-item-small-first"
-          >
-            <div className="featured-item__content">
-              <h3>Basic t-shirts $29,99</h3>
-              <a href="#" className="btn btn--rounded">
-                More details
-              </a>
-            </div>
-          </article>
-
-          <article
-            style={{ backgroundImage: "url(/images/featured-3.jpg)" }}
-            className="featured-item featured-item-small"
-          >
-            <div className="featured-item__content">
-              <h3>Sale this summer</h3>
-              <a href="#" className="btn btn--rounded">
-                VIEW ALL
-              </a>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      {/* <Subscribe /> */}
+      <Subscribe />
       <Footer />
     </Layout>
   );

@@ -90,15 +90,29 @@ const Header = ({ isErrorPage }) => {
           className={`site-nav ${menuOpen ? "site-nav--open" : ""}`}
         >
           <Link href="/products">
-            <a>Products</a>
+            <a className={router.pathname == "/products" ? "active_link" : ""}>
+              Products
+            </a>
           </Link>
           {isUser && (
             <>
               <Link href="/users/my-products">
-                <a>My Products</a>
+                <a
+                  className={
+                    router.pathname == "/users/my-products" ? "active_link" : ""
+                  }
+                >
+                  My Products
+                </a>
               </Link>
               <Link href="/users/my-adverts">
-                <a>My Adverts</a>
+                <a
+                  className={
+                    router.pathname == "/users/my-adverts" ? "active_link" : ""
+                  }
+                >
+                  My Adverts
+                </a>
               </Link>
             </>
           )}
