@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
-import Layout from "../layouts/Main";
-import Footer from "../components/footer";
-import Breadcrumb from "../components/breadcrumb";
-import ProductsFilter from "../components/products-filter";
-import ProductsContent from "../components/products-content";
+import Layout from "../../layouts/Main";
+import Footer from "../../components/footer";
+import Breadcrumb from "../../components/breadcrumb";
+import ProductsFilter from "../../components/products-filter";
+import ProductsContent from "../../components/products-content";
 
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,11 +13,11 @@ import {
   clearProducts,
   setCategories,
   clearCategories,
-} from "../store/actions/productActions";
+} from "../../store/actions/productActions";
 
-import { server } from "../utils/server";
+import { server } from "../../utils/server";
 
-import { api_getAllProducts, api_getAllCategories } from "../api/index";
+import { api_getAllProducts, api_getAllCategories } from "../../api/index";
 const countProducts = (field, value, products) => {
   let result = 0;
   products.map((product) => {
@@ -123,12 +123,12 @@ const filterProducts = (products, filter) => {
   return { filteredProducts: sortedFilteredProducts, isFiltered, length };
 };
 
-const Products = () => {
+const Products = ({ initCategory }) => {
   const dispatch = useDispatch();
   const [productloading, setProductLoading] = useState({
     isLoading: false,
     state: "success",
-    message: "latest",
+    message: "",
   });
   const [categoriesloading, setCategoriesLoading] = useState({
     isLoading: false,
@@ -143,11 +143,11 @@ const Products = () => {
   });
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [filterValue, setFilterValue] = useState({
-    categories: {},
+    categories: initCategory ? { [initCategory]: true } : {},
     priceRange: [0, 1000],
     sizes: {},
     colors: {},
-    sortBy: "",
+    sortBy: "latest",
   });
   const [filteredProducts, setFilteredProducts] = useState(null);
 

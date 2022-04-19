@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Layout from "../layouts/Main";
 import PageIntro from "../components/page-intro";
 import ProductsFeatured from "../components/products-featured";
@@ -5,11 +6,69 @@ import Footer from "../components/footer";
 import Subscribe from "../components/subscribe";
 import Adverts from "../components/Adverts/index";
 import Category from "../components/Category/Index";
+
+import { server } from "../utils/server";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCategories,
+  clearCategories,
+} from "../store/actions/productActions";
+import { api_getAllProducts, api_getAllCategories } from "../api/index";
+
 const IndexPage = () => {
+  const dispatch = useDispatch();
+
+  const [categoriesloading, setCategoriesLoading] = useState({
+    isLoading: false,
+    state: "success",
+    message: "",
+  });
+  const { categories } = useSelector((state) => {
+    return {
+      categories: state.product.categories,
+    };
+  });
+
+  const loadCategories = async () => {
+    setCategoriesLoading({
+      isLoading: true,
+      state: "success",
+      message: "",
+    });
+    dispatch(clearCategories());
+    try {
+      const res = await api_getAllCategories();
+
+      const responseData = res.data;
+      dispatch(setCategories(responseData));
+
+      setCategoriesLoading({
+        isLoading: false,
+        state: "success",
+        message: "Category loaded succefully",
+      });
+    } catch (error) {
+      console.log("error: ", error);
+      dispatch(clearCategories());
+      setCategoriesLoading({
+        isLoading: false,
+        state: "error",
+        message:
+          error.response && error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : "something went wrong while loading categories!",
+      });
+    }
+  };
+  useEffect(() => {
+    if (!categories) {
+      loadCategories();
+    }
+  }, []);
+
   return (
     <Layout>
       <PageIntro />
-
       <div className="container featuredProducts_adverts">
         <div className="featured_products_container">
           <ProductsFeatured />
@@ -21,10 +80,26 @@ const IndexPage = () => {
       <section className="container">
         <h2 className="categories__title">Categories</h2>
         <div className="categories-list">
-          <Category image="./images/featured-1.jpg" name="Men" />
+          {categories &&
+            categories.map((categoryData) => {
+              return (
+                <Category
+                  image={
+                    categoryData.categoryImage
+                      ? `${server}/${categoryData.categoryImage}`
+                      : "./images/featured-1.jpg"
+                  }
+                  name={categoryData.category}
+                  description={categoryData.description}
+                  subCategories={categoryData.subCategory}
+                  id={categoryData._id}
+                />
+              );
+            })}
+          {/* <Category image="./images/featured-1.jpg" name="Men" />
           <Category image="./images/slide-1.jpg" name="Women" />
           <Category image="./images/featured-2.jpg" name="House hold" />
-          <Category image="./images/slide-2.jpg" name="Devices" />
+          <Category image="./images/slide-2.jpg" name="Devices" /> */}
         </div>
       </section>
       <section className="section">
@@ -80,7 +155,6 @@ const IndexPage = () => {
           </ul>
         </div>
       </section>
-
       <Subscribe />
       <Footer />
     </Layout>
