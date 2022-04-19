@@ -298,7 +298,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
             file: null,
           };
         });
-        setPreviousImages({ ...previousImages, ...pastImages });
+        setPreviousImages({ ...initialImagesState, ...pastImages });
       }
       ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
         if (product.contacts && product.contacts[contact]) {
@@ -452,7 +452,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   };
 
   const reRenderImagePreview = (newProduct) => {
-    console.log("newProduct.images", newProduct.images)
+    console.log("newProduct.images", newProduct.images);
     if (newProduct && newProduct.images) {
       console.log("newProduct.images", newProduct.images);
       setProduct({
