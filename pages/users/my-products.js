@@ -10,6 +10,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { confirmAlert } from "react-confirm-alert";
 import {
+  clearProducts,
   setUserProducts,
   clearUserProducts,
   setCategories,
@@ -291,6 +292,7 @@ const Products = () => {
         deleting: false,
       });
       onCloseDeleteModal();
+      dispatch(clearProducts());
       loadProducts();
     } catch (error) {
       console.log("error: ", error);

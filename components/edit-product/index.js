@@ -21,6 +21,7 @@ import {
   api_editProductImage,
 } from "../../api/index";
 import {
+  clearProducts,
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
@@ -83,7 +84,8 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
 
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
-
+  const [isFeachered, setIsFeachered] = useState(false);
+console.log('isFeachered',isFeachered)
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: "",
@@ -148,7 +150,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         currentPrice: data.currentPrice,
         price: data.price,
         discription: data.discription,
-        postType: "postType",
+        postType: isFeachered ? "Featured" : "Normal",
         sizes: sizes,
         colors: colors,
       };
@@ -172,6 +174,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         draggable: true,
         progress: undefined,
       });
+      dispatch(clearProducts());
       onClickBack();
     } catch (error) {
       console.log("error: ", error);
@@ -305,6 +308,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           setValue(contact, product.contacts[contact]);
         }
       });
+      setIsFeachered(product.postType === "Featured" ? true : false);
     }
   }, [product]);
 
@@ -955,6 +959,28 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                     ))}
                   </div>
                 ))}
+              </div>
+              <div className="block">
+                <h3 className="block__title">Post type</h3>
+                <form className="form">
+                  <div className="checkbox-wrapper">
+                    <label
+                      htmlFor="check-signed-in2"
+                      className={`checkbox checkbox--sm`}
+                    >
+                      <input
+                        disabled={addingProduct}
+                        type="checkbox"
+                        name="keepSigned"
+                        id="check-signed-in2"
+                        value={isFeachered}
+                        onChange={(e) => setIsFeachered(e.target.checked)}
+                      />
+                      <span className="checkbox__check"></span>
+                      <p>Add as featured product</p>
+                    </label>
+                  </div>
+                </form>
               </div>
 
               {/* <div className="block">
