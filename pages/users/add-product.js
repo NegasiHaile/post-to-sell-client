@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductItemLoading from "../../components/product-item/add-product-preview";
 import { api_getAllCategories } from "../../api/index";
 import {
+  clearProducts,
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
@@ -48,6 +49,7 @@ const AddProductPage = () => {
   const auth = useSelector((state) => state.auth);
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
+  const [isFeachered, setIsFeachered] = useState(false);
 
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
@@ -61,7 +63,7 @@ const AddProductPage = () => {
   const [preview, setPreview] = useState();
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
-  
+
   const [productVariant, setProductVariant] = useState({
     sizes: {},
     colors: {},
@@ -106,7 +108,7 @@ const AddProductPage = () => {
         var formData = new FormData();
         sizes.forEach((size) => formData.append("sizes", size));
         colors.forEach((color) => formData.append("colors", color));
-        formData.append("images", selectedFile);       
+        formData.append("images", selectedFile);
         for (let i = 0; i < selectedMultipleFile[0].length; i++) {
           formData.append("images", selectedMultipleFile[0][i]);
         }
@@ -119,7 +121,7 @@ const AddProductPage = () => {
         formData.append("currentPrice", data.currentPrice);
         formData.append("price", data.price);
         formData.append("discription", data.discription);
-        formData.append("postType", "postType");
+        formData.append("postType", isFeachered ? "Featured" : "Normal");
 
         const res = await axios.post(`${server}/api/products/add`, formData, {
           headers: {
@@ -143,6 +145,7 @@ const AddProductPage = () => {
           draggable: true,
           progress: undefined,
         });
+        dispatch(clearProducts());
         router.push("/users/my-products");
       } catch (error) {
         console.log("error: ", error);
@@ -729,6 +732,28 @@ const AddProductPage = () => {
                     ))}
                   </div>
                 ))}
+              </div>
+              <div className="block">
+                <h3 className="block__title">Post type</h3>
+                <form className="form">
+                  <div className="checkbox-wrapper">
+                    <label
+                      htmlFor="check-signed-in2"
+                      className={`checkbox checkbox--sm`}
+                    >
+                      <input
+                        disabled={addingProduct}
+                        type="checkbox"
+                        name="keepSigned"
+                        id="check-signed-in2"
+                        value={isFeachered}
+                        onChange={(e) => setIsFeachered(e.target.checked)}
+                      />
+                      <span className="checkbox__check"></span>
+                      <p>Add as featured product</p>
+                    </label>
+                  </div>
+                </form>
               </div>
               {/* <div className="block">
                 <h3 className="block__title">Payment method</h3>
