@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-function UserAccountDropdown({ dropdawonOpen, onClickLogout }) {
+function UserAccountDropdown({ pathname, dropdawonOpen, onClickLogout }) {
+  console.log(pathname);
   return (
     <div
       className={
@@ -9,27 +10,49 @@ function UserAccountDropdown({ dropdawonOpen, onClickLogout }) {
     >
       <ul>
         <Link href="/users/profile">
-          <li>Profile</li>
+          <li className={pathname == "/users/profile" ? "active_link" : ""}>
+            Profile
+          </li>
         </Link>
         <Link href="/users/settings">
-          <li>Settings</li>
+          <li className={pathname == "/users/settings" ? "active_link" : ""}>
+            Settings
+          </li>
         </Link>
         <Link href="/users/change-password">
-          <li>Change password</li>
+          <li
+            className={
+              pathname == "/users/change-password" ? "active_link" : ""
+            }
+          >
+            Change password
+          </li>
         </Link>
         <div className="divider"></div>
         <Link href="/users/add-product">
-          <li>Add Product</li>
+          <li className={pathname == "/users/add-product" ? "active_link" : ""}>
+            Add Product
+          </li>
         </Link>
-        <Link href="/products">
-          <li>My Products</li>
+        <Link href="/users/my-products">
+          <li className={pathname == "/users/my-products" ? "active_link" : ""}>
+            My Products
+          </li>
         </Link>
         <div className="divider"></div>
         <Link href="/users/add-advert/0">
-          <li>Add Advert</li>
+          <li
+            className={
+              pathname == "/users/add-advert/[aid]" ? "active_link" : ""
+            }
+          >
+            Add Advert
+          </li>
         </Link>
         <Link href="/users/my-adverts">
-          <li>My Adverts</li>
+          <li className={pathname == "/users/my-adverts" ? "active_link" : ""}>
+            My Adverts
+          </li>
         </Link>
         <button className="btn-logout" onClick={onClickLogout}>
           Lock Account

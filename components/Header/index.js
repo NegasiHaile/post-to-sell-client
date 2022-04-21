@@ -195,6 +195,7 @@ const Header = ({ isErrorPage }) => {
       </div>
 
       <UserAccountDropdown
+        pathname={router.pathname}
         dropdawonOpen={dropdawonOpen}
         onClickLogout={onClickLogout}
       />
