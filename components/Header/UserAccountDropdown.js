@@ -24,7 +24,7 @@ function UserAccountDropdown({
               /* textOverflow: "ellipsis", */
             }}
           >
-            <b> {profile.email} </b>
+            <b> {profile && profile.email ? profile.email : "Profile"} </b>
           </li>
         </Link>
         <Link href="/users/settings">

@@ -194,7 +194,7 @@ const Header = ({ isErrorPage }) => {
         </div>
       </div>
 
-      {user && profile && (
+      {user && (
         <UserAccountDropdown
           pathname={router.pathname}
           dropdawonOpen={dropdawonOpen}
