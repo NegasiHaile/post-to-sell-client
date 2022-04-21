@@ -12,8 +12,8 @@ import UserAccountDropdown from "./UserAccountDropdown";
 const Header = ({ isErrorPage }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { cartItems, user } = useSelector((state) => {
-    return { cartItems: state.cart, user: state.auth.user };
+  const { profile, user } = useSelector((state) => {
+    return { profile: state.profile.profile, user: state.auth.user };
   });
   const [dropdawonOpen, setDropdawonOpen] = useState(false);
   const isUser = user && user.role === "user";
@@ -194,11 +194,14 @@ const Header = ({ isErrorPage }) => {
         </div>
       </div>
 
-      <UserAccountDropdown
-        pathname={router.pathname}
-        dropdawonOpen={dropdawonOpen}
-        onClickLogout={onClickLogout}
-      />
+      {user && profile && (
+        <UserAccountDropdown
+          pathname={router.pathname}
+          dropdawonOpen={dropdawonOpen}
+          profile={profile}
+          onClickLogout={onClickLogout}
+        />
+      )}
     </header>
   );
 };

@@ -1,7 +1,11 @@
 import Link from "next/link";
 
-function UserAccountDropdown({ pathname, dropdawonOpen, onClickLogout }) {
-  console.log(pathname);
+function UserAccountDropdown({
+  pathname,
+  dropdawonOpen,
+  profile,
+  onClickLogout,
+}) {
   return (
     <div
       className={
@@ -10,8 +14,17 @@ function UserAccountDropdown({ pathname, dropdawonOpen, onClickLogout }) {
     >
       <ul>
         <Link href="/users/profile">
-          <li className={pathname == "/users/profile" ? "active_link" : ""}>
-            Profile
+          <li
+            className={pathname == "/users/profile" ? "active_link" : ""}
+            style={{
+              width: "100%",
+              whiteSpace: "nowrap",
+              overflowX: "scroll",
+              textTransform: "capitalize",
+              /* textOverflow: "ellipsis", */
+            }}
+          >
+            <b> {profile.email} </b>
           </li>
         </Link>
         <Link href="/users/settings">
