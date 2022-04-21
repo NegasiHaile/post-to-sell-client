@@ -73,9 +73,8 @@ const IndexPage = () => {
         <div className="featured_products_container">
           <ProductsFeatured />
         </div>
-        <div className="adverts_container">
-          <Adverts />
-        </div>
+
+        <Adverts />
       </div>
       <section className="container">
         <h2 className="categories__title">Categories</h2>
