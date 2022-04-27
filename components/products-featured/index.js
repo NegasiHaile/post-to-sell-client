@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProducts, clearProducts } from "../../store/actions/productActions";
 import {
   api_getAllFeaturedProducts,
-  api_getAllProducts, 
+  api_getAllProducts,
 } from "../../api/index";
 
 const filterProducts = (products, filters) => {
