@@ -84,8 +84,10 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
 
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
-  const [isFeachered, setIsFeachered] = useState(false);
-console.log('isFeachered',isFeachered)
+  const [isFeachered, setIsFeachered] = useState(
+    product && product.postType === "Featured" ? true : false
+  );
+
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: "",
@@ -99,6 +101,10 @@ console.log('isFeachered',isFeachered)
   const [preview, setPreview] = useState();
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
+
+  const clearPreviousData = () => {
+    dispatch(clearProducts());
+  };
 
   const [productVariant, setProductVariant] = useState({
     sizes: {},
@@ -174,7 +180,7 @@ console.log('isFeachered',isFeachered)
         draggable: true,
         progress: undefined,
       });
-      dispatch(clearProducts());
+      clearPreviousData();
       onClickBack();
     } catch (error) {
       console.log("error: ", error);
@@ -347,6 +353,7 @@ console.log('isFeachered',isFeachered)
         draggable: true,
         progress: undefined,
       });
+      clearPreviousData();
     } catch (error) {
       console.log("error: ", error);
       setProductImageDelete({
@@ -433,6 +440,7 @@ console.log('isFeachered',isFeachered)
         state: "success",
         message: "Image uploaded succefully",
       });
+      clearPreviousData();
     } catch (error) {
       console.log("error: ", error);
       toast.error("Image save error!", {

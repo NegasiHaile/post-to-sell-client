@@ -978,6 +978,116 @@ h5 {
       position: relative;
       background-color: var(--color-red);
     }
+    .btn-delete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+      width: 25px;
+      height: 25px;
+      font-size: 15px;
+      border-radius: 50%;
+      border: none;
+      background-color: #fff;
+      position: absolute;
+      box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.16);
+      @include breakpoint(phone) {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        color: red;
+        top: 15px;
+        right: 15px;
+        font-size: 15px;
+      }
+      &:hover,
+      &.btn-heart--active {
+        color: #fff;
+        background-color: var(--color-orange);
+      }
+    }
+    .btn-add {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      bottom: 15px;
+      right: 15px;
+      z-index: 10;
+      width: 25px;
+      height: 25px;
+      font-size: 18px;
+      border-radius: 50%;
+      border: none;
+      background-color: #fff;
+      position: absolute;
+      box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.16);
+      @include breakpoint(phone) {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        color: blue;
+        bottom: 15px;
+        right: 15px;
+        font-size: 18px;
+      }
+      &:hover,
+      &.btn-heart--active {
+        color: #fff;
+        background-color: var(--color-orange);
+      }
+    }
+    .btn-upload {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      bottom: 15px;
+      left: 15px;
+      z-index: 10;
+      /* width: 18px;
+      height: 18px; */
+      font-size: 12px;
+      border-radius: 12px;
+      border: none;
+      background-color: #fff;
+      position: absolute;
+      box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.16);
+      @include breakpoint(phone) {
+        /* height: 18px;
+        width: 18px; */
+        border-radius: 10px;
+        color: blue;
+        bottom: 15px;
+        left: 15px;
+        font-size: 10px;
+      }
+      &:hover,
+      &.btn-heart--active {
+        color: #fff;
+        background-color: var(--color-orange);
+      }
+      &.btn--rounded-upload {
+        font-size: 10px;
+        background: #fff;
+        display: inline-block;
+        border-radius: 10px;
+        padding: 2px 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        @include breakpoint(phone) {
+          font-size: 10px;
+          padding: 2px 10px;
+        }
+        &.btn--yellow-upload {
+          background-color: var(--color-orange);
+          color: #fff;
+          color: #000000;
+        }
+      }
+    }
   }
   .product__description {
     h3 {

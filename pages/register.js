@@ -43,9 +43,9 @@ const RegisterPage = () => {
       const authData = {
         accesstoken: responseData.accesstoken,
         refreshtoken: responseData.refreshtoken,
-        id: responseData.id,
-        role: responseData.role,
-        accountStatus: responseData.accountStatus,
+        id: responseData.profile._id,
+        role: responseData.profile.role,
+        accountStatus: responseData.profile.accountStatus,
       };
       dispatch(setProfile(responseData.profile));
       dispatch(signinSuccess(authData));
