@@ -379,7 +379,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   const onSelectImageFile = (e, id) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
-    }
+    }    
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     setPreviousImages({
       ...previousImages,
@@ -390,6 +390,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       },
     });
   };
+  console.log("previousImages", previousImages);
   const [productImageUpload, setProductImageUpload] = useState({
     isLoading: false,
     state: "success",
@@ -1033,6 +1034,12 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   name={watchAllFields.productName}
                   price={watchAllFields.price}
                   currentPrice={watchAllFields.price}
+                  previousImages={previousImages}
+                  productImageDelete={productImageDelete}
+                  onClickDeleteImage={onClickDeleteImage}
+                  onUploadImage={onUploadImage}
+                  addingProduct={addingProduct}
+                  onSelectImageFile={onSelectImageFile}
                 />
               </div>
             </div>

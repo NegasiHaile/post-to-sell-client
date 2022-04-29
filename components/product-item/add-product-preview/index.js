@@ -7,6 +7,12 @@ const ProductItemLoading = ({
   name,
   price,
   currentPrice,
+  previousImages,
+  productImageDelete,
+  onClickDeleteImage,
+  onUploadImage,
+  addingProduct,
+  onSelectImageFile,
 }) => {
   const [isFavourite, setIsFavourite] = useState(false);
 
@@ -16,35 +22,38 @@ const ProductItemLoading = ({
   return (
     <a href="#" className="product-item product-item--loading">
       <div className="product__image">
-        {/* <button
-          type="button"
-          onClick={toggleFav}
-          className={`btn-heart ${isFavourite ? "btn-heart--active" : ""}`}
-        >
-          <i className="icon-heart"></i>
-        </button> */}
-        <button
-          /* disabled={productImageDelete.isLoading} */
-          type="button"
-          /*  onClick={() =>
-            onClickDeleteImage(previousImages[key + 1].image, key + 1)
-          } */
-          className={`btn-delete`}
-        >
-          X
-        </button>
-
-        <button
-          /* disabled={productImageDelete.isLoading} */
-          type="button"
-          /* onClick={() => onUploadImage(previousImages[key + 1], key + 1)} */
-          className={`btn-upload btn--rounded-upload btn--yellow-upload`}
-        >
-          save
-        </button>
-
+        {/* {previousImages[0].preview && !previousImages[0].file && (
+          <button
+            disabled={productImageDelete.isLoading}
+            type="button"
+            onClick={() => onClickDeleteImage(previousImages[0].image, 0)}
+            className={`btn-delete`}
+          >
+            X
+          </button>
+        )} */}
+        {previousImages[0].file && (
+          <button
+            disabled={productImageDelete.isLoading}
+            type="button"
+            onClick={() => onUploadImage(previousImages[0], 0)}
+            className={`btn-upload btn--rounded-upload btn--yellow-upload`}
+          >
+            save
+          </button>
+        )}
         <button type="button" className={`btn-add`}>
-          +
+          <input
+            disabled={addingProduct}
+            className="form__input form__input--sm"
+            style={{ paddingTop: "13px", display: "none" }}
+            type="file"
+            accept="image/*"
+            name="productImage"
+            onChange={(e) => onSelectImageFile(e, 0)}
+            id={`image-input${6}`}
+          />
+          <label for={`image-input${6}`}>+</label>
         </button>
         {productImage && (
           <Link href={`#`}>
