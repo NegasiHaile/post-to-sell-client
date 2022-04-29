@@ -12,7 +12,7 @@ import { server } from "../../utils/server";
 import { postData } from "../../utils/services";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import ProductItemLoading from "../../components/product-item/add-product-preview";
+import ProductItemLoading from "../../components/product-item/edit-product-preview";
 import {
   api_getAllCategories,
   api_deleteProductImage,
@@ -307,6 +307,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
             file: null,
           };
         });
+        console.log('pastImages',pastImages);
+        console.log('initialImagesState',initialImagesState);
+        console.log('{ ...initialImagesState, ...pastImages }',{ ...initialImagesState, ...pastImages });
         setPreviousImages({ ...initialImagesState, ...pastImages });
       }
       ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
@@ -389,8 +392,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         file: e.target.files[0],
       },
     });
-  };
-  console.log("previousImages", previousImages);
+  };  
   const [productImageUpload, setProductImageUpload] = useState({
     isLoading: false,
     state: "success",

@@ -32,7 +32,7 @@ const ProductItemLoading = ({
             X
           </button>
         )} */}
-        {/* {previousImages[0].file && (
+        {previousImages[0].file && (
           <button
             disabled={productImageDelete.isLoading}
             type="button"
@@ -54,7 +54,7 @@ const ProductItemLoading = ({
             id={`image-input${6}`}
           />
           <label for={`image-input${6}`}>+</label>
-        </button> */}
+        </button>
         {productImage && (
           <Link href={`#`}>
             <a>

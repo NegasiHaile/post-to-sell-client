@@ -238,9 +238,9 @@ const Products = ({ initCategory }) => {
   };
 
   useEffect(() => {
-    if (!products) {
+    /* if (!products) { */
       loadProducts();
-    }
+    /* } */
     if (!categories) {
       loadCategories();
     }
