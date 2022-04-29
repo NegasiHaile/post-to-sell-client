@@ -59,35 +59,44 @@ function MyAdverts() {
       <div className="container">
         <br />
         <br />
-        <p>List of my adverts</p>
+        <p>
+          {" "}
+          {myAdvertsList.length
+            ? "List of my adverts"
+            : "You haven't any advertisement yet!"}
+        </p>
         <div className="products-content">
           <section className="my-adverts-list">
-            {myAdvertsList.map((advert, index) => (
-              <div className="advert-item-container" key={index}>
-                <AdvertLoading
-                  advertBanner={`${server}/${advert.advertBanner}`}
-                  link={advert.link}
-                />
-                <div className="overlay">
-                  <Link href={`/users/add-advert/${advert._id}`}>
+            {myAdvertsList.length ? (
+              myAdvertsList.map((advert, index) => (
+                <div className="advert-item-container" key={index}>
+                  <AdvertLoading
+                    advertBanner={`${server}/${advert.advertBanner}`}
+                    link={advert.link}
+                  />
+                  <div className="overlay">
+                    <Link href={`/users/add-advert/${advert._id}`}>
+                      <span>
+                        <BsPencilFill
+                          style={{ color: "#39ac73", cursor: "pointer" }}
+                        />
+                      </span>
+                    </Link>
                     <span>
-                      <BsPencilFill
-                        style={{ color: "#39ac73", cursor: "pointer" }}
+                      <BsTrashFill
+                        onClick={() => {
+                          setShowModal(true),
+                            setDeleteAdvertStatus({ advertId: advert._id });
+                        }}
+                        style={{ color: "#ff471a", cursor: "pointer" }}
                       />
                     </span>
-                  </Link>
-                  <span>
-                    <BsTrashFill
-                      onClick={() => {
-                        setShowModal(true),
-                          setDeleteAdvertStatus({ advertId: advert._id });
-                      }}
-                      style={{ color: "#ff471a", cursor: "pointer" }}
-                    />
-                  </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p></p>
+            )}
           </section>
         </div>
         {showModal && (
