@@ -24,6 +24,13 @@ function UserAccountDropdown({
               /* textOverflow: "ellipsis", */
             }}
           >
+            <small style={{ fontSize: ".7rem" }}>
+              {" "}
+              {profile && profile.fName
+                ? profile.fName + " " + profile.lName
+                : "User Name"}
+            </small>
+            <br />
             <b> {profile && profile.email ? profile.email : "Profile"} </b>
           </li>
         </Link>
