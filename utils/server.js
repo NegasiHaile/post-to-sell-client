@@ -5,4 +5,4 @@ const PORT = process.env.PORT || 5000;
 
 export const server = dev
   ? `https://post-to-sell-server.herokuapp.com`
-  : "https://next-ecommerce-front.vercel.app";
+  : "https://post-to-sell-server.herokuapp.com";
