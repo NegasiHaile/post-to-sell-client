@@ -80,7 +80,7 @@ const IndexPage = () => {
       <section className="container">
         <h2 className="categories__title">Categories</h2>
         <div className="categories-list">
-          {categories && false
+          {categories
             ? categories.map((categoryData) => {
                 return (
                   <Category
