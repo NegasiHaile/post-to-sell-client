@@ -49,7 +49,7 @@ const getPriceRange = (products) => {
     }
   });
   return [
-    max - min < 1 && min > 10 ? 0 : max,
+    max - min < 1 && min > 10 ? 0 : min,
     max - min < 1 && max < 10 ? 1000 : max,
   ];
 };
@@ -66,9 +66,21 @@ const filterProducts = (products, filter) => {
   );
 
   const filteredProducts = products.filter((product) => {
+    let pricePass = true;
     let categoryPass = true;
     let sizePass = true;
     let colorPass = true;
+
+    if (filter.priceRange) {
+      if (
+        !(
+          product.currentPrice >= filter.priceRange[0] &&
+          product.currentPrice <= filter.priceRange[1]
+        )
+      ) {
+        pricePass = false;
+      }
+    }
 
     if (categories.length > 0 && !categories.includes(product.category)) {
       categoryPass = false;
@@ -96,7 +108,7 @@ const filterProducts = (products, filter) => {
       }
     }
 
-    return categoryPass && sizePass && colorPass;
+    return categoryPass && sizePass && colorPass && pricePass;
   });
   let sortedFilteredProducts = [];
   if (!filter.sortBy || filter.sortBy === "") {
@@ -152,10 +164,10 @@ const Products = () => {
       user: state.auth.user,
     };
   });
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState(null);
   const [filterValue, setFilterValue] = useState({
     categories: {},
-    priceRange: [0, 1000],
+    priceRange: null,
     sizes: {},
     colors: {},
     sortBy: "latest",
@@ -334,7 +346,9 @@ const Products = () => {
   }, [products, categories]);
   useEffect(() => {
     if (products) {
-      setPriceRange(getPriceRange(products));
+      const priceRangeVar = getPriceRange(products);
+      addPriceFilter(priceRangeVar);
+      setPriceRange(priceRangeVar);
     }
   }, [products]);
   useEffect(() => {

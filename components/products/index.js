@@ -40,7 +40,7 @@ const getPriceRange = (products) => {
     }
   });
   return [
-    max - min < 1 && min > 10 ? 0 : max,
+    max - min < 1 && min > 10 ? 0 : min,
     max - min < 1 && max < 10 ? 1000 : max,
   ];
 };
@@ -57,9 +57,21 @@ const filterProducts = (products, filter) => {
   );
 
   const filteredProducts = products.filter((product) => {
+    let pricePass = true;
     let categoryPass = true;
     let sizePass = true;
     let colorPass = true;
+
+    if (filter.priceRange) {
+      if (
+        !(
+          product.currentPrice >= filter.priceRange[0] &&
+          product.currentPrice <= filter.priceRange[1]
+        )
+      ) {
+        pricePass = false;
+      }
+    }
 
     if (categories.length > 0 && !categories.includes(product.category)) {
       categoryPass = false;
@@ -88,7 +100,7 @@ const filterProducts = (products, filter) => {
       }
     }
 
-    return categoryPass && sizePass && colorPass;
+    return categoryPass && sizePass && colorPass && pricePass;
   });
   let sortedFilteredProducts = [];
   if (!filter.sortBy || filter.sortBy === "") {
@@ -141,16 +153,15 @@ const Products = ({ initCategory }) => {
       categories: state.product.categories,
     };
   });
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState(null);
   const [filterValue, setFilterValue] = useState({
     categories: initCategory ? { [initCategory]: true } : {},
-    priceRange: [0, 1000],
+    priceRange: null,
     sizes: {},
     colors: {},
     sortBy: "latest",
   });
-  const [filteredProducts, setFilteredProducts] = useState(null);
-
+  const [filteredProducts, setFilteredProducts] = useState(null); 
   const addArrayFilter = (filterType, field, value) => {
     setFilterValue({
       ...filterValue,
@@ -239,7 +250,7 @@ const Products = ({ initCategory }) => {
 
   useEffect(() => {
     /* if (!products) { */
-      loadProducts();
+    loadProducts();
     /* } */
     if (!categories) {
       loadCategories();
@@ -262,7 +273,9 @@ const Products = ({ initCategory }) => {
   }, [products, categories]);
   useEffect(() => {
     if (products) {
-      setPriceRange(getPriceRange(products));
+      const priceRangeVar = getPriceRange(products);
+      addPriceFilter(priceRangeVar);
+      setPriceRange(priceRangeVar);
     }
   }, [products]);
   useEffect(() => {

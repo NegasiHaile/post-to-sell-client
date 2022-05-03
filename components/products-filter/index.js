@@ -95,13 +95,16 @@ const ProductsFilter = ({
         <div className="products-filter__block">
           <button type="button">Price</button>
           <div className="products-filter__block__content">
-            <Range
-              min={priceRange[0]}
-              max={priceRange[1]}
-              defaultValue={priceRange}
-              tipFormatter={(value) => `${displayMoney(value)}`}
-              onChange={(value) => addPriceFilter(value)}
-            />
+            {priceRange && (
+              <Range
+                onAfterChange={(value) => addPriceFilter(value)}
+                min={priceRange[0]}
+                max={priceRange[1]}
+                defaultValue={priceRange}
+                tipFormatter={(value) => `${displayMoney(value)}`}
+                /* onChange={(value) => addPriceFilter(value)} */
+              />
+            )}
           </div>
         </div>
 
