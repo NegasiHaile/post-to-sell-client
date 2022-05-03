@@ -8,8 +8,14 @@ import { server } from "../../utils/server";
 SwiperCore.use([EffectFade, Navigation]);
 
 const PageIntro = () => {
-  const [banners, setBanners] = useState([]);
-
+  const [banners, setBanners] = useState([
+    {
+      banner: "../../image/banners/slide1.jpg",
+      static: true,
+      title: "Advert your businness and designes!",
+    },
+  ]);
+  console.log("banners", banners);
   useEffect(async () => {
     const res = await api_getAllBanners();
     setBanners(res.data);
@@ -22,7 +28,9 @@ const PageIntro = () => {
             <div
               className="page-intro__slide"
               style={{
-                backgroundImage: `url('${server}/${banner.banner}')`,
+                backgroundImage: banner.static
+                  ? banner.banner
+                  : `url('${server}/${banner.banner}')`,
               }}
             >
               <div className="container">
