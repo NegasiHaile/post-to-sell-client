@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AdvertItem from "./AdvertItem";
 import { api_getAllAdverts } from "../../api/index";
+import ProductLoadingColumn from "../../components/products-content/list/loading/ProductLoadingColumn";
 function Adverts() {
   const [allAdverts, setAllAdverts] = useState([]);
   useEffect(async () => {
@@ -34,9 +35,13 @@ function Adverts() {
       //   borderRight: "solid 1px #cdcdcd",
       // }}
       >
-        {allAdverts.map((advert, index) => (
-          <AdvertItem key={index} advert={advert} />
-        ))}
+        {allAdverts.length !== 0 ? (
+          allAdverts.map((advert, index) => (
+            <AdvertItem key={index} advert={advert} />
+          ))
+        ) : (
+          <ProductLoadingColumn />
+        )}
       </div>
     </div>
   );

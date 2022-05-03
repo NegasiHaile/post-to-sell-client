@@ -1791,6 +1791,34 @@ h5 {
   }
 }
 
+.products-list-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  @include breakpoint(phone) {
+    margin-right: -33px;
+  }
+  @include breakpoint(tablet-lg) {
+    margin-right: -63px;
+  }
+  .product-item {
+    width: calc(100% /* / 2 */ - 15px);
+    margin-bottom: 50px;
+    margin-right: 15px;
+    @include breakpoint(phone) {
+      margin-right: 33px;
+      margin-bottom: 25px;
+      width: calc(100%/*  / 3 */ - 33px);
+    }
+    @include breakpoint(tablet-lg) {
+      margin-right: 63px;
+      margin-bottom: 30px;
+      width: calc(100%/*  / 3 */ - 63px);
+    }
+  }
+}
+
 .select-wrapper {
   position: relative;
   &:before {

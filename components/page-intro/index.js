@@ -12,7 +12,7 @@ const PageIntro = () => {
     {
       banner: "../../image/banners/slide1.jpg",
       static: true,
-      title: "Advert your businness and designes!",
+      title: "Get a fashioons of summer collection!",
     },
   ]);
   console.log("banners", banners);

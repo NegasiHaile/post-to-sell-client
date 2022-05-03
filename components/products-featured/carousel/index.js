@@ -1,4 +1,5 @@
 import ProductItem from "./../../product-item";
+import ProductsLoading from "../../products-content/list/loading";
 
 // import Swiper core and required components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -22,7 +23,7 @@ if (process.browser) {
 }
 
 const ProductsCarousel = ({ products }) => {
-  if (!products) return "Loading";
+  if (!products) return <ProductsLoading />;
 
   return (
     <div className="products-content">
