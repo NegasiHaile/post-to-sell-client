@@ -6,6 +6,7 @@ import Footer from "../components/footer";
 import Subscribe from "../components/subscribe";
 import Adverts from "../components/Adverts/index";
 import Category from "../components/Category/Index";
+import LoadingSkeleton from "../components/Category/LoadingSkeleton";
 
 import { server } from "../utils/server";
 import { useDispatch, useSelector } from "react-redux";
@@ -79,26 +80,23 @@ const IndexPage = () => {
       <section className="container">
         <h2 className="categories__title">Categories</h2>
         <div className="categories-list">
-          {categories &&
-            categories.map((categoryData) => {
-              return (
-                <Category
-                  image={
-                    categoryData.categoryImage
-                      ? `${server}/${categoryData.categoryImage}`
-                      : "./images/featured-1.jpg"
-                  }
-                  name={categoryData.category}
-                  description={categoryData.description}
-                  subCategories={categoryData.subCategory}
-                  id={categoryData._id}
-                />
-              );
-            })}
-          {/* <Category image="./images/featured-1.jpg" name="Men" />
-          <Category image="./images/slide-1.jpg" name="Women" />
-          <Category image="./images/featured-2.jpg" name="House hold" />
-          <Category image="./images/slide-2.jpg" name="Devices" /> */}
+          {categories
+            ? categories.map((categoryData) => {
+                return (
+                  <Category
+                    image={
+                      categoryData.categoryImage
+                        ? `${server}/${categoryData.categoryImage}`
+                        : "./images/featured-1.jpg"
+                    }
+                    name={categoryData.category}
+                    description={categoryData.description}
+                    subCategories={categoryData.subCategory}
+                    id={categoryData._id}
+                  />
+                );
+              })
+            : [1, 2, 3, 4].map((item) => <LoadingSkeleton />)}
         </div>
       </section>
       <section className="section">
