@@ -28,17 +28,20 @@ const ProductsCarousel = ({ products }) => {
   return (
     <div className="products-content">
       <section className="products-list">
-        {products.map((item) => (
-          <ProductItem
-            discount={item.discount}
-            price={item.price}
-            currentPrice={item.currentPrice}
-            key={item._id}
-            id={item._id}
-            productImage={`${server}/${item.images[0]}`}
-            name={item.name}
-          />
-        ))}
+        {products.map(
+          (item) =>
+            item.status === "active" && (
+              <ProductItem
+                discount={item.discount}
+                price={item.price}
+                currentPrice={item.currentPrice}
+                key={item._id}
+                id={item._id}
+                productImage={`${server}/${item.images[0]}`}
+                name={item.name}
+              />
+            )
+        )}
       </section>
     </div>
     // <div className="products-carousel">
