@@ -85,17 +85,17 @@
 
 .category-text {
   font-size: 0.8rem;
-  letter-spacing: 0.1rem;
+  letter-spacing: 1px;
   line-height: 1.7;
   color: #868686;
 }
 .category-content ul {
-  margin: 1rem 0rem;
+  margin: 0.6rem 0rem;
   margin-left: 1rem;
 }
 .category-content ul li {
   font-size: 0.8rem;
-  letter-spacing: 0.1rem;
+  // letter-spacing: 1px;
   line-height: 1.8;
   color: #868686;
   list-style: disc;
