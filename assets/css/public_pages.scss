@@ -77,15 +77,15 @@
 }
 
 .category-header {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  color: #0d0d0d;
+  color: #333;
   margin-bottom: 0.5rem;
 }
 
 .category-text {
   font-size: 0.8rem;
-  letter-spacing: 1px;
+  // letter-spacing: 1px;
   line-height: 1.5;
   color: #868686;
 }
@@ -95,7 +95,7 @@
 }
 .category-content ul li {
   font-size: 0.8rem;
-  letter-spacing: 1px;
+  // letter-spacing: 1px;
   line-height: 1.5;
   color: #868686;
   list-style: disc;
@@ -104,7 +104,7 @@
   display: block;
   width: 100%;
   padding: 0.3rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: center;
   color: #333;
   background-color: #eeeeee;
@@ -112,7 +112,7 @@
   border-radius: 0.4rem;
   transition: 0.2s;
   cursor: pointer;
-  letter-spacing: 1px;
+  // letter-spacing: 1px;
 }
 
 .category-btn span {
