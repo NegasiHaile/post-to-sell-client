@@ -38,7 +38,7 @@ const ProductsCarousel = ({ products }) => {
                 key={item._id}
                 id={item._id}
                 productImage={`${server}/${item.images[0]}`}
-                name={item.name}
+                name={item.productName}
               />
             )
         )}

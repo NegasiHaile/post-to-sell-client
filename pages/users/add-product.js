@@ -741,7 +741,7 @@ const AddProductPage = () => {
                   productImage={selectedFile ? preview : null}
                   name={watchAllFields.productName}
                   price={watchAllFields.price}
-                  currentPrice={watchAllFields.price}
+                  currentPrice={watchAllFields.currentPrice}
                 />
               </div>
             </div>

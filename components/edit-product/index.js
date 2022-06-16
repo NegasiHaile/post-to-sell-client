@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
-import CheckoutItems from "../../components/checkout/items";
 import CheckboxColor from "../../components/products-filter/form-builder/checkbox-color";
 import Checkbox from "../../components/products-filter/form-builder/checkbox";
 import productsColors from "../../utils/data/products-colors";
@@ -9,8 +8,6 @@ import productsSizes from "../../utils/data/products-sizes";
 
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
-import { postData } from "../../utils/services";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import ProductItemLoading from "../../components/product-item/edit-product-preview";
 import {
@@ -55,13 +52,6 @@ const initialImagesState = {
   },
 };
 
-const contactAddress = {
-  phoneNumber: "0983339025",
-  email: "yismawmintesnot@gmail.com",
-  address: "addis ababa, 22",
-  telegramUsername: "minoty",
-};
-
 const categoryParser = (categories) => {
   let result = {};
   if (categories) {
@@ -79,7 +69,7 @@ const categoryParser = (categories) => {
 const AddProductPage = ({ oldProduct, onClickBack }) => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-
+  const profile = useSelector((state) => state.profile.profile);
   const [product, setProduct] = useState(oldProduct);
 
   const [addingProduct, setAddingProduct] = useState(false);
@@ -97,10 +87,24 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   });
 
   const [previousImages, setPreviousImages] = useState(initialImagesState);
-  console.log("previousImages", previousImages);
   const [preview, setPreview] = useState();
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
+
+  const [selectedCategory, setSelectedCategory] = useState({
+    category: oldProduct.category,
+    subCategory: oldProduct.subCategory,
+    brand: oldProduct.brand,
+    model: oldProduct.model,
+  });
+
+  // user contacts
+  const contactAddress = {
+    phoneNumber: "",
+    email: profile?.email,
+    address: "",
+    telegramUsername: "",
+  };
 
   const clearPreviousData = () => {
     dispatch(clearProducts());
@@ -110,6 +114,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     sizes: {},
     colors: {},
   });
+
   const addProductVariant = (variantType, field, value) => {
     setProductVariant({
       ...productVariant,
@@ -150,9 +155,10 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         contacts: contacts,
         userId: auth.user.id,
         productName: data.productName,
-        brand: data.brand,
-        category: data.category,
-        subCategory: data.subCategory,
+        category: selectedCategory.category,
+        subCategory: selectedCategory.subCategory,
+        brand: selectedCategory.brand,
+        model: selectedCategory.model,
         currentPrice: data.currentPrice,
         price: data.price,
         discription: data.discription,
@@ -170,8 +176,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         message: "Proudct edited succefully!",
       });
       const responseData = res.data;
+
       setAddingProduct(false);
-      toast.success("🦄 Wow so easy!", {
+      toast.success(`🦄 ${res.data.msg}`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -217,7 +224,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   };
 
   const watchAllFields = watch();
-  console.log("watchAllFields", watchAllFields);
 
   const onSelectMultipleFile = (e) => {
     let fileObj = [];
@@ -236,11 +242,13 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     state: "success",
     message: "",
   });
+
   const { categories } = useSelector((state) => {
     return {
       categories: state.product.categories,
     };
   });
+
   const loadCategories = async () => {
     setCategoriesLoading({
       isLoading: true,
@@ -278,11 +286,13 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       loadCategories();
     }
   }, []);
+
   useEffect(() => {
     if (categories) {
       setCategoriesData(categoryParser(categories));
     }
   }, [categories]);
+
   useEffect(() => {
     if (product) {
       [
@@ -307,9 +317,12 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
             file: null,
           };
         });
-        console.log('pastImages',pastImages);
-        console.log('initialImagesState',initialImagesState);
-        console.log('{ ...initialImagesState, ...pastImages }',{ ...initialImagesState, ...pastImages });
+        console.log("pastImages", pastImages);
+        console.log("initialImagesState", initialImagesState);
+        console.log("{ ...initialImagesState, ...pastImages }", {
+          ...initialImagesState,
+          ...pastImages,
+        });
         setPreviousImages({ ...initialImagesState, ...pastImages });
       }
       ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
@@ -326,6 +339,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     state: "success",
     message: "",
   });
+
   const onClickDeleteImage = async (imageUrl, index) => {
     setProductImageDelete({
       isLoading: true,
@@ -379,10 +393,11 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       });
     }
   };
+
   const onSelectImageFile = (e, id) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
-    }    
+    }
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     setPreviousImages({
       ...previousImages,
@@ -392,12 +407,14 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         file: e.target.files[0],
       },
     });
-  };  
+  };
+
   const [productImageUpload, setProductImageUpload] = useState({
     isLoading: false,
     state: "success",
     message: "",
   });
+
   const onUploadImage = async (imageUrl, index) => {
     setProductImageUpload({
       isLoading: true,
@@ -493,120 +510,21 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                 <form className="form">
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Product Name"
-                        type="text"
-                        name="productName"
-                        {...register("productName", {
-                          required: true,
-                          maxLength: 60,
-                        })}
-                      />
-                      {errors.productName &&
-                        errors.productName.type === "required" && (
-                          <p className="message message--error">
-                            Product name is required
-                          </p>
-                        )}
-                      {errors.productName &&
-                        errors.productName.type === "maxLength" && (
-                          <p className="message message--error">
-                            Product name must have less than 60 characters
-                          </p>
-                        )}
-                    </div>
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Product Brand"
-                        type="text"
-                        name="brand"
-                        {...register("brand", {
-                          required: true,
-                          maxLength: 60,
-                        })}
-                      />
-                      {errors.brand && errors.brand.type === "required" && (
-                        <p className="message message--error">
-                          Product brand is required
-                        </p>
-                      )}
-                      {errors.brand && errors.brand.type === "maxLength" && (
-                        <p className="message message--error">
-                          Product brand must have less than 60 characters
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Current Product Price"
-                        type="number"
-                        name="currentPrice"
-                        {...register("currentPrice", {
-                          required: true,
-                          minLength: 1,
-                        })}
-                      />
-                      {errors.currentPrice &&
-                        errors.currentPrice.type === "required" && (
-                          <p className="message message--error">
-                            Current Product price is required
-                          </p>
-                        )}
-                      {errors.currentPrice &&
-                        errors.currentPrice.type === "minLength" && (
-                          <p className="message message--error">
-                            Current Product price must be atleast 1 birr
-                          </p>
-                        )}
-                    </div>
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Previous Product Price"
-                        type="number"
-                        name="price"
-                        {...register("price", {
-                          required: true,
-                          minLength: 1,
-                        })}
-                      />
-                      {errors.price && errors.price.type === "required" && (
-                        <p className="message message--error">
-                          Product price is required
-                        </p>
-                      )}
-                      {errors.price && errors.price.type === "minLength" && (
-                        <p className="message message--error">
-                          Product price must be atleast 1 birr
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
-                    <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
                           placeholder="Product Category"
                           disabled={addingProduct}
                           className="form__input form__input--sm"
                           name="category"
-                          {...register("category", {
-                            required: true,
-                            maxLength: 60,
-                          })}
+                          value={selectedCategory.category}
+                          onChange={(e) =>
+                            setSelectedCategory({
+                              ...selectedCategory,
+                              category: e.target.value,
+                            })
+                          }
                         >
-                          <option>Product Category</option>
+                          <option>Product category</option>
                           {Object.keys(categoriesData).map((key) => {
                             const category = categoriesData[key];
                             return (
@@ -630,6 +548,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                           )}
                       </div>
                     </div>
+
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
@@ -637,38 +556,162 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                           disabled={addingProduct}
                           className="form__input form__input--sm"
                           name="subCategory"
-                          {...register("subCategory", {
-                            required: true,
-                            maxLength: 60,
-                          })}
+                          value={selectedCategory.subCategory}
+                          onChange={(e) =>
+                            setSelectedCategory({
+                              ...selectedCategory,
+                              subCategory: e.target.value,
+                            })
+                          }
                         >
-                          <option>Product Category</option>
+                          <option>Sub category</option>
                           {categoriesData &&
                             categoriesData[watchAllFields.category] &&
                             categoriesData[
                               watchAllFields.category
-                            ].subCategory.map((subCategory) => {
+                            ].subCategory.map((subCategory, index) => {
                               return (
-                                <option value={subCategory}>
-                                  {subCategory}
+                                <option
+                                  key={index}
+                                  value={subCategory.sub_name}
+                                >
+                                  {subCategory.sub_name}
                                 </option>
                               );
                             })}
+                          <option value="other">Other</option>
                         </select>
-                        {errors.subCategory &&
-                          errors.subCategory.type === "required" && (
-                            <p className="message message--error">
-                              Product subcategory is required
-                            </p>
-                          )}
-                        {errors.subCategory &&
-                          errors.subCategory.type === "maxLength" && (
-                            <p className="message message--error">
-                              Product subcategory must have less than 60
-                              characters
-                            </p>
-                          )}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="form__input-row form__input-row--two">
+                    {selectedCategory.subCategory && (
+                      <div className="form__col">
+                        <div className="select-wrapper select-form">
+                          <select
+                            placeholder="Brand"
+                            disabled={addingProduct}
+                            className="form__input form__input--sm"
+                            name="brand"
+                            value={selectedCategory.brand}
+                            onChange={(e) =>
+                              setSelectedCategory({
+                                ...selectedCategory,
+                                brand: e.target.value,
+                              })
+                            }
+                          >
+                            <option>Brand</option>
+                            {categoriesData &&
+                              categoriesData[watchAllFields.category] &&
+                              categoriesData[
+                                watchAllFields.category
+                              ].subCategory.map((sub, index) => {
+                                if (
+                                  sub.sub_name === selectedCategory.subCategory
+                                ) {
+                                  return sub.brands.map((brand, i) => {
+                                    return (
+                                      <option key={i} value={brand.brand_name}>
+                                        {brand.brand_name}
+                                      </option>
+                                    );
+                                  });
+                                }
+                              })}
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                    {selectedCategory.brand && (
+                      <div className="form__col">
+                        <div className="select-wrapper select-form">
+                          <select
+                            placeholder="Model"
+                            disabled={addingProduct}
+                            className="form__input form__input--sm"
+                            name="model"
+                            value={selectedCategory.model}
+                            onChange={(e) =>
+                              setSelectedCategory({
+                                ...selectedCategory,
+                                model: e.target.value,
+                              })
+                            }
+                          >
+                            <option>Model</option>
+                            {categoriesData &&
+                              categoriesData[watchAllFields.category] &&
+                              categoriesData[
+                                watchAllFields.category
+                              ].subCategory.map((sub, index) => {
+                                if (
+                                  sub.sub_name === selectedCategory.subCategory
+                                ) {
+                                  return sub.brands.map((brand, i) => {
+                                    if (
+                                      brand.brand_name ===
+                                      selectedCategory.brand
+                                    ) {
+                                      return brand.models.map((model, mi) => {
+                                        return (
+                                          <option key={mi} value={model}>
+                                            {model}
+                                          </option>
+                                        );
+                                      });
+                                    }
+                                  });
+                                }
+                              })}
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form__input-row form__input-row--two">
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Product name"
+                        type="text"
+                        name="productName"
+                        {...register("productName", {
+                          required: true,
+                          maxLength: 60,
+                        })}
+                      />
+                      {errors.productName &&
+                        errors.productName.type === "required" && (
+                          <small className="message message--error">
+                            Product name is required
+                          </small>
+                        )}
+                    </div>
+
+                    <div className="form__col">
+                      <input
+                        disabled={addingProduct}
+                        className="form__input form__input--sm"
+                        placeholder="Price"
+                        type="number"
+                        name="currentPrice"
+                        {...register("currentPrice", {
+                          required: true,
+                          minLength: 1,
+                        })}
+                      />
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "required" && (
+                          <small className="message message--error">
+                            Price is required
+                          </small>
+                        )}
                     </div>
                   </div>
 
@@ -705,163 +748,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
               </div>
 
               <div className="block">
-                <h3 className="block__title">Contact Address Detail</h3>
-                <form className="form">
-                  <div className="checkbox-wrapper">
-                    <label
-                      htmlFor="check-signed-in"
-                      className={`checkbox checkbox--sm`}
-                    >
-                      <input
-                        disabled={addingProduct}
-                        type="checkbox"
-                        name="keepSigned"
-                        id="check-signed-in"
-                        value={useProfileAddress}
-                        onChange={(e) => onClickUseProfileAddress(e)}
-                        /* {...register("keepSigned", {
-                        required: true,
-                      })} */
-                      />
-                      <span className="checkbox__check"></span>
-                      <p>Use my profile address</p>
-                    </label>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Phone Number"
-                        type="number"
-                        name="phoneNumber"
-                        {...register("phoneNumber", {
-                          required: true,
-                          maxLength: 16,
-                        })}
-                      />
-                      {errors.phoneNumber &&
-                        errors.phoneNumber.type === "required" && (
-                          <p className="message message--error">
-                            Phone number is required
-                          </p>
-                        )}
-                      {errors.phoneNumber &&
-                        errors.phoneNumber.type === "maxLength" && (
-                          <p className="message message--error">
-                            Enter valid phone number
-                          </p>
-                        )}
-                    </div>
-
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Email (optional)"
-                        type="text"
-                        name="email"
-                        {...register("email", {
-                          pattern:
-                            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                          maxLength: 50,
-                        })}
-                      />
-                      {errors.email && errors.email.type === "maxLength" && (
-                        <p className="message message--error">
-                          Email is too long!
-                        </p>
-                      )}
-                      {errors.email && errors.email.type === "pattern" && (
-                        <p className="message message--error">
-                          Please write a valid email
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form__input-row form__input-row--two">
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Physical Address"
-                        type="text"
-                        name="address"
-                        {...register("address", {
-                          maxLength: 100,
-                        })}
-                      />
-                      {errors.address &&
-                        errors.address.type === "minLength" && (
-                          <p className="message message--error">
-                            Address must be less than 100 characters
-                          </p>
-                        )}
-                    </div>
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        placeholder="Telegram Username"
-                        type="text"
-                        name="telegramUsername"
-                        {...register("telegramUsername", {
-                          maxLength: 100,
-                        })}
-                      />
-                      {errors.telegramUsername &&
-                        errors.telegramUsername.type === "minLength" && (
-                          <p className="message message--error">
-                            Username must be less than 100 characters
-                          </p>
-                        )}
-                    </div>
-                  </div>
-
-                  {/* <button
-                    type="submit"
-                    className="btn btn--rounded btn--yellow btn-submit"
-                    disabled={addingProduct}
-                  >
-                    {addingProduct ? "Signing in" : "Sign in"}
-                  </button> */}
-                </form>
-              </div>
-
-              <div className="block">
                 <h3 className="block__title">Product Images</h3>
-                <form className="form">
-                  <div className="form__input-row form__input-row--two">
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        style={{ paddingTop: "13px" }}
-                        type="file"
-                        accept="image/*"
-                        name="productImage"
-                        onChange={(e) => onSelectImageFile(e, 0)}
-                      />
-                    </div>
-                    <div className="form__col">
-                      <input
-                        disabled={addingProduct}
-                        className="form__input form__input--sm"
-                        style={{ paddingTop: "13px" }}
-                        type="file"
-                        accept="image/*"
-                        name="productImageCollection"
-                        multiple={true}
-                        onChange={onSelectMultipleFile}
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-
-              <div className="block">
                 <div className="add-product-gallery__thumbs">
                   {[0, 1, 2, 3].map((key) => (
                     <div
@@ -925,53 +812,122 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
 
             <div className="checkout__col-4">
               <div className="block">
-                <h3 className="block__title">Product colors</h3>
-                <div className="products-filter__block">
-                  <div className="products-filter__block__content">
-                    {productsColors.map((productsColor) => (
-                      <div className="checkbox-color-wrapper">
-                        {productsColor.map((type) => (
-                          <CheckboxColor
-                            key={type.id}
-                            name="product-color"
-                            color={type.color}
-                            onChange={(value) => {
-                              addProductVariant(
-                                "colors",
-                                type.color,
-                                value.target.checked
-                              );
-                            }}
-                          />
-                        ))}
+                <div className="block">
+                  <h3 className="block__title">Contact address detail</h3>
+                  <form className="form">
+                    <div className="checkbox-wrapper">
+                      <label
+                        htmlFor="check-signed-in"
+                        className={`checkbox checkbox--sm`}
+                      >
+                        <input
+                          disabled={addingProduct}
+                          type="checkbox"
+                          name="keepSigned"
+                          id="check-signed-in"
+                          value={useProfileAddress}
+                          onChange={(e) => onClickUseProfileAddress(e)}
+                        />
+                        <span className="checkbox__check"></span>
+                        <p>Use my profile address</p>
+                      </label>
+                    </div>
+
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Phone Number"
+                          type="number"
+                          name="phoneNumber"
+                          {...register("phoneNumber", {
+                            required: true,
+                            maxLength: 16,
+                          })}
+                        />
+                        {errors.phoneNumber &&
+                          errors.phoneNumber.type === "required" && (
+                            <p className="message message--error">
+                              Phone number is required
+                            </p>
+                          )}
+                        {errors.phoneNumber &&
+                          errors.phoneNumber.type === "maxLength" && (
+                            <p className="message message--error">
+                              Enter valid phone number
+                            </p>
+                          )}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Email (optional)"
+                          type="text"
+                          name="email"
+                          {...register("email", {
+                            pattern:
+                              /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                            maxLength: 50,
+                          })}
+                        />
+                        {errors.email && errors.email.type === "maxLength" && (
+                          <p className="message message--error">
+                            Email is too long!
+                          </p>
+                        )}
+                        {errors.email && errors.email.type === "pattern" && (
+                          <p className="message message--error">
+                            Please write a valid email
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Physical Address"
+                          type="text"
+                          name="address"
+                          {...register("address", {
+                            maxLength: 100,
+                          })}
+                        />
+                        {errors.address &&
+                          errors.address.type === "minLength" && (
+                            <p className="message message--error">
+                              Address must be less than 100 characters
+                            </p>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Telegram Username"
+                          type="text"
+                          name="telegramUsername"
+                          {...register("telegramUsername", {
+                            maxLength: 100,
+                          })}
+                        />
+                        {errors.telegramUsername &&
+                          errors.telegramUsername.type === "minLength" && (
+                            <p className="message message--error">
+                              Username must be less than 100 characters
+                            </p>
+                          )}
+                      </div>
+                    </div>
+                  </form>
                 </div>
-              </div>
-              <div className="block">
-                <h3 className="block__title">Product sizes</h3>
-                {productsSizes.map((productsSize) => (
-                  <div className="products-filter__block__content checkbox-square-wrapper">
-                    {productsSize.map((type) => (
-                      <Checkbox
-                        type="square"
-                        key={type.id}
-                        name="product-size"
-                        label={type.label}
-                        onChange={(value) => {
-                          addProductVariant(
-                            "sizes",
-                            type.label,
-                            value.target.checked
-                          );
-                        }}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <div className="block">
                 <h3 className="block__title">Post type</h3>
                 <form className="form">
                   <div className="checkbox-wrapper">
@@ -1035,7 +991,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   }
                   name={watchAllFields.productName}
                   price={watchAllFields.price}
-                  currentPrice={watchAllFields.price}
+                  currentPrice={watchAllFields.currentPrice}
                   previousImages={previousImages}
                   productImageDelete={productImageDelete}
                   onClickDeleteImage={onClickDeleteImage}

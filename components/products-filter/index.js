@@ -7,9 +7,6 @@ import Tooltip from "rc-tooltip";
 import { useForm } from "react-hook-form";
 
 // data
-import productsTypes from "./../../utils/data/products-types";
-import productsColors from "./../../utils/data/products-colors";
-import productsSizes from "./../../utils/data/products-sizes";
 import { displayMoney } from "./../../utils/helpers";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -35,9 +32,6 @@ const handle = (props) => {
 };
 
 const ProductsFilter = ({
-  categories,
-  categoriesloading,
-  loadCategories,
   productCountByCategory,
   addArrayFilter,
   priceRange,
@@ -105,51 +99,6 @@ const ProductsFilter = ({
                 /* onChange={(value) => addPriceFilter(value)} */
               />
             )}
-          </div>
-        </div>
-
-        <div className="products-filter__block">
-          <button type="button">Size</button>
-          <div className="products-filter__block__content">
-            {productsSizes.map((productsSize) => (
-              <div className="checkbox-square-wrapper">
-                {productsSize.map((type) => (
-                  <Checkbox
-                    type="square"
-                    key={type.id}
-                    name="product-size"
-                    label={type.label}
-                    onChange={(value) => {
-                      addArrayFilter("sizes", type.label, value.target.checked);
-                    }}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="products-filter__block">
-          <button type="button">Color</button>
-          <div className="products-filter__block__content">
-            {productsColors.map((productsColor) => (
-              <div className="checkbox-color-wrapper">
-                {productsColor.map((type) => (
-                  <CheckboxColor
-                    key={type.id}
-                    name="product-color"
-                    color={type.color}
-                    onChange={(value) => {
-                      addArrayFilter(
-                        "colors",
-                        type.color,
-                        value.target.checked
-                      );
-                    }}
-                  />
-                ))}
-              </div>
-            ))}
           </div>
         </div>
 
