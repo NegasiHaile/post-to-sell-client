@@ -18,6 +18,7 @@ import {
   api_getAllUsers,
   api_getUserProfile,
   api_editUserProfile,
+  api_ChangeMyPassword,
 } from "./users"; // users APIs
 
 import {
@@ -49,7 +50,12 @@ export { api_getAllCategories };
 export { api_getAllBanners };
 
 // users
-export { api_getAllUsers, api_getUserProfile, api_editUserProfile };
+export {
+  api_getAllUsers,
+  api_getUserProfile,
+  api_editUserProfile,
+  api_ChangeMyPassword,
+};
 
 // adverts
 export {

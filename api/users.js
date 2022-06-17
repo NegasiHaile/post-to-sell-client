@@ -15,6 +15,19 @@ export const api_getUserProfile = async (token) => {
   });
 };
 
+// Get user profile
+export const api_ChangeMyPassword = async (userAuth, data) => {
+  return await axios.put(
+    `${server}/api/users/change_my_password`,
+    { ...data },
+    {
+      headers: {
+        Authorization: userAuth.accesstoken,
+      },
+    }
+  );
+};
+
 // Edit user profile
 export const api_editUserProfile = async (user, data) => {
   return await axios.put(
