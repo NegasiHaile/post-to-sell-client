@@ -128,16 +128,50 @@ function Profile() {
                   </div>
                   <div className="form__input-row">
                     <div className="form__col">
-                      <input
-                        className="form__input form__input--sm"
-                        type="text"
-                        placeholder="Gender"
-                        name="gender"
-                        value={profile.gender}
-                        onChange={(e) =>
-                          setProfile({ ...profile, gender: e.target.value })
-                        }
-                      />
+                      <label> Gender</label>
+                      <div
+                        style={{
+                          display: "flex",
+                          marginTop: "5px",
+                        }}
+                      >
+                        <label
+                          htmlFor="male"
+                          className={`checkbox checkbox--sm`}
+                          style={{ marginRight: "25px" }}
+                        >
+                          <input
+                            type="radio"
+                            name="gender"
+                            value="male"
+                            id="male"
+                            checked={profile.gender == "male"}
+                            onChange={(e) =>
+                              setProfile({ ...profile, gender: e.target.value })
+                            }
+                          />
+                          <span className="checkbox__check"></span>
+                          <p>Male</p>
+                        </label>
+
+                        <label
+                          htmlFor="female"
+                          className={`checkbox checkbox--sm`}
+                        >
+                          <input
+                            type="radio"
+                            name="gender"
+                            value="female"
+                            id="female"
+                            checked={profile.gender == "female"}
+                            onChange={(e) =>
+                              setProfile({ ...profile, gender: e.target.value })
+                            }
+                          />
+                          <span className="checkbox__check"></span>
+                          <p>Female</p>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
