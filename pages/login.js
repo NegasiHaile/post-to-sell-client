@@ -128,7 +128,7 @@ const LoginPage = ({ title = "post to sell login" }) => {
                   name="password"
                   {...register("password", {
                     required: true,
-                    minLength: 8,
+                    minLength: 6,
                   })}
                 />
                 {errors.password && errors.password.type === "required" && (
@@ -138,7 +138,7 @@ const LoginPage = ({ title = "post to sell login" }) => {
                 )}
                 {errors.password && errors.password.type === "minLength" && (
                   <p className="message message--error">
-                    Password must have atleast 8 characters
+                    Password must have atleast 6 characters
                   </p>
                 )}
               </div>

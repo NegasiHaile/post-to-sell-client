@@ -220,7 +220,7 @@ const RegisterPage = () => {
                   name="password"
                   {...register("password", {
                     required: true,
-                    minLength: 8,
+                    minLength: 6,
                   })}
                 />
                 {errors.password && errors.password.type === "required" && (
