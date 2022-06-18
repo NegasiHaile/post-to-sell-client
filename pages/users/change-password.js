@@ -16,6 +16,7 @@ const paswordInitialState = {
 function ChangePassword() {
   const [userAuth, setUserAuth] = useState({});
   const [password, setPassword] = useState(paswordInitialState);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(async () => {
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -64,7 +65,7 @@ function ChangePassword() {
                   <input
                     className="form__input form__input--sm"
                     placeholder="Your old password"
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     name="oldPassword"
                     value={password.oldPassword}
                     onChange={onChangeInput}
@@ -75,7 +76,7 @@ function ChangePassword() {
                 <div className="form__input-row">
                   <input
                     className="form__input form__input--sm"
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Create new password"
                     name="newPassword"
                     value={password.newPassword}
@@ -88,7 +89,7 @@ function ChangePassword() {
                 <div className="form__input-row">
                   <input
                     className="form__input form__input--sm"
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Retype new password"
                     name="retypeNewPassword"
                     value={password.retypeNewPassword}
@@ -97,6 +98,19 @@ function ChangePassword() {
                     required={true}
                   />
                 </div>
+                <label
+                  htmlFor="check-signed-in"
+                  className={`checkbox checkbox--sm`}
+                >
+                  <input
+                    type="checkbox"
+                    name="keepSigned"
+                    id="check-signed-in"
+                    onChange={(e) => setShowPassword(e.target.checked)}
+                  />
+                  <span className="checkbox__check"></span>
+                  <p>Show password!</p>
+                </label>
 
                 <button
                   type="submit"
