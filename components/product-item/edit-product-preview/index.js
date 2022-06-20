@@ -9,7 +9,6 @@ const ProductItemLoading = ({
   currentPrice,
   previousImages,
   productImageDelete,
-  onClickDeleteImage,
   onUploadImage,
   addingProduct,
   onSelectImageFile,
@@ -49,9 +48,6 @@ const ProductItemLoading = ({
           <Link href={`#`}>
             <a>
               <img src={productImage} alt="product" />
-              {discount && (
-                <span className="product__discount">{discount}%</span>
-              )}
             </a>
           </Link>
         )}

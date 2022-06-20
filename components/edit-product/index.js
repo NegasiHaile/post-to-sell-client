@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
-import CheckboxColor from "../../components/products-filter/form-builder/checkbox-color";
-import Checkbox from "../../components/products-filter/form-builder/checkbox";
-import productsColors from "../../utils/data/products-colors";
-import productsSizes from "../../utils/data/products-sizes";
 
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
@@ -500,7 +496,15 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         <div className="container">
           <div className="cart__intro">
             <h3 className="cart__title">Edit Product</h3>
-            <CheckoutStatus step="checkout" />
+            <div>
+              <a
+                onClick={onClickBack}
+                style={{ cursor: "pointer" }}
+                className="cart__btn-back"
+              >
+                <i className="icon-left"></i> Back
+              </a>
+            </div>
           </div>
 
           <div className="checkout-content">
