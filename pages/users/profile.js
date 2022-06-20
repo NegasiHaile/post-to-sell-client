@@ -39,8 +39,12 @@ function Profile() {
     if (userProfile) {
       prepareUserProfile(userProfile);
     } else {
-      const res = await api_getUserProfile(user.accesstoken);
-      prepareUserProfile(res.data.profile);
+      try {
+        const res = await api_getUserProfile(user.accesstoken);
+        prepareUserProfile(res.data.profile);
+      } catch (error) {
+        Toast("error", error.response.data.msg);
+      }
     }
   }, []);
 
