@@ -16,13 +16,6 @@ import {
   setCategories,
 } from "../../store/actions/productActions";
 
-const contactAddress = {
-  phoneNumber: "0983339025",
-  email: "yismawmintesnot@gmail.com",
-  address: "addis ababa, 22",
-  telegramUsername: "minoty",
-};
-
 const categoryParser = (categories) => {
   let result = {};
   if (categories) {
@@ -39,8 +32,14 @@ const categoryParser = (categories) => {
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
+  const { userProfile, auth } = useSelector((state) => {
+    return {
+      userProfile: state.profile.profile,
+      auth: state.auth,
+    };
+  });
+
   const router = useRouter();
-  const auth = useSelector((state) => state.auth);
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
   const [isFeachered, setIsFeachered] = useState(false);
@@ -48,9 +47,10 @@ const AddProductPage = () => {
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: "",
-    email: "",
     address: "",
     telegramUsername: "",
+    facebook: "",
+    whatsapp: "",
   });
 
   const [selectedFile, setSelectedFile] = useState();
@@ -79,6 +79,20 @@ const AddProductPage = () => {
     model: "",
   });
 
+  const contactAddress = {
+    phoneNumber: userProfile?.phone ? userProfile.phone : "",
+    address: userProfile?.address ? userProfile.address : "",
+    telegramUsername: userProfile?.contacts.telegram
+      ? userProfile?.contacts.telegram
+      : "",
+    facebook: userProfile?.contacts.facebook
+      ? userProfile?.contacts.facebook
+      : "",
+    whatsapp: userProfile?.contacts.whatsapp
+      ? userProfile?.contacts.whatsapp
+      : "",
+  };
+
   const {
     register,
     handleSubmit,
@@ -94,29 +108,24 @@ const AddProductPage = () => {
     if (selectedFile) {
       setAddingProduct(true);
       try {
-        const sizes = Object.keys(productVariant.sizes).filter(
-          (key) => productVariant.sizes[key] === true
-        );
-        const colors = Object.keys(productVariant.colors).filter(
-          (key) => productVariant.colors[key] === true
-        );
-
         // Contacts assigned to the product
         const contacts = {
           phoneNumber: data.phoneNumber,
-          email: data.email,
           address: data.address,
           telegramUsername: data.telegramUsername,
+          facebook: data.facebook,
+          whatsapp: data.whatsapp,
         };
 
         var formData = new FormData();
-        sizes.forEach((size) => formData.append("sizes", size));
-        colors.forEach((color) => formData.append("colors", color));
         formData.append("images", selectedFile);
         for (let i = 0; i < selectedMultipleFile[0].length; i++) {
           formData.append("images", selectedMultipleFile[0][i]);
         }
-        formData.append("contacts", contacts);
+
+        for (let contactsKey in contacts) {
+          formData.append(`contacts[${contactsKey}]`, contacts[contactsKey]);
+        }
         formData.append("userId", auth.user.id);
         formData.append("productName", data.productName);
         formData.append("brand", selectedCategory.brand);
@@ -195,19 +204,22 @@ const AddProductPage = () => {
     if (e.target.checked) {
       setPreviousAddress({
         phoneNumber: getValues("phoneNumber"),
-        email: getValues("email"),
         address: getValues("address"),
         telegramUsername: getValues("telegramUsername"),
+        facebook: getValues("facebook"),
+        whatsapp: getValues("whatsapp"),
       });
       setValue("phoneNumber", contactAddress.phoneNumber);
-      setValue("email", contactAddress.email);
       setValue("address", contactAddress.address);
       setValue("telegramUsername", contactAddress.telegramUsername);
+      setValue("facebook", contactAddress.facebook);
+      setValue("whatsapp", contactAddress.whatsapp);
     } else {
       setValue("phoneNumber", previousAddress.phoneNumber);
-      setValue("email", previousAddress.email);
       setValue("address", previousAddress.address);
       setValue("telegramUsername", previousAddress.telegramUsername);
+      setValue("facebook", previousAddress.facebook);
+      setValue("whatsapp", previousAddress.whatsapp);
     }
   };
 
@@ -647,32 +659,6 @@ const AddProductPage = () => {
                         <input
                           disabled={addingProduct}
                           className="form__input form__input--sm"
-                          placeholder="Email (optional)"
-                          type="text"
-                          name="email"
-                          {...register("email", {
-                            pattern:
-                              /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            maxLength: 50,
-                          })}
-                        />
-                        {errors.email && errors.email.type === "maxLength" && (
-                          <p className="message message--error">
-                            Email is too long!
-                          </p>
-                        )}
-                        {errors.email && errors.email.type === "pattern" && (
-                          <p className="message message--error">
-                            Please write a valid email
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="form__input-row">
-                      <div className="form__col">
-                        <input
-                          disabled={addingProduct}
-                          className="form__input form__input--sm"
                           placeholder="Physical Address"
                           type="text"
                           name="address"
@@ -706,6 +692,34 @@ const AddProductPage = () => {
                               Username must be less than 100 characters
                             </p>
                           )}
+                      </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Facebook url"
+                          type="text"
+                          name="facebook"
+                          {...register("facebook", {
+                            maxLength: 100,
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="whatsapp number"
+                          type="text"
+                          name="whatsapp"
+                          {...register("whatsapp", {
+                            maxLength: 100,
+                          })}
+                        />
                       </div>
                     </div>
                   </form>
