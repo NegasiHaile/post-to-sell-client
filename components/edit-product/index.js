@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Layout from "../../layouts/Main";
-import CheckoutStatus from "../../components/checkout-status";
-
+import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import {
   api_editProduct,
   api_addProductImage,
   api_editProductImage,
+  api_updateProductPaymentStatus,
 } from "../../api/index";
 import {
   clearProducts,
@@ -56,6 +57,7 @@ const categoryParser = (categories) => {
         label: category.category,
         value: category._id,
         subCategory: category.subCategory,
+        postFee: category.postFee,
       };
     });
   }
@@ -63,6 +65,8 @@ const categoryParser = (categories) => {
 };
 
 const AddProductPage = ({ oldProduct, onClickBack }) => {
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.profile.profile);
@@ -96,6 +100,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     brand: oldProduct.brand,
     model: oldProduct.model,
   });
+  const [payFor, setPayFor] = useState(1);
 
   // user contacts
   const contactAddress = {
@@ -504,6 +509,27 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     }
   };
 
+  const updateProductPaymentStatus = async () => {
+    try {
+      const res = await api_updateProductPaymentStatus(
+        oldProduct._id,
+        Number(payFor),
+        auth.user.accesstoken
+      );
+      setShowModal(false);
+      toast.success(res.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      router.push("/products");
+    } catch (error) {}
+  };
   return (
     <Layout>
       <section className="cart">
@@ -964,6 +990,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         id="check-signed-in2"
                         value={isFeachered}
                         onChange={(e) => setIsFeachered(e.target.checked)}
+                        checked={isFeachered}
                       />
                       <span className="checkbox__check"></span>
                       <p>Add as featured product</p>
@@ -971,36 +998,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   </div>
                 </form>
               </div>
-
-              {/* <div className="block">
-                <h3 className="block__title">Tags</h3>
-                <ul className="round-options round-options--two">
-                  <li className="round-item round-item--bg">
-                    <p>New</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Used</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Slightly Used</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Sells</p>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="block">
-                <h3 className="block__title">Post type</h3>
-                <ul className="round-options round-options--two">
-                  <li className="round-item round-item--bg">
-                    <p>featured Post</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Normal Post</p>
-                  </li>
-                </ul>
-              </div> */}
             </div>
 
             <div className="checkout__col-2">
@@ -1022,6 +1019,18 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   onSelectImageFile={onSelectImageFile}
                 />
               </div>
+
+              {oldProduct.postPayment == 0 && (
+                <div className="cart-actions__items-wrapper">
+                  <button
+                    type="button"
+                    className="btn btn--rounded btn--border btn--call"
+                    onClick={() => setShowModal(true)}
+                  >
+                    Pay post fee
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1049,6 +1058,16 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           </div>
         </div>
       </section>
+      {showModal && (
+        <PaymentModal
+          category={selectedCategory.category}
+          payFor={payFor}
+          setPayFor={setPayFor}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          updateProductPaymentStatus={updateProductPaymentStatus}
+        />
+      )}
     </Layout>
   );
 };

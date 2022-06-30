@@ -93,15 +93,15 @@ const RegisterPage = () => {
           <div className="back-button-section">
             <Link href="/products">
               <a>
-                <i className="icon-left"></i> Back to store
+                <i className="icon-left"></i> Back to products
               </a>
             </Link>
           </div>
 
           <div className="form-block" onSubmit={handleSubmit(onSubmit)}>
-            <h2 className="form-block__title">
-              Create an account and discover the benefits
-            </h2>
+            <h5 className="form-block__title">
+              Create an account and Post-To-Sell your products.
+            </h5>
             {/* <p className="form-block__description">
               Lorem Ipsum is simply dummy text of the printing and typesetting
               industry. Lorem Ipsum has been the industry's standard dummy text
@@ -228,28 +228,9 @@ const RegisterPage = () => {
                 )}
                 {errors.password && errors.password.type === "minLength" && (
                   <p className="message message--error">
-                    Password must have atleast 8 characters
+                    Password must have atleast 6 characters
                   </p>
                 )}
-              </div>
-
-              <div className="form__info">
-                <div className="checkbox-wrapper">
-                  <label
-                    htmlFor="check-signed-in"
-                    className={`checkbox checkbox--sm`}
-                  >
-                    <input
-                      name="signed-in"
-                      type="checkbox"
-                      id="check-signed-in"
-                    />
-                    <span className="checkbox__check"></span>
-                    <p>
-                      I agree to the Google Terms of Service and Privacy Policy
-                    </p>
-                  </label>
-                </div>
               </div>
 
               <button
@@ -261,8 +242,9 @@ const RegisterPage = () => {
               </button>
 
               <p className="form__signup-link">
+                Do you already have an account?
                 <Link href="/login">
-                  <a href="#">Are you already a member?</a>
+                  <a href="#"> LOGIN</a>
                 </Link>
               </p>
             </form>

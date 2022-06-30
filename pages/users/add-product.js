@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+
+// APIs
+import {
+  api_getAllCategories,
+  api_updateProductPaymentStatus,
+} from "../../api/index";
+
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
 
-import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import ProductItemLoading from "../../components/product-item/add-product-preview";
-import { api_getAllCategories } from "../../api/index";
+
 import {
   clearProducts,
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
+
+import PaymentModal from "../../components/PaymentModal/PaymentModal";
 
 const categoryParser = (categories) => {
   let result = {};
@@ -24,6 +34,7 @@ const categoryParser = (categories) => {
         label: category.category,
         value: category._id,
         subCategory: category.subCategory,
+        postFee: category.postFee,
       };
     });
   }
@@ -40,6 +51,7 @@ const AddProductPage = () => {
   });
 
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
   const [addingProduct, setAddingProduct] = useState(false);
   const [result, setResult] = useState({ state: "success", message: "" });
   const [isFeachered, setIsFeachered] = useState(false);
@@ -79,6 +91,9 @@ const AddProductPage = () => {
     model: "",
   });
 
+  const [responsedProductData, setResponsedProductData] = useState({});
+  const [payFor, setPayFor] = useState(1);
+
   const contactAddress = {
     phoneNumber: userProfile?.phone ? userProfile.phone : "",
     address: userProfile?.address ? userProfile.address : "",
@@ -103,8 +118,6 @@ const AddProductPage = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(selectedCategory);
-    console.log("data", data);
     if (selectedFile) {
       setAddingProduct(true);
       try {
@@ -159,7 +172,8 @@ const AddProductPage = () => {
           progress: undefined,
         });
         dispatch(clearProducts());
-        router.push("/users/my-products");
+        setResponsedProductData(res.data.product);
+        setShowModal(true);
       } catch (error) {
         console.log("error: ", error);
         setResult({
@@ -312,6 +326,28 @@ const AddProductPage = () => {
       setCategoriesData(categoryParser(categories));
     }
   }, [categories]);
+
+  const updateProductPaymentStatus = async () => {
+    try {
+      const res = await api_updateProductPaymentStatus(
+        responsedProductData._id,
+        Number(payFor),
+        auth.user.accesstoken
+      );
+      setShowModal(false);
+      router.push("/users/my-products");
+      toast.success(res.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {}
+  };
 
   return (
     <Layout>
@@ -777,6 +813,17 @@ const AddProductPage = () => {
           </div>
         </div>
       </section>
+
+      {showModal && (
+        <PaymentModal
+          category={responsedProductData.category}
+          payFor={payFor}
+          setPayFor={setPayFor}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          updateProductPaymentStatus={updateProductPaymentStatus}
+        />
+      )}
     </Layout>
   );
 };

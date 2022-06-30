@@ -8,18 +8,19 @@ import {
   api_editProduct,
   api_addProductImage,
   api_editProductImage,
-} from "./products.js"; // all products APIs
+  api_updateProductPaymentStatus,
+} from "./products.js"; // Product APIs
 
-import { api_getAllCategories } from "./categories.js"; //all categories APIs
+import { api_getAllCategories } from "./categories.js"; // Categorie APIs
 
-import { api_getAllBanners } from "./banners"; //banners APIs
+import { api_getAllBanners } from "./banners"; // Banner APIs
 
 import {
   api_getAllUsers,
   api_getUserProfile,
   api_editUserProfile,
   api_ChangeMyPassword,
-} from "./users"; // users APIs
+} from "./users"; // User APIs
 
 import {
   api_addAdvert,
@@ -28,7 +29,7 @@ import {
   api_deleteAdvert,
   api_editAdvert,
   api_editAdvertBanner,
-} from "./adverts"; // adverts APIs
+} from "./adverts"; // Advert APIs
 
 // ## Exporting API Functions
 //product
@@ -41,6 +42,7 @@ export {
   api_editProduct,
   api_addProductImage,
   api_editProductImage,
+  api_updateProductPaymentStatus,
 };
 
 //categories

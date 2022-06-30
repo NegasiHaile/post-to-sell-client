@@ -31,7 +31,7 @@ export const api_editProduct = async (id, data, header) => {
   );
 };
 
-export const api_addProductImage = async (id, data, header) => {  
+export const api_addProductImage = async (id, data, header) => {
   return await axios.put(
     `${server}/api/products/add/image/${id}`,
     data,
@@ -55,6 +55,22 @@ export const api_deleteProductImage = async (id, url, token) => {
     {
       headers: {
         Authorization: token,
+      },
+    }
+  );
+};
+
+export const api_updateProductPaymentStatus = async (
+  id,
+  payFor,
+  accesstoken
+) => {
+  return await axios.put(
+    `${server}/api/products/payment/update_status/${id}`,
+    { payFor },
+    {
+      headers: {
+        Authorization: accesstoken,
       },
     }
   );
