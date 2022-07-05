@@ -1,6 +1,6 @@
 // ## importing
 import {
-  api_getAllProducts,
+  api_getAllActiveProducts,
   api_getAllFeaturedProducts,
   api_deleteProduct,
   api_getAllUserProducts,
@@ -34,7 +34,7 @@ import {
 // ## Exporting API Functions
 //product
 export {
-  api_getAllProducts,
+  api_getAllActiveProducts,
   api_getAllFeaturedProducts,
   api_deleteProduct,
   api_getAllUserProducts,

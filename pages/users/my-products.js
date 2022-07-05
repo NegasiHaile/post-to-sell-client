@@ -393,10 +393,6 @@ const Products = () => {
           title={"Delete Proudct"}
           content={"Are you sure you want to delete the product?"}
           confirming={deleteProductStatus.deleting}
-          // confirmResult={{
-          //   message: deleteProductStatus.message,
-          //   state: deleteProductStatus.state,
-          // }}
         />
       )}
     </>

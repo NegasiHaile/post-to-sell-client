@@ -550,12 +550,6 @@ const AddProductPage = () => {
                           minLength: 1,
                         })}
                       />
-                      {errors.currentPrice &&
-                        errors.currentPrice.type === "required" && (
-                          <small className="message message--error">
-                            Price is required
-                          </small>
-                        )}
                     </div>
                   </div>
 
@@ -573,19 +567,6 @@ const AddProductPage = () => {
                           maxLength: 1000,
                         })}
                       ></textarea>
-                      {errors.discription &&
-                        errors.discription.type === "required" && (
-                          <p className="message message--error">
-                            Product discription is required
-                          </p>
-                        )}
-                      {errors.discription &&
-                        errors.discription.type === "maxLength" && (
-                          <p className="message message--error">
-                            Product discription must have less than 1000
-                            characters
-                          </p>
-                        )}
                     </div>
                   </div>
                 </form>
@@ -822,6 +803,7 @@ const AddProductPage = () => {
           showModal={showModal}
           setShowModal={setShowModal}
           updateProductPaymentStatus={updateProductPaymentStatus}
+          product={responsedProductData}
         />
       )}
     </Layout>

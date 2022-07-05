@@ -14,7 +14,7 @@ import {
   setCategories,
   clearCategories,
 } from "../store/actions/productActions";
-import { api_getAllProducts, api_getAllCategories } from "../api/index";
+import { api_getAllActiveProducts, api_getAllCategories } from "../api/index";
 
 const IndexPage = () => {
   const dispatch = useDispatch();

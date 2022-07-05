@@ -9,6 +9,7 @@ const PaymentModal = ({
   payFor,
   setPayFor,
   updateProductPaymentStatus,
+  product,
 }) => {
   const [thePostFee, setThePostFee] = useState(0);
   const { categories } = useSelector((state) => {
@@ -16,12 +17,15 @@ const PaymentModal = ({
       categories: state.product.categories,
     };
   });
-
+  console.warn(product);
   useEffect(() => {
-    console.warn(categories);
     categories.map((ctgry) => {
       if (ctgry._id == category) {
-        setThePostFee(ctgry.postFee);
+        if (product.postType == "Featured") {
+          setThePostFee(ctgry.featuredPostFee);
+        } else {
+          setThePostFee(ctgry.postFee);
+        }
       }
     });
 

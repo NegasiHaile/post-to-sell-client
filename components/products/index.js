@@ -17,7 +17,10 @@ import {
 
 import { server } from "../../utils/server";
 
-import { api_getAllProducts, api_getAllCategories } from "../../api/index";
+import {
+  api_getAllActiveProducts,
+  api_getAllCategories,
+} from "../../api/index";
 const countProducts = (field, value, products) => {
   let result = 0;
   products.map((product) => {
@@ -200,7 +203,7 @@ const Products = ({ initCategory }) => {
     });
     dispatch(clearProducts());
     try {
-      const res = await api_getAllProducts();
+      const res = await api_getAllActiveProducts();
       const responseData = res.data;
       dispatch(setProducts(responseData));
 

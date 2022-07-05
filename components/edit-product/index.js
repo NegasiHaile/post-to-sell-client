@@ -1066,6 +1066,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           showModal={showModal}
           setShowModal={setShowModal}
           updateProductPaymentStatus={updateProductPaymentStatus}
+          product={product}
         />
       )}
     </Layout>
