@@ -9,6 +9,7 @@ const ProductsContent = ({
   myProduct,
   onClickEdit,
   onClickDelete,
+  onClickSold,
 }) => {
   const [orderProductsOpen, setOrderProductsOpen] = useState(false);
 
@@ -39,14 +40,6 @@ const ProductsContent = ({
             orderProductsOpen ? "products-order-open" : ""
           }`}
         >
-          {/* <div className="products__filter__select">
-            <h4>Show products: </h4>
-            <div className="select-wrapper">
-              <select>
-                <option>Popular</option>
-              </select>
-            </div>
-          </div> */}
           <div className="products__filter__select">
             <h4>Sort by: </h4>
             <div className="select-wrapper">
@@ -71,6 +64,7 @@ const ProductsContent = ({
         myProduct={myProduct}
         onClickEdit={onClickEdit}
         onClickDelete={onClickDelete}
+        onClickSold={onClickSold}
       />
     </section>
   );
