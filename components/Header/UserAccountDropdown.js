@@ -34,11 +34,6 @@ function UserAccountDropdown({
             <b> {profile && profile.email ? profile.email : "Profile"} </b>
           </li>
         </Link>
-        <Link href="/users/settings">
-          <li className={pathname == "/users/settings" ? "active_link" : ""}>
-            Settings
-          </li>
-        </Link>
         <Link href="/users/change-password">
           <li
             className={
@@ -46,6 +41,11 @@ function UserAccountDropdown({
             }
           >
             Change password
+          </li>
+        </Link>
+        <Link href="/users/settings">
+          <li className={pathname == "/users/settings" ? "active_link" : ""}>
+            Notify me on post
           </li>
         </Link>
         <div className="divider"></div>
