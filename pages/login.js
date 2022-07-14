@@ -45,6 +45,7 @@ const LoginPage = ({ title = "post to sell login" }) => {
         role: responseData.profile.role,
         accountStatus: responseData.profile.accountStatus,
       };
+      localStorage.setItem("auth", JSON.stringify(authData));
       dispatch(setProfile(responseData.profile));
       dispatch(signinSuccess(authData));
       setSigningIn(false);
@@ -60,7 +61,6 @@ const LoginPage = ({ title = "post to sell login" }) => {
       });
       router.push("/products");
     } catch (error) {
-      console.log("error: ", error);
       setResult({
         state: "error",
         message:
@@ -83,7 +83,6 @@ const LoginPage = ({ title = "post to sell login" }) => {
       });
     }
   };
-  console.log("result", result);
   return (
     <Layout>
       <Head>

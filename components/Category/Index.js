@@ -22,7 +22,7 @@ function Category({ image, name, description, subCategories, id }) {
           </p>
           <ul>
             {[...Array(subLength).keys()].map((value) => (
-              <li>{subCategories[value]}</li>
+              <li>{subCategories[value].sub_name}</li>
             ))}
             {/*  <li>Sumsing Devices</li>
             <li>HP Devices</li>

@@ -23,18 +23,18 @@
 .skeleton-category-img {
   display: block;
   width: 100%;
-  height: 13rem;
+  height: 8rem;
   object-fit: cover;
   background-color: #eeeeee;
 }
 
 .skeleton-category-content {
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .skeleton-category-header {
   width: 60%;
-  height: 20px;
+  height: 1rem;
   background-color: #eeeeee;
   border-radius: 20px;
   margin-bottom: 1rem;
@@ -42,20 +42,20 @@
 
 .skeleton-category-text {
   width: 100%;
-  height: 0.6rem;
+  height: 0.5rem;
   background-color: #eeeeee;
   border-radius: 0.3rem;
   margin-bottom: 0.3rem;
 }
 .skeleton-category-content ul {
   margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   margin-left: 1rem;
   list-style-type: disc;
 }
 .skeleton-category-content ul li {
   width: 75%;
-  height: 0.6rem;
+  height: 0.5rem;
   background-color: #eeeeee;
   border-radius: 0.3rem;
   margin-bottom: 0.3rem;
@@ -63,7 +63,7 @@
 .skeleton-category-btn {
   display: block;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.3rem;
   font-size: 1rem;
   color: #333;
   background-color: #eeeeee;

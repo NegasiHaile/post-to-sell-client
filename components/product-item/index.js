@@ -48,18 +48,18 @@ const ProductItem = ({
         </Link>
       </div>
 
-      <div className="product__description">
-        <h3>{name}</h3>
+      <div className="product__description" style={{ marginTop: "0px" }}>
         <div
-          className={
-            "product__price " + (price ? "product__price--discount" : "")
-          }
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            columnGap: "3px",
+            justifyContent: "space-between",
+            marginTop: "-15px",
+          }}
         >
-          <h4>${currentPrice}</h4>
-
-          {price && (
-            <span style={{ textDecoration: "line-through" }}>${price}</span>
-          )}
+          <p style={{ textAlign: "start" }}>{name}</p>
+          <p style={{ textAlign: "end", color: "red" }}>{currentPrice} ETB</p>
         </div>
         {myProduct && (
           <div

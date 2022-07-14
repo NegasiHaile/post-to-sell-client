@@ -41,6 +41,7 @@ const IndexPage = () => {
       const res = await api_getAllCategories();
 
       const responseData = res.data;
+      console.log(res.data);
       dispatch(setCategories(responseData));
 
       setCategoriesLoading({

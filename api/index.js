@@ -9,9 +9,17 @@ import {
   api_addProductImage,
   api_editProductImage,
 } from "./products.js"; // all products APIs
+
 import { api_getAllCategories } from "./categories.js"; //all categories APIs
+
 import { api_getAllBanners } from "./banners"; //banners APIs
-import { api_getAllUsers } from "./users"; // users APIs
+
+import {
+  api_getAllUsers,
+  api_getUserProfile,
+  api_editUserProfile,
+} from "./users"; // users APIs
+
 import {
   api_addAdvert,
   api_getAllAdverts,
@@ -22,6 +30,7 @@ import {
 } from "./adverts"; // adverts APIs
 
 // ## Exporting API Functions
+//product
 export {
   api_getAllProducts,
   api_getAllFeaturedProducts,
@@ -31,10 +40,18 @@ export {
   api_editProduct,
   api_addProductImage,
   api_editProductImage,
-}; //product
-export { api_getAllCategories }; //categories
-export { api_getAllBanners }; // banner
-export { api_getAllUsers }; // users
+};
+
+//categories
+export { api_getAllCategories };
+
+// banner
+export { api_getAllBanners };
+
+// users
+export { api_getAllUsers, api_getUserProfile, api_editUserProfile };
+
+// adverts
 export {
   api_addAdvert,
   api_getAllAdverts,
@@ -42,4 +59,4 @@ export {
   api_deleteAdvert,
   api_editAdvert,
   api_editAdvertBanner,
-}; // adverts
+};

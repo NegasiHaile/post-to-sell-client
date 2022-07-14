@@ -36,9 +36,12 @@ function Adverts() {
       // }}
       >
         {allAdverts.length !== 0 ? (
-          allAdverts.map((advert, index) => (
-            <AdvertItem key={index} advert={advert} />
-          ))
+          allAdverts.map(
+            (advert, index) =>
+              advert.status === "active" && (
+                <AdvertItem key={index} advert={advert} />
+              )
+          )
         ) : (
           <ProductLoadingColumn />
         )}

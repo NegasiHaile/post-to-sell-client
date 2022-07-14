@@ -193,7 +193,7 @@ h5 {
     margin-right: auto;
   }
   @include breakpoint(desktop-lg) {
-    max-width: 1280px;
+    max-width: 1080px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -922,7 +922,7 @@ h5 {
     margin-bottom: 20px;
     position: relative;
     @include breakpoint(phone) {
-      height: 385px;
+      height: 300px;
       margin-bottom: 30px;
     }
     > a {
@@ -1809,12 +1809,12 @@ h5 {
     @include breakpoint(phone) {
       margin-right: 33px;
       margin-bottom: 25px;
-      width: calc(100%/*  / 3 */ - 33px);
+      width: calc(100% /*  / 3 */ - 33px);
     }
     @include breakpoint(tablet-lg) {
       margin-right: 63px;
       margin-bottom: 30px;
-      width: calc(100%/*  / 3 */ - 63px);
+      width: calc(100% /*  / 3 */ - 63px);
     }
   }
 }

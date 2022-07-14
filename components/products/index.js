@@ -100,7 +100,13 @@ const filterProducts = (products, filter) => {
       }
     }
 
-    return categoryPass && sizePass && colorPass && pricePass;
+    return (
+      product.status === "active" &&
+      categoryPass &&
+      sizePass &&
+      colorPass &&
+      pricePass
+    );
   });
   let sortedFilteredProducts = [];
   if (!filter.sortBy || filter.sortBy === "") {
@@ -161,7 +167,7 @@ const Products = ({ initCategory }) => {
     colors: {},
     sortBy: "latest",
   });
-  const [filteredProducts, setFilteredProducts] = useState(null); 
+  const [filteredProducts, setFilteredProducts] = useState(null);
   const addArrayFilter = (filterType, field, value) => {
     setFilterValue({
       ...filterValue,
