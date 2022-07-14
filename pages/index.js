@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+// Dev components
 import Layout from "../layouts/Main";
 import PageIntro from "../components/page-intro";
 import ProductsFeatured from "../components/products-featured";
@@ -8,13 +11,15 @@ import Adverts from "../components/Adverts/index";
 import Category from "../components/Category/Index";
 import LoadingSkeleton from "../components/Category/LoadingSkeleton";
 
+// Utils
 import { server } from "../utils/server";
-import { useDispatch, useSelector } from "react-redux";
+
+// APIS
 import {
   setCategories,
   clearCategories,
 } from "../store/actions/productActions";
-import { api_getAllActiveProducts, api_getAllCategories } from "../api/index";
+import { api_getAllCategories } from "../api/index";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
