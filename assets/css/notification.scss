@@ -1,0 +1,49 @@
+.notifications-container {
+  margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 5px;
+  @include breakpoint(phone) {
+  }
+}
+.notification {
+  border-radius: 5px;
+  display: flex;
+  padding: 5px;
+  padding-bottom: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+  .notification-title {
+    width: 100%;
+    margin: 5px;
+    font-weight: bold;
+  }
+  .notification-content {
+    margin: 5px;
+    width: 100%;
+    @include breakpoint(phone) {
+      // display: none;
+    }
+  }
+
+  .notification-delete {
+    color: var(--color-call);
+    padding: 0px 7px;
+    margin-left: 10px;
+    &:hover {
+      border: 1px solid var(--color-orange);
+      border-radius: 50%;
+      color: var(--color-orange);
+      transition: padding 0.3s ease;
+    }
+  }
+}
+.new {
+  border-bottom: 1px solid var(--color-green);
+  border-left: 10px solid var(--color-green);
+}
+.seen {
+  border-bottom: 1px solid var(--color-light-gray);
+  border-left: 10px solid var(--color-light-gray);
+}
