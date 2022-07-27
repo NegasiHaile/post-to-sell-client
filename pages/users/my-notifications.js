@@ -12,7 +12,7 @@ import Toast from "../../components/Utils/Toast";
 import {
   api_getUserProfile,
   api_UpdateNotificationStatusToSeen,
-  api_DleteUserNotification,
+  api_DeleteUserNotification,
 } from "../../api";
 
 // Redux
@@ -40,7 +40,7 @@ const MyNotifications = () => {
 
   const deleteNotification = async (notificationId) => {
     try {
-      const res = await api_DleteUserNotification(user, notificationId);
+      const res = await api_DeleteUserNotification(user, notificationId);
       getUserProfile(user);
       Toast("success", res.data.msg);
     } catch (error) {
