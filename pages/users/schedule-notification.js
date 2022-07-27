@@ -12,12 +12,12 @@ import { api_getAllCategories } from "../../api/index";
 
 // schedule notification initial state
 const initialState = {
-  category: "",
-  categorykey: "",
-  subcategory: "",
-  subcategoryKey: "",
-  brand: "",
-  brandKey: "",
+  categoryId: "",
+  categoryIndex: "",
+  subcategoryId: "",
+  subcategoryIndex: "",
+  brandId: "",
+  brandIndex: "",
   model: "",
 };
 function ScheduleNotification() {
@@ -55,9 +55,10 @@ function ScheduleNotification() {
 
   const scheduleNotifiaction = async (e) => {
     e.preventDefault();
-    // console.warn(scheduleDataFlow);
+    console.warn(scheduleDataFlow);
     setScheduleDataFlow(initialState);
-    alert("You have successfully set a notification.");
+    console.warn(notifyMeWith);
+    alert("You have successfully set a notification." + notifyMeWith);
   };
 
   // Find the key of selected option
@@ -70,8 +71,8 @@ function ScheduleNotification() {
     const Index = findSelectedIndex(event);
     setScheduleDataFlow({
       ...initialState,
-      category: event.target.value,
-      categoryKey: Index,
+      categoryId: event.target.value,
+      categoryIndex: Index,
     });
     setNotifyMeWith(event.target.value);
   };
@@ -80,8 +81,8 @@ function ScheduleNotification() {
     const Index = findSelectedIndex(event);
     setScheduleDataFlow({
       ...scheduleDataFlow,
-      subcategory: event.target.value,
-      subcategoryKey: Index,
+      subcategoryId: event.target.value,
+      subcategoryIndex: Index,
     });
     setNotifyMeWith(event.target.value);
   };
@@ -90,13 +91,20 @@ function ScheduleNotification() {
     const Index = findSelectedIndex(event);
     setScheduleDataFlow({
       ...scheduleDataFlow,
-      brand: event.target.value,
-      brandKey: Index,
+      brandId: event.target.value,
+      brandIndex: Index,
     });
     setNotifyMeWith(event.target.value);
   };
 
-  console.warn(categoriesData);
+  const onModelChange = (event) => {
+    setScheduleDataFlow({
+      ...scheduleDataFlow,
+      model: event.target.value,
+    });
+    setNotifyMeWith(event.target.value);
+  };
+
   return (
     <Layout>
       <div className="cart">
@@ -114,8 +122,8 @@ function ScheduleNotification() {
                   <div className="select-wrapper select-form">
                     <select
                       className="form__input form__input--sm"
-                      name="category"
-                      value={scheduleDataFlow.category}
+                      name="categoryId"
+                      value={scheduleDataFlow.categoryId}
                       onChange={(e) => onCategoryChange(e)}
                       required={true}
                     >
@@ -135,18 +143,18 @@ function ScheduleNotification() {
                     </select>
                   </div>
                   <br />
-                  {scheduleDataFlow.categoryKey && (
+                  {scheduleDataFlow.categoryIndex && (
                     <div className="select-wrapper select-form">
                       <select
                         className="form__input form__input--sm"
-                        name="subCategory"
-                        value={scheduleDataFlow.subCategory}
+                        name="subCategoryId"
+                        value={scheduleDataFlow.subCategoryId}
                         onChange={(e) => onSubCategoryChange(e)}
                       >
                         <option value="">Select sub-category</option>
                         {categoriesData.length > 0 &&
                           categoriesData[
-                            scheduleDataFlow.categoryKey
+                            scheduleDataFlow.categoryIndex
                           ].subCategory.map((sub, index) => {
                             return (
                               <option
@@ -162,20 +170,20 @@ function ScheduleNotification() {
                     </div>
                   )}
                   <br />
-                  {scheduleDataFlow.subcategoryKey && (
+                  {scheduleDataFlow.subcategoryIndex && (
                     <div className="select-wrapper select-form">
                       <select
                         className="form__input form__input--sm"
-                        name="brand"
-                        value={scheduleDataFlow.brand}
+                        name="brandId"
+                        value={scheduleDataFlow.brandId}
                         onChange={(e) => onBrandChange(e)}
                       >
                         <option value="">Select brand</option>
                         {categoriesData.length > 0 &&
                           categoriesData[
-                            scheduleDataFlow.categoryKey
+                            scheduleDataFlow.categoryIndex
                           ].subCategory[
-                            scheduleDataFlow.subcategoryKey
+                            scheduleDataFlow.subcategoryIndex
                           ].brands.map((brand, index) => {
                             return (
                               <option
@@ -187,6 +195,37 @@ function ScheduleNotification() {
                               </option>
                             );
                           })}
+                      </select>
+                    </div>
+                  )}
+                  <br />
+                  {scheduleDataFlow.brandIndex && (
+                    <div className="select-wrapper select-form">
+                      <select
+                        className="form__input form__input--sm"
+                        name="model"
+                        value={scheduleDataFlow.model}
+                        onChange={(e) => onModelChange(e)}
+                      >
+                        <option value="">Select model</option>
+                        {categoriesData.length > 0 &&
+                          categoriesData[
+                            scheduleDataFlow.categoryIndex
+                          ].subCategory[
+                            scheduleDataFlow.subcategoryIndex
+                          ].brands[scheduleDataFlow.brandIndex].models.map(
+                            (model, index) => {
+                              return (
+                                <option
+                                  key={index}
+                                  data-key={index}
+                                  value={model}
+                                >
+                                  {model}
+                                </option>
+                              );
+                            }
+                          )}
                       </select>
                     </div>
                   )}
