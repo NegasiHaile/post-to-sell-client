@@ -6,9 +6,13 @@ import Head from "next/head";
 
 // dev components
 import Layout from "../../layouts/Main";
+import Toast from "../../components/Utils/Toast";
 
 // APIs
-import { api_getAllCategories } from "../../api/index";
+import {
+  api_getAllCategories,
+  api_scheduleNotification,
+} from "../../api/index";
 
 // schedule notification initial state
 const initialState = {
@@ -22,8 +26,9 @@ const initialState = {
 };
 function ScheduleNotification() {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => {
+  const { user, categories } = useSelector((state) => {
     return {
+      user: state.auth.user,
       categories: state.product.categories,
     };
   });
@@ -55,10 +60,11 @@ function ScheduleNotification() {
 
   const scheduleNotifiaction = async (e) => {
     e.preventDefault();
-    console.warn(scheduleDataFlow);
+    const res = await api_scheduleNotification(user, {
+      notificationTarget: notifyMeWith,
+    });
     setScheduleDataFlow(initialState);
-    console.warn(notifyMeWith);
-    alert("You have successfully set a notification." + notifyMeWith);
+    Toast("success", res.data.msg);
   };
 
   // Find the key of selected option

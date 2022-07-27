@@ -56,7 +56,7 @@ export const api_editUserProfile = async (user, data) => {
 export const api_scheduleNotification = async (user, data) => {
   if (validToken(user.accesstoken))
     return await axios.put(
-      `${server}/api/schedule_notification/${user.id}`,
+      `${server}/api/users/schedule_notification/${user.id}`,
       { ...data },
       {
         headers: {
