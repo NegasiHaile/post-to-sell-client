@@ -20,6 +20,9 @@ import {
   api_getUserProfile,
   api_editUserProfile,
   api_ChangeMyPassword,
+  api_scheduleNotification,
+  api_UpdateNotificationStatusToSeen,
+  api_DeleteUserNotification,
 } from "./users"; // User APIs
 
 import {
@@ -57,6 +60,9 @@ export {
   api_getUserProfile,
   api_editUserProfile,
   api_ChangeMyPassword,
+  api_scheduleNotification,
+  api_UpdateNotificationStatusToSeen,
+  api_DeleteUserNotification,
 };
 
 // adverts
