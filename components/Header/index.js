@@ -1,19 +1,32 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import useOnClickOutside from "use-onclickoutside";
-import Logo from "../../assets/icons/logo";
+
+// Next tools
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signoutSuccess } from "../../store/actions/authActions";
-import { toast } from "react-toastify";
-import { signOut } from "../../components/SignOut";
 
+// Libraries
+import useOnClickOutside from "use-onclickoutside";
+import { toast } from "react-toastify";
+
+// Redux
+import { setProfile } from "../../store/actions/profileActions";
+
+// Dev components
+import Logo from "../../assets/icons/logo";
+import { signOut } from "../../components/SignOut";
 import UserAccountDropdown from "./UserAccountDropdown";
+
+// APIs
+import { api_getUserProfile } from "../../api";
+
 const Header = ({ isErrorPage }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { profile, user } = useSelector((state) => {
-    return { profile: state.profile.profile, user: state.auth.user };
+  const [newNotifications, setNewNotifications] = useState(0);
+  const user = useSelector((state) => state.auth.user);
+  const { profile } = useSelector((state) => {
+    return { profile: state.profile.profile };
   });
   const [dropdawonOpen, setDropdawonOpen] = useState(false);
   const isUser = user && user.role === "user";
@@ -35,6 +48,20 @@ const Header = ({ isErrorPage }) => {
     }
   };
 
+  useEffect(async () => {
+    if (user) {
+      const res = await api_getUserProfile(user?.accesstoken);
+      dispatch(setProfile(res.data.profile));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const newNtfs = profile?.notifications.filter(
+      (notification) => notification.status === "new"
+    );
+    setNewNotifications(newNtfs?.length);
+  }, [profile]);
+
   const onClickLogout = () => {
     signOut(dispatch);
     /* dispatch(signoutSuccess()); */
@@ -48,6 +75,7 @@ const Header = ({ isErrorPage }) => {
       draggable: true,
       progress: undefined,
     });
+    localStorage.removeItem("auth");
     router.push("/login");
   };
 
@@ -74,6 +102,7 @@ const Header = ({ isErrorPage }) => {
   useOnClickOutside(navRef, closeMenu);
   useOnClickOutside(searchRef, closeSearch);
 
+  console.log(profile);
   return (
     <header className={`site-header ${!onTop ? "site-header--fixed" : ""}`}>
       <div className="container">
@@ -144,23 +173,32 @@ const Header = ({ isErrorPage }) => {
               className="icon-search"
             ></i>
           </button>
-          {/* <Link href="/cart">
-            <button className="btn-cart">
-              <i className="icon-cart"></i>
-              {cartItems.length > 0 && (
-                <span className="btn-cart__count">{cartItems.length}</span>
-              )}
-            </button>
-          </Link> */}
+
           {isUser ? (
-            <div>
-              <button
-                className="site-header__btn-profile-avatar"
-                onClick={() => setDropdawonOpen(!dropdawonOpen)}
-              >
-                <i className="icon-avatar"></i>
-              </button>
-            </div>
+            <>
+              <Link href="/users/my-notifications">
+                <button
+                  className={`btn-cart ${
+                    router.pathname == "/users/my-notifications"
+                      ? "active_link"
+                      : ""
+                  }`}
+                >
+                  <i className="icon-cart"></i>
+                  {newNotifications > 0 && (
+                    <span className="btn-cart__count">{newNotifications}</span>
+                  )}
+                </button>
+              </Link>
+              <div>
+                <button
+                  className="site-header__btn-profile-avatar"
+                  onClick={() => setDropdawonOpen(!dropdawonOpen)}
+                >
+                  <i className="icon-avatar"></i>
+                </button>
+              </div>
+            </>
           ) : (
             <>
               <Link href="/login">
