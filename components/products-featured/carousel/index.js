@@ -1,9 +1,6 @@
 import ProductItem from "./../../product-item";
 import ProductsLoading from "../../products-content/list/loading";
 
-// import Swiper core and required components
-import { Swiper, SwiperSlide } from "swiper/react";
-
 import { server } from "../../../utils/server";
 
 let slidesPerView = 1.5;
