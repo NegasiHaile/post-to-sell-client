@@ -14,6 +14,9 @@ import {
   api_scheduleNotification,
 } from "../../api/index";
 
+// Redux
+import { setProfile } from "../../store/actions/profileActions";
+
 // schedule notification initial state
 const initialState = {
   categoryId: "",
@@ -26,6 +29,7 @@ const initialState = {
 };
 function ScheduleNotification() {
   const dispatch = useDispatch();
+  const userProfile = useSelector((state) => state.profile.profile);
   const { user, categories } = useSelector((state) => {
     return {
       user: state.auth.user,
@@ -33,9 +37,15 @@ function ScheduleNotification() {
     };
   });
 
+  // States
+  const [myNotificationSchedules, setMyNotificationSchedules] = useState([]);
   const [categoriesData, setCategoriesData] = useState({});
   const [scheduleDataFlow, setScheduleDataFlow] = useState(initialState);
   const [notifyMeWith, setNotifyMeWith] = useState("");
+
+  useEffect(() => {
+    setMyNotificationSchedules(userProfile?.notifyMeOnPost);
+  }, [userProfile]);
 
   // Get all list of categories
   const loadCategories = async () => {
@@ -56,13 +66,12 @@ function ScheduleNotification() {
     }
   }, [categories]);
 
-  useEffect(() => {}, [scheduleDataFlow]);
-
   const scheduleNotifiaction = async (e) => {
     e.preventDefault();
     const res = await api_scheduleNotification(user, {
       notificationTarget: notifyMeWith,
     });
+    dispatch(setProfile(res.data.profile));
     setScheduleDataFlow(initialState);
     Toast("success", res.data.msg);
   };
@@ -111,6 +120,7 @@ function ScheduleNotification() {
     setNotifyMeWith(event.target.value);
   };
 
+  console.warn(myNotificationSchedules);
   return (
     <Layout>
       <div className="cart">
