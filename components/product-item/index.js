@@ -5,16 +5,15 @@ import { toggleFavProduct } from "./../../store/actions/userActions";
 
 const ProductItem = ({
   product,
-  discount,
   productImage,
   tag,
   id,
   name,
-  price,
   currentPrice,
   myProduct,
   onClickEdit,
   onClickDelete,
+  onClickSold,
 }) => {
   const dispatch = useDispatch();
   const { favProducts } = useSelector((state) => state.user);
@@ -32,14 +31,6 @@ const ProductItem = ({
   return (
     <div className="product-item">
       <div className="product__image">
-        {/* <button
-          type="button"
-          onClick={toggleFav}
-          className={`btn-heart btn btn--rounded btn--call`}
-        >
-          {myProduct ? "Delete" : <i className="icon-heart"></i>}
-        </button> */}
-
         <Link href={`/product/${id}`}>
           <a>
             <img src={productImage} alt="product" />
@@ -81,6 +72,12 @@ const ProductItem = ({
               className="product__discount"
             >
               {"Delete"}
+            </button>
+            <button
+              onClick={() => onClickSold(product)}
+              className="product__discount btn_call"
+            >
+              {"Sold"}
             </button>
           </div>
         )}
