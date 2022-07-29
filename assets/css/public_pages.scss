@@ -54,15 +54,13 @@
   background-color: #fff;
   border-radius: 0.4rem;
   overflow: hidden;
-  box-shadow: 0 3rem 6rem rgba(92, 92, 92, 0.1);
   cursor: pointer;
   transition: 0.2s;
-  // max-width: 100%;
+  border: solid 1px transparent;
 }
 
 .category-item:hover {
-  // transform: translateY(-0.5%);
-  box-shadow: 0 4rem 8rem rgba(92, 92, 92, 0.5);
+  border: solid 1px var(--color-light-gray);
 }
 
 .category-img {
