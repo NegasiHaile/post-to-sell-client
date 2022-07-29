@@ -25,14 +25,14 @@ export const api_getUserProfile = async (token) => {
 };
 
 // Get user profile
-export const api_ChangeMyPassword = async (userAuth, data) => {
-  if (validToken(userAuth.accesstoken))
+export const api_ChangeMyPassword = async (user, data) => {
+  if (validToken(user.accesstoken))
     return await axios.put(
       `${server}/api/users/change_my_password`,
       { ...data },
       {
         headers: {
-          Authorization: userAuth.accesstoken,
+          Authorization: user.accesstoken,
         },
       }
     );

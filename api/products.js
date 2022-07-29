@@ -26,7 +26,7 @@ export const api_deleteProduct = async (id, token) => {
 };
 
 export const api_editProduct = async (id, data, header) => {
-  if (validToken())
+  if (validToken(header.headers.Authorization))
     return await axios.put(
       `${server}/api/products/edit/${id}`,
       { ...data },
@@ -35,7 +35,7 @@ export const api_editProduct = async (id, data, header) => {
 };
 
 export const api_addProductImage = async (id, data, header) => {
-  if (validToken())
+  if (validToken(header.headers.Authorization))
     return await axios.put(
       `${server}/api/products/add/image/${id}`,
       data,
@@ -44,7 +44,7 @@ export const api_addProductImage = async (id, data, header) => {
 };
 
 export const api_editProductImage = async (id, data, header) => {
-  if (validToken())
+  if (validToken(header.headers.Authorization))
     return await axios.put(
       `${server}/api/products/edit/image/${id}`,
       data,
@@ -53,7 +53,7 @@ export const api_editProductImage = async (id, data, header) => {
 };
 
 export const api_deleteProductImage = async (id, url, token) => {
-  if (validToken())
+  if (validToken(token))
     return await axios.put(
       `${server}/api/products/delete/image/${id}?imagePath=${url}`,
       id,
@@ -70,7 +70,7 @@ export const api_updateProductPaymentStatus = async (
   payFor,
   accesstoken
 ) => {
-  if (validToken())
+  if (validToken(accesstoken))
     return await axios.put(
       `${server}/api/products/payment/update_status/${id}`,
       { payFor },
