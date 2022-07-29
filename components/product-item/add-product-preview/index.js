@@ -1,18 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const ProductItemLoading = ({
-  discount,
-  productImage,
-  name,
-  currentPrice,
-  previousImages,
-  productImageDelete,
-  onClickDeleteImage,
-  onUploadImage,
-  addingProduct,
-  onSelectImageFile,
-}) => {
+const ProductItemLoading = ({ discount, productImage, name, currentPrice }) => {
   const [isFavourite, setIsFavourite] = useState(false);
 
   const toggleFav = () => {
