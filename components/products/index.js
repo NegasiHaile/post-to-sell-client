@@ -6,7 +6,6 @@ import Breadcrumb from "../../components/breadcrumb";
 import ProductsFilter from "../../components/products-filter";
 import ProductsContent from "../../components/products-content";
 
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setProducts,
@@ -14,8 +13,6 @@ import {
   setCategories,
   clearCategories,
 } from "../../store/actions/productActions";
-
-import { server } from "../../utils/server";
 
 import {
   api_getAllActiveProducts,
@@ -169,8 +166,11 @@ const Products = ({ initCategory }) => {
     sizes: {},
     colors: {},
     sortBy: "latest",
+    latest: null,
   });
   const [filteredProducts, setFilteredProducts] = useState(null);
+  const [productCountByCategory, setProductCountByCategory] = useState([]);
+
   const addArrayFilter = (filterType, field, value) => {
     setFilterValue({
       ...filterValue,
@@ -192,8 +192,6 @@ const Products = ({ initCategory }) => {
       sortBy: value,
     });
   };
-
-  const [productCountByCategory, setProductCountByCategory] = useState([]);
 
   const loadProducts = async () => {
     setProductLoading({
@@ -225,6 +223,7 @@ const Products = ({ initCategory }) => {
       });
     }
   };
+
   const loadCategories = async () => {
     setCategoriesLoading({
       isLoading: true,
@@ -280,6 +279,7 @@ const Products = ({ initCategory }) => {
       );
     }
   }, [products, categories]);
+
   useEffect(() => {
     if (products) {
       const priceRangeVar = getPriceRange(products);
@@ -287,11 +287,13 @@ const Products = ({ initCategory }) => {
       setPriceRange(priceRangeVar);
     }
   }, [products]);
+
   useEffect(() => {
     if (products && filterValue) {
       setFilteredProducts(filterProducts(products, filterValue));
     }
   }, [products, filterValue]);
+
   return (
     <Layout>
       <Breadcrumb />
