@@ -100,7 +100,7 @@ const IndexPage = () => {
         <Adverts />
       </div>
       <section className="container">
-        <h2 className="categories__title">Categories</h2>
+        <h4 className="categories__title">Our Categories</h4>
         <div style={{ marginBottom: "50px" }}>
           <Swiper
             spaceBetween={spaceBetween}
