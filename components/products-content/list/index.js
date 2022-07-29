@@ -11,11 +11,8 @@ const ProductsContent = ({
   myProduct,
   onClickEdit,
   onClickDelete,
+  onClickSold,
 }) => {
-  //const fetcher = (url) => fetch(url).then((res) => res.json());
-  //const { data, error } = useSwr("/api/products", fetcher);
-
-  //if (error) return <div>Failed to load users</div>;
   return (
     <>
       {!products &&
@@ -51,6 +48,7 @@ const ProductsContent = ({
                 myProduct={myProduct}
                 onClickEdit={onClickEdit}
                 onClickDelete={onClickDelete}
+                onClickSold={onClickSold}
                 discount={item.price}
                 tag={item.tag}
                 key={item._id}
