@@ -41,7 +41,7 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <Fragment>
       <Component {...pageProps} />
-      <ToastContainer /* closeButton={false} */ position="bottom-right" />
+      <ToastContainer position="bottom-right" />
     </Fragment>
   );
 };
