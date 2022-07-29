@@ -31,12 +31,12 @@ let centeredSlides = false;
 let spaceBetween = 17;
 if (process.browser) {
   if (window.innerWidth > 768) {
-    slidesPerView = 2.5;
+    slidesPerView = 3.2;
     spaceBetween = 25;
     centeredSlides = false;
   }
   if (window.innerWidth > 1024) {
-    slidesPerView = 4.5;
+    slidesPerView = 4.3;
     spaceBetween = 30;
     centeredSlides = false;
   }
@@ -97,7 +97,6 @@ const IndexPage = () => {
         <div className="featured_products_container">
           <ProductsFeatured />
         </div>
-
         <Adverts />
       </div>
       <section className="container">
