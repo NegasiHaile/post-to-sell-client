@@ -43,8 +43,12 @@ function UserAccountDropdown({
             Change password
           </li>
         </Link>
-        <Link href="/users/settings">
-          <li className={pathname == "/users/settings" ? "active_link" : ""}>
+        <Link href="/users/schedule-notification">
+          <li
+            className={
+              pathname == "/users/schedule-notification" ? "active_link" : ""
+            }
+          >
             Notify me on post
           </li>
         </Link>
