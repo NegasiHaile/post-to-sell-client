@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import ProductsCarousel from "./carousel";
 import { useRouter } from "next/router";
-import useSwr from "swr";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts, clearProducts } from "../../store/actions/productActions";
 import { api_getAllFeaturedProducts } from "../../api/index";
 
 const filterProducts = (products, filters) => {
-  const newProducts = products.filter((product) => {
+  const featuredProducts = products.filter((product) => {
     let result = true;
     filters.map((filter) => {
       const key = Object.keys(filter)[0];
@@ -18,33 +17,28 @@ const filterProducts = (products, filters) => {
     });
     return result;
   });
-  return newProducts;
+  return featuredProducts;
 };
 
 const ProductsFeatured = () => {
   const router = useRouter();
-  /* const fetcher = (url) => fetch(url).then((res) => res.json());
-  const [fproducts, setFproducts] = useState([]);
-
-  useEffect(async () => {
-    const res = await api_getAllFeaturedProducts();
-    setFproducts(res.data);
-  }, []); */
-
   const dispatch = useDispatch();
+
+  // useStates
+  const [filteredProducts, setFilteredProducts] = useState(null);
   const [productloading, setProductLoading] = useState({
     isLoading: false,
     state: "success",
     message: "",
   });
 
+  // UseSelectors
   const { products } = useSelector((state) => {
     return {
       products: state.product.products,
     };
   });
-  const [filteredProducts, setFilteredProducts] = useState(null);
-  console.log("filteredProducts", filteredProducts);
+
   const loadProducts = async () => {
     setProductLoading({
       isLoading: true,
@@ -54,8 +48,7 @@ const ProductsFeatured = () => {
     dispatch(clearProducts());
     try {
       const res = await api_getAllFeaturedProducts();
-      const responseData = res.data;
-      dispatch(setProducts(responseData));
+      dispatch(setProducts(res.data));
 
       setProductLoading({
         isLoading: false,
@@ -81,6 +74,7 @@ const ProductsFeatured = () => {
       loadProducts();
     }
   }, []);
+
   useEffect(() => {
     if (products) {
       setFilteredProducts(filterProducts(products, [{ postType: "Featured" }]));
