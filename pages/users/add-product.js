@@ -159,7 +159,6 @@ const AddProductPage = () => {
           state: "success",
           message: "Product added succefully!",
         });
-        const responseData = res.data;
         setAddingProduct(false);
         toast.success("Product added succefully!", {
           position: "top-right",
@@ -459,7 +458,7 @@ const AddProductPage = () => {
                                 ) {
                                   return sub.brands.map((brand, i) => {
                                     return (
-                                      <option value={brand.brand_name}>
+                                      <option key={i} value={brand.brand_name}>
                                         {brand.brand_name}
                                       </option>
                                     );
@@ -550,6 +549,12 @@ const AddProductPage = () => {
                           minLength: 1,
                         })}
                       />
+                      {errors.currentPrice &&
+                        errors.currentPrice.type === "required" && (
+                          <small className="message message--error">
+                            Price is required
+                          </small>
+                        )}
                     </div>
                   </div>
 
