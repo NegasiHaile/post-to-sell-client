@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Checkbox from "./form-builder/checkbox";
-import CheckboxColor from "./form-builder/checkbox-color";
 import Slider /* , { Range } */ from "rc-slider";
 import Tooltip from "rc-tooltip";
-import { useForm } from "react-hook-form";
 
 // data
 import { displayMoney } from "./../../utils/helpers";
@@ -12,8 +10,6 @@ import { displayMoney } from "./../../utils/helpers";
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
-//const { createSliderWithTooltip } = Slider;
-//const Range = createSliderWithTooltip(Slider.Range);
 const { Handle } = Slider;
 
 const handle = (props) => {
@@ -62,6 +58,7 @@ const ProductsFilter = ({
           filtersOpen ? "products-filter__wrapper--open" : ""
         }`}
       >
+        {/* -------------------- Filter by category ---------------- */}
         <div className="products-filter__block">
           <button type="button">Product Category</button>
           <div className="products-filter__block__content">
