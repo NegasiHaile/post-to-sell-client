@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+// import Swiper core and required components
+import { Swiper, SwiperSlide } from "swiper/react";
+
 // Dev components
 import Layout from "../layouts/Main";
 import PageIntro from "../components/page-intro";
@@ -22,6 +25,22 @@ import {
   setCategories,
   clearCategories,
 } from "../store/actions/productActions";
+
+let slidesPerView = 1.5;
+let centeredSlides = false;
+let spaceBetween = 17;
+if (process.browser) {
+  if (window.innerWidth > 768) {
+    slidesPerView = 2.5;
+    spaceBetween = 25;
+    centeredSlides = false;
+  }
+  if (window.innerWidth > 1024) {
+    slidesPerView = 4.5;
+    spaceBetween = 30;
+    centeredSlides = false;
+  }
+}
 
 const IndexPage = () => {
   const dispatch = useDispatch();
@@ -83,28 +102,43 @@ const IndexPage = () => {
       </div>
       <section className="container">
         <h2 className="categories__title">Categories</h2>
-        <div className="categories-list">
-          {categories ? (
-            categories.map((categoryData) => {
-              return (
-                <Category
-                  image={
-                    categoryData.categoryImage
-                      ? `${server}/${categoryData.categoryImage}`
-                      : "./images/featured-1.jpg"
-                  }
-                  name={categoryData.category}
-                  description={categoryData.description}
-                  subCategories={categoryData.subCategory}
-                  id={categoryData._id}
-                />
-              );
-            })
-          ) : categoriesloading.isLoading ? (
-            [1, 2, 3, 4].map(() => <LoadingSkeleton />)
-          ) : (
-            <p>{categoriesloading.message}</p>
-          )}
+        <div style={{ marginBottom: "50px" }}>
+          <Swiper
+            spaceBetween={spaceBetween}
+            loop={true}
+            centeredSlides={centeredSlides}
+            watchOverflow={true}
+            slidesPerView={slidesPerView}
+            className="swiper-wrapper"
+          >
+            {categories ? (
+              categories.map((categoryData) => {
+                return (
+                  <SwiperSlide key={categoryData._id}>
+                    <Category
+                      image={
+                        categoryData.categoryImage
+                          ? `${server}/${categoryData.categoryImage}`
+                          : "./images/featured-1.jpg"
+                      }
+                      name={categoryData.category}
+                      description={categoryData.description}
+                      subCategories={categoryData.subCategory}
+                      id={categoryData._id}
+                    />
+                  </SwiperSlide>
+                );
+              })
+            ) : categoriesloading.isLoading ? (
+              [1, 2, 3, 4].map((item, index) => (
+                <SwiperSlide key={index}>
+                  <LoadingSkeleton />
+                </SwiperSlide>
+              ))
+            ) : (
+              <p>{categoriesloading.message}</p>
+            )}
+          </Swiper>
         </div>
       </section>
       <section className="section">
