@@ -4,7 +4,6 @@ import ActionCreators, { Types } from "../actionCreators";
 
 export function* signin(action) {
   const { user_name, password } = action;
-  /* if (language) { */
   try {
     yield call(console.log, user_name, password);
     yield put(
@@ -18,11 +17,6 @@ export function* signin(action) {
   } catch (err) {
     yield put(ActionCreators.signoutSuccess());
   }
-  /* } else {
-    yield put(
-      ActionCreators.translationFailure("There's no language selected.")
-    );
-  } */
 }
 
 export default function* authWatcher() {
