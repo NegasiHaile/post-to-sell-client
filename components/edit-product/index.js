@@ -21,6 +21,9 @@ import {
 } from "../../store/actions/productActions";
 import { toast } from "react-toastify";
 
+// Utils
+import { numberOfDaysInInterval } from "../../utils/date/numberOfDays";
+
 const initialImagesState = {
   0: {
     preview: null,
@@ -530,6 +533,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       router.push("/products");
     } catch (error) {}
   };
+
   return (
     <Layout>
       <section className="cart">
@@ -1020,7 +1024,11 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                 />
               </div>
 
-              {oldProduct.postPayment == 0 && (
+              {(oldProduct.postPayment == 0 ||
+                numberOfDaysInInterval(
+                  new Date(),
+                  new Date(oldProduct.postExpireDate)
+                ) <= 5) && (
                 <div className="cart-actions__items-wrapper">
                   <button
                     type="button"
