@@ -15,11 +15,13 @@ import LoadingSkeleton from "../components/Category/LoadingSkeleton";
 import { server } from "../utils/server";
 
 // APIS
+import { api_getAllCategories } from "../api/index";
+
+// Redux state
 import {
   setCategories,
   clearCategories,
 } from "../store/actions/productActions";
-import { api_getAllCategories } from "../api/index";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
@@ -44,10 +46,7 @@ const IndexPage = () => {
     dispatch(clearCategories());
     try {
       const res = await api_getAllCategories();
-
-      const responseData = res.data;
-      console.log(res.data);
-      dispatch(setCategories(responseData));
+      dispatch(setCategories(res.data));
 
       setCategoriesLoading({
         isLoading: false,
@@ -55,7 +54,6 @@ const IndexPage = () => {
         message: "Category loaded succefully",
       });
     } catch (error) {
-      console.log("error: ", error);
       dispatch(clearCategories());
       setCategoriesLoading({
         isLoading: false,
@@ -86,23 +84,27 @@ const IndexPage = () => {
       <section className="container">
         <h2 className="categories__title">Categories</h2>
         <div className="categories-list">
-          {categories
-            ? categories.map((categoryData) => {
-                return (
-                  <Category
-                    image={
-                      categoryData.categoryImage
-                        ? `${server}/${categoryData.categoryImage}`
-                        : "./images/featured-1.jpg"
-                    }
-                    name={categoryData.category}
-                    description={categoryData.description}
-                    subCategories={categoryData.subCategory}
-                    id={categoryData._id}
-                  />
-                );
-              })
-            : [1, 2, 3, 4].map((item) => <LoadingSkeleton />)}
+          {categories ? (
+            categories.map((categoryData) => {
+              return (
+                <Category
+                  image={
+                    categoryData.categoryImage
+                      ? `${server}/${categoryData.categoryImage}`
+                      : "./images/featured-1.jpg"
+                  }
+                  name={categoryData.category}
+                  description={categoryData.description}
+                  subCategories={categoryData.subCategory}
+                  id={categoryData._id}
+                />
+              );
+            })
+          ) : categoriesloading.isLoading ? (
+            [1, 2, 3, 4].map(() => <LoadingSkeleton />)
+          ) : (
+            <p>{categoriesloading.message}</p>
+          )}
         </div>
       </section>
       <section className="section">
