@@ -274,13 +274,20 @@ const Products = () => {
     message: "",
     deleting: false,
   });
-  const [deleteModal, setDeleteModal] = useState(false);
+
+  const [productAction, setProductAction] = useState(null);
   const onClickDelete = (product) => {
     setSelectedProduct(product);
-    setDeleteModal(true);
+    setProductAction("delete");
   };
+
+  const onClickSold = (product) => {
+    setSelectedProduct(product);
+    setProductAction("sold");
+  };
+
   const onCloseDeleteModal = () => {
-    setDeleteModal(false);
+    setProductAction(null);
     setSelectedProduct(null);
   };
   const onConfirmDeleteProduct = async () => {
@@ -379,19 +386,24 @@ const Products = () => {
               myProduct={true}
               onClickEdit={onClickEdit}
               onClickDelete={onClickDelete}
+              onClickSold={onClickSold}
             />
           </div>
         </section>
         <Footer />
       </Layout>
-      {deleteModal && (
+      {productAction && (
         <Modal
           onCloseModal={onCloseDeleteModal}
           onConfirm={onConfirmDeleteProduct}
-          confirmLabel={"Delete"}
+          confirmLabel={productAction == "delete" ? "Delete" : "Sold"}
           confirmProcessLabel={"Deleting"}
-          title={"Delete Proudct"}
-          content={"Are you sure you want to delete the product?"}
+          title={(productAction == "delete" ? "Delete" : "Sold") + " Proudct"}
+          content={
+            productAction == "delete"
+              ? "Are you sure you want to delete the product?"
+              : "If your product is sold, it will be deleted permanently, Sure?"
+          }
           confirming={deleteProductStatus.deleting}
         />
       )}
