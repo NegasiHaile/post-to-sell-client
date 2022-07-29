@@ -30,7 +30,6 @@ const MyApp = ({ Component, pageProps }) => {
   const user = useSelector((state) => state.auth.user);
   const router = useRouter();
 
-  console.log("router.pathname", router.pathname);
   if (
     (router.pathname === "/login" || router.pathname === "/register") &&
     user
