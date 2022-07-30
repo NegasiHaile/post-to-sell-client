@@ -154,9 +154,8 @@ const AddProductPage = () => {
         Toast("success", "Product added successfully");
         setShowModal(true);
       } catch (error) {
-        console.error(error);
         setAddingProduct(false);
-        // Toast("error", error.response.data.msg);
+        Toast("error", error.response.data.msg);
       }
     } else {
       Toast("error", "primary image is required!");
