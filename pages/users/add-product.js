@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import axios from "axios";
 
+// Plugins
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import Toast from "../../components/Utils/Toast";
 
 // APIs
 import {
@@ -10,21 +13,19 @@ import {
   api_updateProductPaymentStatus,
 } from "../../api/index";
 
+// Components
 import Layout from "../../layouts/Main";
 import CheckoutStatus from "../../components/checkout-status";
-
-import { server } from "../../utils/server";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import ProductItemLoading from "../../components/product-item/add-product-preview";
+import { server } from "../../utils/server";
 
+// Redux state
 import {
   clearProducts,
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
-
-import PaymentModal from "../../components/PaymentModal/PaymentModal";
 
 const categoryParser = (categories) => {
   let result = {};
@@ -43,19 +44,20 @@ const categoryParser = (categories) => {
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
-  const { userProfile, auth } = useSelector((state) => {
+  const router = useRouter();
+
+  const { userProfile, auth, categories } = useSelector((state) => {
     return {
       userProfile: state.profile.profile,
       auth: state.auth,
+      categories: state.product.categories,
     };
   });
 
-  const router = useRouter();
+  // UseStates
   const [showModal, setShowModal] = useState(false);
   const [addingProduct, setAddingProduct] = useState(false);
-  const [result, setResult] = useState({ state: "success", message: "" });
-  const [isFeachered, setIsFeachered] = useState(false);
-
+  const [isFeatured, setIsFeatured] = useState(false);
   const [useProfileAddress, setUseProfileAddress] = useState(false);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: "",
@@ -70,29 +72,17 @@ const AddProductPage = () => {
   const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
   const [previewMultiple, setPreviewMultiple] = useState([]);
 
-  const [productVariant, setProductVariant] = useState({
-    sizes: {},
-    colors: {},
-  });
-  const addProductVariant = (variantType, field, value) => {
-    setProductVariant({
-      ...productVariant,
-      [variantType]: {
-        ...productVariant[variantType],
-        [field]: value,
-      },
-    });
-  };
-
   const [selectedCategory, setSelectedCategory] = useState({
     category: "",
     subCategory: "",
     brand: "",
     model: "",
   });
-
   const [responsedProductData, setResponsedProductData] = useState({});
   const [payFor, setPayFor] = useState(1);
+
+  const [categoriesData, setCategoriesData] = useState({});
+  const [areCategoriesLoading, setAreCategorieLoading] = useState(false);
 
   const contactAddress = {
     phoneNumber: userProfile?.phone ? userProfile.phone : "",
@@ -131,8 +121,10 @@ const AddProductPage = () => {
         };
 
         var formData = new FormData();
+
         formData.append("images", selectedFile);
-        for (let i = 0; i < selectedMultipleFile[0].length; i++) {
+
+        for (let i = 0; i < selectedMultipleFile[0]?.length; i++) {
           formData.append("images", selectedMultipleFile[0][i]);
         }
 
@@ -147,7 +139,7 @@ const AddProductPage = () => {
         formData.append("subCategory", selectedCategory.subCategory);
         formData.append("currentPrice", data.currentPrice);
         formData.append("discription", data.discription);
-        formData.append("postType", isFeachered ? "Featured" : "Normal");
+        formData.append("postType", isFeatured ? "Featured" : "Normal");
 
         const res = await axios.post(`${server}/api/products/add`, formData, {
           headers: {
@@ -155,63 +147,23 @@ const AddProductPage = () => {
             Authorization: auth.user.accesstoken,
           },
         });
-        setResult({
-          state: "success",
-          message: "Product added succefully!",
-        });
+
         setAddingProduct(false);
-        toast.success("Product added succefully!", {
-          position: "top-right",
-          theme: "colored",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
         dispatch(clearProducts());
         setResponsedProductData(res.data.product);
+        Toast("success", "Product added successfully");
         setShowModal(true);
       } catch (error) {
-        console.log("error: ", error);
-        setResult({
-          state: "error",
-          message:
-            error.response && error.response.data && error.response.data.msg
-              ? error.response.data.msg
-              : "something went wrong while signing in!",
-        });
+        console.error(error);
         setAddingProduct(false);
-        toast.error("Product adding error!", {
-          position: "top-right",
-          theme: "colored",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        // Toast("error", error.response.data.msg);
       }
     } else {
-      setResult({
-        state: "error",
-        message: "primary image is required!",
-      });
-      toast.error("primary image is required!", {
-        position: "top-right",
-        theme: "colored",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("error", "primary image is required!");
     }
   };
 
+  // Assigning contact address for the product
   const onClickUseProfileAddress = (e) => {
     setUseProfileAddress(e.target.checked);
     if (e.target.checked) {
@@ -243,21 +195,22 @@ const AddProductPage = () => {
       setPreview(undefined);
       return;
     }
-
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreview(objectUrl);
 
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
-  const onSelectFile = (e) => {
+
+  const onSelectProductPreviewImage = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;
     }
     setSelectedFile(e.target.files[0]);
   };
-  const onSelectMultipleFile = (e) => {
+
+  const onSelectProductImages = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
@@ -271,47 +224,18 @@ const AddProductPage = () => {
     setPreviewMultiple(fileArray);
   };
 
-  const [categoriesData, setCategoriesData] = useState({});
-  const [categoriesloading, setCategoriesLoading] = useState({
-    isLoading: false,
-    state: "success",
-    message: "",
-  });
-
-  const { categories } = useSelector((state) => {
-    return {
-      categories: state.product.categories,
-    };
-  });
+  // Fetch list of categories for the selection dropdowns
   const loadCategories = async () => {
-    setCategoriesLoading({
-      isLoading: true,
-      state: "success",
-      message: "",
-    });
+    setAreCategorieLoading(true);
     dispatch(clearCategories());
     try {
       const res = await api_getAllCategories();
+      dispatch(setCategories(res.data));
 
-      const responseData = res.data;
-      dispatch(setCategories(responseData));
-
-      setCategoriesLoading({
-        isLoading: false,
-        state: "success",
-        message: "Category loaded succefully",
-      });
+      setAreCategorieLoading(false);
     } catch (error) {
-      console.log("error: ", error);
       dispatch(clearCategories());
-      setCategoriesLoading({
-        isLoading: false,
-        state: "error",
-        message:
-          error.response && error.response.data && error.response.data.msg
-            ? error.response.data.msg
-            : "something went wrong while loading categories!",
-      });
+      setAreCategorieLoading(false);
     }
   };
 
@@ -320,6 +244,7 @@ const AddProductPage = () => {
       loadCategories();
     }
   }, []);
+
   useEffect(() => {
     if (categories) {
       setCategoriesData(categoryParser(categories));
@@ -335,17 +260,10 @@ const AddProductPage = () => {
       );
       setShowModal(false);
       router.push("/users/my-products");
-      toast.success(res.data.msg, {
-        position: "top-right",
-        theme: "colored",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {}
+      Toast("success", res.data.msg);
+    } catch (error) {
+      Toast("error", error.response.data.msg);
+    }
   };
 
   return (
@@ -373,14 +291,13 @@ const AddProductPage = () => {
                           name="category"
                           {...register("category", {
                             required: true,
-                            maxLength: 60,
                           })}
                         >
                           <option value="">Product category</option>
-                          {Object.keys(categoriesData).map((key, index) => {
+                          {Object.keys(categoriesData).map((key) => {
                             const category = categoriesData[key];
                             return (
-                              <option key={index} value={category.value}>
+                              <option key={key} value={category.value}>
                                 {category.label}
                               </option>
                             );
@@ -416,10 +333,7 @@ const AddProductPage = () => {
                               watchAllFields.category
                             ].subCategory.map((subCategory, index) => {
                               return (
-                                <option
-                                  key={index}
-                                  value={subCategory.sub_name}
-                                >
+                                <option key={index} value={subCategory.id}>
                                   {subCategory.sub_name}
                                 </option>
                               );
@@ -453,12 +367,10 @@ const AddProductPage = () => {
                               categoriesData[
                                 watchAllFields.category
                               ].subCategory.map((sub, index) => {
-                                if (
-                                  sub.sub_name === selectedCategory.subCategory
-                                ) {
-                                  return sub.brands.map((brand, i) => {
+                                if (sub.id === selectedCategory.subCategory) {
+                                  return sub.brands.map((brand, bi) => {
                                     return (
-                                      <option key={i} value={brand.brand_name}>
+                                      <option key={bi} value={brand.id}>
                                         {brand.brand_name}
                                       </option>
                                     );
@@ -470,6 +382,7 @@ const AddProductPage = () => {
                         </div>
                       </div>
                     )}
+
                     {selectedCategory.brand && (
                       <div className="form__col">
                         <div className="select-wrapper select-form">
@@ -479,7 +392,6 @@ const AddProductPage = () => {
                             className="form__input form__input--sm"
                             name="model"
                             {...register("model", {
-                              required: true,
                               maxLength: 60,
                             })}
                           >
@@ -489,15 +401,10 @@ const AddProductPage = () => {
                               categoriesData[
                                 watchAllFields.category
                               ].subCategory.map((sub, index) => {
-                                if (
-                                  sub.sub_name === selectedCategory.subCategory
-                                ) {
+                                if (sub.id === selectedCategory.subCategory) {
                                   return sub.brands.map((brand, i) => {
                                     console.log(selectedCategory.brand);
-                                    if (
-                                      brand.brand_name ===
-                                      selectedCategory.brand
-                                    ) {
+                                    if (brand.id === selectedCategory.brand) {
                                       return brand.models.map((model, mi) => {
                                         return (
                                           <option key={mi} value={model}>
@@ -525,29 +432,19 @@ const AddProductPage = () => {
                         type="text"
                         name="productName"
                         {...register("productName", {
-                          required: true,
-                          maxLength: 60,
+                          maxLength: 15,
                         })}
                       />
-                      {errors.productName &&
-                        errors.productName.type === "required" && (
-                          <small className="message message--error">
-                            Product name is required
-                          </small>
-                        )}
                     </div>
 
                     <div className="form__col">
                       <input
                         disabled={addingProduct}
                         className="form__input form__input--sm"
-                        placeholder="Price"
+                        placeholder="0.00 ETB"
                         type="number"
                         name="currentPrice"
-                        {...register("currentPrice", {
-                          required: true,
-                          minLength: 1,
-                        })}
+                        {...register("currentPrice")}
                       />
                       {errors.currentPrice &&
                         errors.currentPrice.type === "required" && (
@@ -568,7 +465,6 @@ const AddProductPage = () => {
                         type="text"
                         name="discription"
                         {...register("discription", {
-                          required: true,
                           maxLength: 1000,
                         })}
                       ></textarea>
@@ -589,7 +485,7 @@ const AddProductPage = () => {
                         type="file"
                         accept="image/*"
                         name="productImage"
-                        onChange={onSelectFile}
+                        onChange={onSelectProductPreviewImage}
                       />
                     </div>
                     <div className="form__col">
@@ -601,7 +497,7 @@ const AddProductPage = () => {
                         accept="image/*"
                         name="productImageCollection"
                         multiple={true}
-                        onChange={onSelectMultipleFile}
+                        onChange={onSelectProductImages}
                       />
                     </div>
                   </div>
@@ -609,8 +505,8 @@ const AddProductPage = () => {
               </div>
               <div className="block">
                 <div className="add-product-gallery__thumbs">
-                  {[0, 1, 2, 3].map((key) => (
-                    <div key={preview} className="add-product-gallery__thumb">
+                  {[0, 1, 2, 3].map((key, index) => (
+                    <div key={index} className="add-product-gallery__thumb">
                       <img
                         src={
                           previewMultiple.length > key
@@ -758,8 +654,8 @@ const AddProductPage = () => {
                         type="checkbox"
                         name="keepSigned"
                         id="check-signed-in2"
-                        value={isFeachered}
-                        onChange={(e) => setIsFeachered(e.target.checked)}
+                        value={isFeatured}
+                        onChange={(e) => setIsFeatured(e.target.checked)}
                       />
                       <span className="checkbox__check"></span>
                       <p>Add as featured product</p>
