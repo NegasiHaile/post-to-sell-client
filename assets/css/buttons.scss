@@ -19,26 +19,27 @@
       background-color: var(--color-orange);
       color: #fff;
       color: #000000;
+      width: 100%;
     }
     &.btn--call {
       background-color: var(--color-call);
       color: #fff;
-      width: 90%;
+      width: 100%;
     }
     &.btn--telegram {
       background-color: var(--color-telegram);
       color: #fff;
-      width: 90%;
+      width: 100%;
     }
     &.btn--facebook {
       background-color: var(--color-facebook);
       color: #fff;
-      width: 90%;
+      width: 100%;
     }
     &.btn--whatsapp {
       background-color: var(--color-whatsapp);
       color: #fff;
-      width: 90%;
+      width: 100%;
     }
   }
 }
