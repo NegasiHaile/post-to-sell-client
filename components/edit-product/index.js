@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+
+// Cpmponents
 import Layout from "../../layouts/Main";
 import PaymentModal from "../../components/PaymentModal/PaymentModal";
+import ProductItemLoading from "../../components/product-item/edit-product-preview";
+import Toast from "../Utils/Toast";
+
+// Services
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
-import { useDispatch, useSelector } from "react-redux";
-import ProductItemLoading from "../../components/product-item/edit-product-preview";
+
+// APIs
 import {
   api_getAllCategories,
   api_deleteProductImage,
@@ -14,12 +21,13 @@ import {
   api_editProductImage,
   api_updateProductPaymentStatus,
 } from "../../api/index";
+
+// Redux
 import {
   clearProducts,
   clearCategories,
   setCategories,
 } from "../../store/actions/productActions";
-import { toast } from "react-toastify";
 
 // Utils
 import { numberOfDaysInInterval } from "../../utils/date/numberOfDays";
@@ -69,18 +77,19 @@ const categoryParser = (categories) => {
 
 const AddProductPage = ({ oldProduct, onClickBack }) => {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
+
+  // use Selectors
   const auth = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.profile.profile);
-  const [product, setProduct] = useState(oldProduct);
 
+  // Use States
+  const [showModal, setShowModal] = useState(false);
+  const [product, setProduct] = useState(oldProduct);
   const [addingProduct, setAddingProduct] = useState(false);
-  const [result, setResult] = useState({ state: "success", message: "" });
-  const [isFeachered, setIsFeachered] = useState(
+  const [isFeatured, setIsFeatured] = useState(
     product && product.postType === "Featured" ? true : false
   );
-
   const [useProfileAddress, setUseProfileAddress] = useState(true);
   const [previousAddress, setPreviousAddress] = useState({
     phoneNumber: oldProduct.contacts ? oldProduct.contacts.phoneNumber : "",
@@ -91,11 +100,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     facebook: oldProduct.contacts ? oldProduct.contacts.facebook : "",
     whatsapp: oldProduct.contacts ? oldProduct.contacts.whatsapp : "",
   });
-
   const [previousImages, setPreviousImages] = useState(initialImagesState);
-  const [preview, setPreview] = useState();
-  const [selectedMultipleFile, setSelectedMultipleFile] = useState([]);
-  const [previewMultiple, setPreviewMultiple] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState({
     category: oldProduct.category,
@@ -103,6 +108,8 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     brand: oldProduct.brand,
     model: oldProduct.model,
   });
+  const [categoriesData, setCategoriesData] = useState({});
+  const [categoriesloading, setCategoriesLoading] = useState(false);
   const [payFor, setPayFor] = useState(1);
 
   // user contacts
@@ -118,21 +125,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     dispatch(clearProducts());
   };
 
-  const [productVariant, setProductVariant] = useState({
-    sizes: {},
-    colors: {},
-  });
-
-  const addProductVariant = (variantType, field, value) => {
-    setProductVariant({
-      ...productVariant,
-      [variantType]: {
-        ...productVariant[variantType],
-        [field]: value,
-      },
-    });
-  };
-
   const {
     register,
     handleSubmit,
@@ -145,14 +137,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   const onSubmit = async (data) => {
     console.log("data", data);
     setAddingProduct(true);
-    setResult({ state: "success", message: "" });
     try {
-      const sizes = Object.keys(productVariant.sizes).filter(
-        (key) => productVariant.sizes[key] === true
-      );
-      const colors = Object.keys(productVariant.colors).filter(
-        (key) => productVariant.colors[key] === true
-      );
       const contacts = {
         phoneNumber: data.phoneNumber,
         address: data.address,
@@ -171,42 +156,21 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         currentPrice: data.currentPrice,
         price: data.price,
         discription: data.discription,
-        postType: isFeachered ? "Featured" : "Normal",
-        sizes: sizes,
-        colors: colors,
+        postType: isFeatured ? "Featured" : "Normal",
       };
       const res = await api_editProduct(product._id, uploadedData, {
         headers: {
           Authorization: auth.user.accesstoken,
         },
       });
-      setResult({
-        state: "success",
-        message: "Proudct edited succefully!",
-      });
-      const responseData = res.data;
 
       setAddingProduct(false);
-      toast.success(`🦄 ${res.data.msg}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("success", res.data.msg);
       clearPreviousData();
       onClickBack();
     } catch (error) {
+      Toast("error", error.response.data.msg);
       console.log("error: ", error);
-      setResult({
-        state: "error",
-        message:
-          error.response && error.response.data && error.response.data.msg
-            ? error.response.data.msg
-            : "something went wrong while editing product!",
-      });
       setAddingProduct(false);
     }
   };
@@ -236,24 +200,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
   };
 
   const watchAllFields = watch();
-
-  const onSelectMultipleFile = (e) => {
-    let fileObj = [];
-    let fileArray = [];
-    fileObj.push(e.target.files);
-    for (let i = 0; i < fileObj[0].length; i++) {
-      fileArray.push(URL.createObjectURL(fileObj[0][i]));
-    }
-    setSelectedMultipleFile(fileObj);
-    setPreviewMultiple(fileArray);
-  };
-
-  const [categoriesData, setCategoriesData] = useState({});
-  const [categoriesloading, setCategoriesLoading] = useState({
-    isLoading: false,
-    state: "success",
-    message: "",
-  });
 
   const { categories } = useSelector((state) => {
     return {
@@ -329,12 +275,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
             file: null,
           };
         });
-        console.log("pastImages", pastImages);
-        console.log("initialImagesState", initialImagesState);
-        console.log("{ ...initialImagesState, ...pastImages }", {
-          ...initialImagesState,
-          ...pastImages,
-        });
         setPreviousImages({ ...initialImagesState, ...pastImages });
       }
       [
@@ -348,7 +288,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           setValue(contact, product.contacts[contact]);
         }
       });
-      setIsFeachered(product.postType === "Featured" ? true : false);
+      setIsFeatured(product.postType === "Featured" ? true : false);
     }
   }, [product]);
 
@@ -427,20 +367,8 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     });
   };
 
-  const [productImageUpload, setProductImageUpload] = useState({
-    isLoading: false,
-    state: "success",
-    message: "",
-  });
-
   const onUploadImage = async (imageUrl, index) => {
-    setProductImageUpload({
-      isLoading: true,
-      state: "success",
-      message: "",
-    });
     try {
-      console.log("imageUrl", imageUrl);
       var formData = new FormData();
       if (imageUrl.image) {
         formData.append("image", imageUrl.file);
@@ -464,45 +392,14 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           });
       const newProduct = res.data ? res.data.data : null;
       reRenderImagePreview(newProduct);
-      toast.success("Image saved succefully!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      setProductImageUpload({
-        isLoading: false,
-        state: "success",
-        message: "Image uploaded succefully",
-      });
+      Toast("success", "Image saved succefully!");
       clearPreviousData();
     } catch (error) {
-      console.log("error: ", error);
-      toast.error("Image save error!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      setProductImageUpload({
-        isLoading: false,
-        state: "error",
-        message:
-          error.response && error.response.data && error.response.data.msg
-            ? error.response.data.msg
-            : "something went wrong while uploading product image!",
-      });
+      Toast("error", error.response.data.msg);
     }
   };
 
   const reRenderImagePreview = (newProduct) => {
-    console.log("newProduct.images", newProduct.images);
     if (newProduct && newProduct.images) {
       console.log("newProduct.images", newProduct.images);
       setProduct({
@@ -520,18 +417,11 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         auth.user.accesstoken
       );
       setShowModal(false);
-      toast.success(res.data.msg, {
-        position: "top-right",
-        theme: "colored",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("success", res.data.msg);
       router.push("/products");
-    } catch (error) {}
+    } catch (error) {
+      Toast("error", error.response.data.msg);
+    }
   };
 
   return (
@@ -554,45 +444,34 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           <div className="checkout-content">
             <div className="checkout__col-6">
               <div className="block">
-                <h3 className="block__title">Product Detail</h3>
+                <h3 className="block__title">Product detail</h3>
                 <form className="form">
                   <div className="form__input-row form__input-row--two">
                     <div className="form__col">
                       <div className="select-wrapper select-form">
                         <select
-                          placeholder="Product Category"
+                          placeholder="Product category"
                           disabled={addingProduct}
                           className="form__input form__input--sm"
                           name="category"
-                          value={selectedCategory.category}
-                          onChange={(e) =>
-                            setSelectedCategory({
-                              ...selectedCategory,
-                              category: e.target.value,
-                            })
-                          }
+                          {...register("category", {
+                            required: true,
+                          })}
                         >
-                          <option>Product category</option>
+                          <option value="">Product category</option>
                           {Object.keys(categoriesData).map((key) => {
                             const category = categoriesData[key];
                             return (
-                              <option value={category.value}>
+                              <option key={key} value={category.value}>
                                 {category.label}
                               </option>
                             );
                           })}
+                          <option value="other">Other</option>
                         </select>
                         {errors.category &&
                           errors.category.type === "required" && (
-                            <p className="message message--error">
-                              Product category is required
-                            </p>
-                          )}
-                        {errors.category &&
-                          errors.category.type === "maxLength" && (
-                            <p className="message message--error">
-                              Product category must have less than 60 characters
-                            </p>
+                            <p className="message message--error">Required</p>
                           )}
                       </div>
                     </div>
@@ -619,10 +498,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                               watchAllFields.category
                             ].subCategory.map((subCategory, index) => {
                               return (
-                                <option
-                                  key={index}
-                                  value={subCategory.sub_name}
-                                >
+                                <option key={index} value={subCategory.id}>
                                   {subCategory.sub_name}
                                 </option>
                               );
@@ -656,12 +532,10 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                               categoriesData[
                                 watchAllFields.category
                               ].subCategory.map((sub, index) => {
-                                if (
-                                  sub.sub_name === selectedCategory.subCategory
-                                ) {
-                                  return sub.brands.map((brand, i) => {
+                                if (sub.id === selectedCategory.subCategory) {
+                                  return sub.brands.map((brand, bi) => {
                                     return (
-                                      <option key={i} value={brand.brand_name}>
+                                      <option key={bi} value={brand.id}>
                                         {brand.brand_name}
                                       </option>
                                     );
@@ -673,6 +547,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         </div>
                       </div>
                     )}
+
                     {selectedCategory.brand && (
                       <div className="form__col">
                         <div className="select-wrapper select-form">
@@ -681,13 +556,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                             disabled={addingProduct}
                             className="form__input form__input--sm"
                             name="model"
-                            value={selectedCategory.model}
-                            onChange={(e) =>
-                              setSelectedCategory({
-                                ...selectedCategory,
-                                model: e.target.value,
-                              })
-                            }
+                            {...register("model", {
+                              maxLength: 60,
+                            })}
                           >
                             <option>Model</option>
                             {categoriesData &&
@@ -695,14 +566,10 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                               categoriesData[
                                 watchAllFields.category
                               ].subCategory.map((sub, index) => {
-                                if (
-                                  sub.sub_name === selectedCategory.subCategory
-                                ) {
+                                if (sub.id === selectedCategory.subCategory) {
                                   return sub.brands.map((brand, i) => {
-                                    if (
-                                      brand.brand_name ===
-                                      selectedCategory.brand
-                                    ) {
+                                    console.log(selectedCategory.brand);
+                                    if (brand.id === selectedCategory.brand) {
                                       return brand.models.map((model, mi) => {
                                         return (
                                           <option key={mi} value={model}>
@@ -730,29 +597,19 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         type="text"
                         name="productName"
                         {...register("productName", {
-                          required: true,
-                          maxLength: 60,
+                          maxLength: 15,
                         })}
                       />
-                      {errors.productName &&
-                        errors.productName.type === "required" && (
-                          <small className="message message--error">
-                            Product name is required
-                          </small>
-                        )}
                     </div>
 
                     <div className="form__col">
                       <input
                         disabled={addingProduct}
                         className="form__input form__input--sm"
-                        placeholder="Price"
+                        placeholder="0.00 ETB"
                         type="number"
                         name="currentPrice"
-                        {...register("currentPrice", {
-                          required: true,
-                          minLength: 1,
-                        })}
+                        {...register("currentPrice")}
                       />
                       {errors.currentPrice &&
                         errors.currentPrice.type === "required" && (
@@ -773,23 +630,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         type="text"
                         name="discription"
                         {...register("discription", {
-                          required: true,
                           maxLength: 1000,
                         })}
                       ></textarea>
-                      {errors.discription &&
-                        errors.discription.type === "required" && (
-                          <p className="message message--error">
-                            Product discription is required
-                          </p>
-                        )}
-                      {errors.discription &&
-                        errors.discription.type === "maxLength" && (
-                          <p className="message message--error">
-                            Product discription must have less than 1000
-                            characters
-                          </p>
-                        )}
                     </div>
                   </div>
                 </form>
@@ -891,16 +734,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                           type="number"
                           name="phoneNumber"
                           {...register("phoneNumber", {
-                            required: true,
                             maxLength: 16,
                           })}
                         />
-                        {errors.phoneNumber &&
-                          errors.phoneNumber.type === "required" && (
-                            <p className="message message--error">
-                              Phone number is required
-                            </p>
-                          )}
                         {errors.phoneNumber &&
                           errors.phoneNumber.type === "maxLength" && (
                             <p className="message message--error">
@@ -992,9 +828,9 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         type="checkbox"
                         name="keepSigned"
                         id="check-signed-in2"
-                        value={isFeachered}
-                        onChange={(e) => setIsFeachered(e.target.checked)}
-                        checked={isFeachered}
+                        value={isFeatured}
+                        onChange={(e) => setIsFeatured(e.target.checked)}
+                        checked={isFeatured}
                       />
                       <span className="checkbox__check"></span>
                       <p>Add as featured product</p>

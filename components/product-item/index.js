@@ -50,7 +50,9 @@ const ProductItem = ({
           }}
         >
           <p style={{ textAlign: "start" }}>{name}</p>
-          <p style={{ textAlign: "end", color: "red" }}>{currentPrice} ETB</p>
+          {currentPrice && (
+            <p style={{ textAlign: "end", color: "red" }}>{currentPrice} ETB</p>
+          )}
         </div>
         {myProduct && (
           <div
@@ -73,12 +75,14 @@ const ProductItem = ({
             >
               {"Delete"}
             </button>
-            <button
-              onClick={() => onClickSold(product)}
-              className="product__discount btn_call"
-            >
-              {"Sold"}
-            </button>
+            {product.postPayment != 0 && (
+              <button
+                onClick={() => onClickSold(product)}
+                className="product__discount btn_call"
+              >
+                {"Sold"}
+              </button>
+            )}
           </div>
         )}
       </div>
