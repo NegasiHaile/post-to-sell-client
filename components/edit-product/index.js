@@ -868,7 +868,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                 <div className="cart-actions__items-wrapper">
                   <button
                     type="button"
-                    className="btn btn--rounded btn--border btn--call"
+                    className="btn btn--rounded btn--border btn--yellow"
                     onClick={() => setShowModal(true)}
                   >
                     Pay post fee
