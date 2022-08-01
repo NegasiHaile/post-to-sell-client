@@ -49,9 +49,11 @@ const ProductItem = ({
             marginTop: "-15px",
           }}
         >
-          <p style={{ textAlign: "start" }}>{name}</p>
-          {currentPrice && (
+          <p style={{ textAlign: "start" }}>{name ? name : "Unnamed"}</p>
+          {currentPrice ? (
             <p style={{ textAlign: "end", color: "red" }}>{currentPrice} ETB</p>
+          ) : (
+            <p>Call me</p>
           )}
         </div>
         {myProduct && (
