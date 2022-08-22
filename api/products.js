@@ -16,6 +16,11 @@ export const api_getAllUserProducts = async (userId, token) => {
       },
     });
 };
+
+export const api_getProductDetail = async (productId) => {
+  return await axios.get(`${server}/api/products/detail/${productId}`);
+};
+
 export const api_deleteProduct = async (id, token) => {
   if (validToken(token))
     return await axios.delete(`${server}/api/products/delete/${id}`, {

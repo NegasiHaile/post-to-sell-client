@@ -8,41 +8,40 @@ import Content from "../../components/product-single/content";
 import Description from "../../components/product-single/description";
 import { useSelector } from "react-redux";
 
+// Import APIs
+import { api_getProductDetail } from "../../api";
+
 export async function getServerSideProps({ query }) {
   const pid = query.pid;
 
   return {
     props: {
-      /* product, */
       pid,
     },
   };
 }
 
-const Product = ({ /* product,  */ pid }) => {
+const Product = ({ pid }) => {
   const [showBlock, setShowBlock] = useState("description");
   const [product, setProduct] = useState(null);
   const products = useSelector((state) => state.product.products);
 
-  const { categories } = useSelector((state) => {
-    return {
-      products: state.product.products,
-      categories: state.product.categories,
-    };
-  });
-
   useEffect(() => {
-    setProduct(
-      products ? products.filter((value) => value._id === pid)[0] : null
-    );
+    if (products) {
+      const prdct = products.filter((value) => value._id === pid)[0];
+      if (prdct) {
+        setProduct(prdct);
+      } else {
+        getProductDetail();
+      }
+    } else {
+      getProductDetail();
+    }
   }, [pid]);
 
-  const filterCategoryName = (id) => {
-    console.warn(id);
-    const category = categories.filter((category) => category._id === id);
-    if (category.length > 0) {
-      return category[0].category;
-    }
+  const getProductDetail = async () => {
+    const res = await api_getProductDetail(pid);
+    setProduct(res.data);
   };
 
   return (
@@ -53,17 +52,13 @@ const Product = ({ /* product,  */ pid }) => {
           <div className="container">
             <div className="product-single__content">
               <Gallery images={product.images} />
-              <Content
-                product={product}
-                category={filterCategoryName(product.category)}
-              />
+              <Content product={product} />
             </div>
 
             <div className="product-single__info">
               <Description
                 product={product}
                 show={showBlock === "description"}
-                category={filterCategoryName(product.category)}
               />
               {/* <Reviews product={product} show={showBlock === 'reviews'} /> */}
             </div>

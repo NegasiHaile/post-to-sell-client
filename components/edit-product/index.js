@@ -418,7 +418,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       );
       setShowModal(false);
       Toast("success", res.data.msg);
-      router.push("/products");
+      router.push("/users/my-products");
     } catch (error) {
       Toast("error", error.response.data.msg);
     }

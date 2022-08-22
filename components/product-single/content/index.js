@@ -1,25 +1,36 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { some } from "lodash";
-import { displayMoney } from "./../../../utils/helpers";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
-const Content = ({ product, category }) => {
-  const { favProducts } = useSelector((state) => state.user);
-  const isFavourite = some(
-    favProducts,
-    (productId) => productId === product.id
-  );
-  const { categories } = useSelector((state) => {
+// components
+import PaymentModal from "../../PaymentModal/PaymentModal";
+
+// Utils
+import {
+  filterCategoryName,
+  filterSubCategoryName,
+  filterBrandName,
+} from "../../../utils/ProductCategory/Category";
+import { displayMoney } from "./../../../utils/helpers";
+import { numberOfDaysInInterval } from "../../../utils/date/numberOfDays";
+import Toast from "../../Utils/Toast";
+
+// APIs
+import { api_updateProductPaymentStatus } from "../../../api";
+
+const Content = ({ product }) => {
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
+  const { categories, profile } = useSelector((state) => {
     return {
-      products: state.product.products,
       categories: state.product.categories,
+      profile: state.profile.profile,
     };
   });
 
-  // useEffect(async () => {
-  //   const res = await api_getAllCategories();
-  //   console.warn(res.data);
-  // }, []);
+  // use states
+  const [showModal, setShowModal] = useState(false);
+  const [payFor, setPayFor] = useState(1);
 
   const formateDate = (stringDate) => {
     const theDate = new Date(stringDate);
@@ -28,7 +39,22 @@ const Content = ({ product, category }) => {
       .substring(0, theDate.toLocaleString().indexOf(" "));
     return formated;
   };
-  console.warn(product);
+
+  const updateProductPaymentStatus = async () => {
+    try {
+      const res = await api_updateProductPaymentStatus(
+        product._id,
+        Number(payFor),
+        auth.user.accesstoken
+      );
+      setShowModal(false);
+      Toast("success", res.data.msg);
+      router.push("/users/my-products");
+    } catch (error) {
+      Toast("error", error.response.data.msg);
+    }
+  };
+
   return (
     <section className="product-content">
       <div className="product-content__intro">
@@ -52,12 +78,26 @@ const Content = ({ product, category }) => {
 
       <div className="product-content__filters">
         <div className="product-filter-item">
-          <h2 className="product__name">
-            {product.model} {"-"}
-            {product.brand} {"-"}
-            {product.subCategory} {"-"}
-            {category}
-          </h2>
+          {categories && (
+            <h2 className="product__name">
+              {product.model}
+              {"-"}
+              {filterBrandName(
+                categories,
+                product.category,
+                product.subCategory,
+                product.brand
+              )}
+              {"-"}
+              {filterSubCategoryName(
+                categories,
+                product.category,
+                product.subCategory
+              )}
+              {"-"}
+              {filterCategoryName(categories, product.category)}
+            </h2>
+          )}
         </div>
       </div>
 
@@ -127,6 +167,33 @@ const Content = ({ product, category }) => {
           </div>
         </div>
       </div>
+      {(product.postPayment == 0 ||
+        numberOfDaysInInterval(new Date(), new Date(product.postExpireDate)) <=
+          5) &&
+      product.userId == profile?._id ? (
+        <div className="cart-actions__items-wrapper">
+          <button
+            type="button"
+            className="btn btn--rounded btn--border btn--yellow"
+            onClick={() => setShowModal(true)}
+          >
+            Pay post fee
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
+      {showModal && (
+        <PaymentModal
+          category={product.category}
+          payFor={payFor}
+          setPayFor={setPayFor}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          updateProductPaymentStatus={updateProductPaymentStatus}
+          product={product}
+        />
+      )}
     </section>
   );
 };

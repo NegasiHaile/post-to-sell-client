@@ -2,6 +2,7 @@
 import {
   api_getAllActiveProducts,
   api_getAllFeaturedProducts,
+  api_getProductDetail,
   api_deleteProduct,
   api_getAllUserProducts,
   api_deleteProductImage,
@@ -39,6 +40,7 @@ import {
 export {
   api_getAllActiveProducts,
   api_getAllFeaturedProducts,
+  api_getProductDetail,
   api_deleteProduct,
   api_getAllUserProducts,
   api_deleteProductImage,
