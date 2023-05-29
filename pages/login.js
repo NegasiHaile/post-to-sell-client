@@ -93,7 +93,7 @@ const LoginPage = ({ title = "post to sell login" }) => {
           <div className="back-button-section">
             <Link href="/products">
               <a>
-                <i className="icon-left"></i> Back to store
+                <i className="icon-left"></i> Back to products
               </a>
             </Link>
           </div>
@@ -128,7 +128,7 @@ const LoginPage = ({ title = "post to sell login" }) => {
                   name="password"
                   {...register("password", {
                     required: true,
-                    minLength: 8,
+                    minLength: 6,
                   })}
                 />
                 {errors.password && errors.password.type === "required" && (
@@ -138,52 +138,10 @@ const LoginPage = ({ title = "post to sell login" }) => {
                 )}
                 {errors.password && errors.password.type === "minLength" && (
                   <p className="message message--error">
-                    Password must have atleast 8 characters
+                    Password must have atleast 6 characters
                   </p>
                 )}
               </div>
-
-              <div className="form__info">
-                <div className="checkbox-wrapper">
-                  <label
-                    htmlFor="check-signed-in"
-                    className={`checkbox checkbox--sm`}
-                  >
-                    <input
-                      disabled={signingIn}
-                      type="checkbox"
-                      name="keepSigned"
-                      id="check-signed-in"
-                      /* {...register("keepSigned", {
-                        required: true,
-                      })} */
-                    />
-                    {/* <input
-                      type="checkbox"
-                      name="keepSigned"
-                      id="check-signed-in"
-                      ref={register({ required: false })}
-                    /> */}
-                    <span className="checkbox__check"></span>
-                    <p>Keep me signed in</p>
-                  </label>
-                </div>
-                <a
-                  href="/forgot-password"
-                  className="form__info__forgot-password"
-                >
-                  Forgot password?
-                </a>
-              </div>
-
-              {/* <div className="form__btns">
-                <button type="button" className="btn-social fb-btn">
-                  <i className="icon-facebook"></i>Facebook
-                </button>
-                <button type="button" className="btn-social google-btn">
-                  <img src="/images/icons/gmail.svg" alt="gmail" /> Gmail
-                </button>
-              </div> */}
 
               <button
                 type="submit"
@@ -192,10 +150,19 @@ const LoginPage = ({ title = "post to sell login" }) => {
               >
                 {signingIn ? "Signing in" : "Sign in"}
               </button>
-
-              <p className="form__signup-link">
-                Not a member yet? <a href="/register">Sign up</a>
-              </p>
+              <div className="form__info">
+                <p className="form__signup-link">
+                  Not a member yet? <a href="/register">Sign up</a>
+                </p>
+                <p className="form__signup-link">
+                  <a
+                    href="/forgot-password"
+                    className="form__info__forgot-password"
+                  >
+                    Forgot password?
+                  </a>
+                </p>
+              </div>
             </form>
           </div>
         </div>

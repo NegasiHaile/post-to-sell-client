@@ -12,7 +12,9 @@ const Modal = ({
   title,
   content,
   confirming,
+  confirmButtonDisabled,
   confirmResult,
+  children,
 }) => {
   return (
     <>
@@ -31,7 +33,10 @@ const Modal = ({
           >
             <RiCloseLine style={{ marginBottom: "-3px" }} />
           </button>
-          <div className={styles.modalContent}>{content}</div>
+          <div className={styles.modalContent}>
+            {content}
+            <div>{children}</div>
+          </div>
           {confirmResult &&
             confirmResult.message &&
             confirmResult.message !== "" && (
@@ -43,6 +48,7 @@ const Modal = ({
             <div className={styles.actionsContainer}>
               <button
                 style={{ disabled: confirming }}
+                disabled={confirmButtonDisabled}
                 className={styles.deleteBtn}
                 onClick={onConfirm}
               >

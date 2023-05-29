@@ -28,7 +28,7 @@ const Content = ({ product, category }) => {
       .substring(0, theDate.toLocaleString().indexOf(" "));
     return formated;
   };
-
+  console.warn(product);
   return (
     <section className="product-content">
       <div className="product-content__intro">
@@ -68,7 +68,8 @@ const Content = ({ product, category }) => {
             <a
               className="btn btn--rounded btn--call"
               href={`tel:${
-                (product.contacts && product.contacts.phone) || "0983339025"
+                (product.contacts && product.contacts.phoneNumber) ||
+                "Not added"
               }`}
               target="_blank"
             >
@@ -77,7 +78,8 @@ const Content = ({ product, category }) => {
                 style={{ color: "#fff", marginRight: "10px" }}
               ></i>
               {` ${
-                (product.contacts && product.contacts.phone) || "0983339025"
+                (product.contacts && product.contacts.phoneNumber) ||
+                "Not added"
               }`}
             </a>
             <a
@@ -99,7 +101,7 @@ const Content = ({ product, category }) => {
             <a
               className="btn btn--rounded btn--whatsapp"
               href={`whatsapp://send?phone=${
-                (product.contacts && product.contacts.phone) || "+251983339025"
+                (product.contacts && product.contacts.whatsapp) || ""
               }&text=test message`}
               target="_blank"
             >
@@ -112,8 +114,7 @@ const Content = ({ product, category }) => {
             <a
               className="btn btn--rounded btn--facebook"
               href={`fb://profile/${
-                (product.contacts && product.contacts.facebookUsername) ||
-                "+251983339025"
+                (product.contacts && product.contacts.facebook) || ""
               }`}
               target="_blank"
             >

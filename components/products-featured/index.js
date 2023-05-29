@@ -5,10 +5,7 @@ import useSwr from "swr";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts, clearProducts } from "../../store/actions/productActions";
-import {
-  api_getAllFeaturedProducts,
-  api_getAllProducts,
-} from "../../api/index";
+import { api_getAllFeaturedProducts } from "../../api/index";
 
 const filterProducts = (products, filters) => {
   const newProducts = products.filter((product) => {
@@ -56,7 +53,7 @@ const ProductsFeatured = () => {
     });
     dispatch(clearProducts());
     try {
-      const res = await api_getAllProducts();
+      const res = await api_getAllFeaturedProducts();
       const responseData = res.data;
       dispatch(setProducts(responseData));
 

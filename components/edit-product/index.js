@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Layout from "../../layouts/Main";
-import CheckoutStatus from "../../components/checkout-status";
-import CheckboxColor from "../../components/products-filter/form-builder/checkbox-color";
-import Checkbox from "../../components/products-filter/form-builder/checkbox";
-import productsColors from "../../utils/data/products-colors";
-import productsSizes from "../../utils/data/products-sizes";
-
+import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import { useForm } from "react-hook-form";
 import { server } from "../../utils/server";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +12,7 @@ import {
   api_editProduct,
   api_addProductImage,
   api_editProductImage,
+  api_updateProductPaymentStatus,
 } from "../../api/index";
 import {
   clearProducts,
@@ -60,6 +57,7 @@ const categoryParser = (categories) => {
         label: category.category,
         value: category._id,
         subCategory: category.subCategory,
+        postFee: category.postFee,
       };
     });
   }
@@ -67,6 +65,8 @@ const categoryParser = (categories) => {
 };
 
 const AddProductPage = ({ oldProduct, onClickBack }) => {
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.profile.profile);
@@ -78,12 +78,15 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     product && product.postType === "Featured" ? true : false
   );
 
-  const [useProfileAddress, setUseProfileAddress] = useState(false);
+  const [useProfileAddress, setUseProfileAddress] = useState(true);
   const [previousAddress, setPreviousAddress] = useState({
-    phoneNumber: "",
-    email: "",
-    address: "",
-    telegramUsername: "",
+    phoneNumber: oldProduct.contacts ? oldProduct.contacts.phoneNumber : "",
+    address: oldProduct.contacts ? oldProduct.contacts.address : "",
+    telegramUsername: oldProduct.contacts
+      ? oldProduct.contacts.telegramUsername
+      : "",
+    facebook: oldProduct.contacts ? oldProduct.contacts.facebook : "",
+    whatsapp: oldProduct.contacts ? oldProduct.contacts.whatsapp : "",
   });
 
   const [previousImages, setPreviousImages] = useState(initialImagesState);
@@ -97,13 +100,15 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     brand: oldProduct.brand,
     model: oldProduct.model,
   });
+  const [payFor, setPayFor] = useState(1);
 
   // user contacts
   const contactAddress = {
     phoneNumber: "",
-    email: profile?.email,
     address: "",
     telegramUsername: "",
+    facebook: "",
+    whatsapp: "",
   };
 
   const clearPreviousData = () => {
@@ -147,9 +152,10 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
       );
       const contacts = {
         phoneNumber: data.phoneNumber,
-        email: data.email,
         address: data.address,
         telegramUsername: data.telegramUsername,
+        facebook: data.facebook,
+        whatsapp: data.whatsapp,
       };
       const uploadedData = {
         contacts: contacts,
@@ -204,22 +210,25 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
 
   const onClickUseProfileAddress = (e) => {
     setUseProfileAddress(e.target.checked);
-    if (e.target.checked) {
+    if (!e.target.checked) {
       setPreviousAddress({
         phoneNumber: getValues("phoneNumber"),
-        email: getValues("email"),
         address: getValues("address"),
         telegramUsername: getValues("telegramUsername"),
+        facebook: getValues("facebook"),
+        whatsapp: getValues("whatsapp"),
       });
       setValue("phoneNumber", contactAddress.phoneNumber);
-      setValue("email", contactAddress.email);
       setValue("address", contactAddress.address);
       setValue("telegramUsername", contactAddress.telegramUsername);
+      setValue("facebook", contactAddress.facebook);
+      setValue("whatsapp", contactAddress.whatsapp);
     } else {
       setValue("phoneNumber", previousAddress.phoneNumber);
-      setValue("email", previousAddress.email);
       setValue("address", previousAddress.address);
       setValue("telegramUsername", previousAddress.telegramUsername);
+      setValue("facebook", previousAddress.facebook);
+      setValue("whatsapp", previousAddress.whatsapp);
     }
   };
 
@@ -325,7 +334,13 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
         });
         setPreviousImages({ ...initialImagesState, ...pastImages });
       }
-      ["phoneNumber", "email", "address", "telegramUsername"].map((contact) => {
+      [
+        "phoneNumber",
+        "address",
+        "telegramUsername",
+        "facebook",
+        "whatsapp",
+      ].map((contact) => {
         if (product.contacts && product.contacts[contact]) {
           setValue(contact, product.contacts[contact]);
         }
@@ -494,13 +509,42 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
     }
   };
 
+  const updateProductPaymentStatus = async () => {
+    try {
+      const res = await api_updateProductPaymentStatus(
+        oldProduct._id,
+        Number(payFor),
+        auth.user.accesstoken
+      );
+      setShowModal(false);
+      toast.success(res.data.msg, {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      router.push("/products");
+    } catch (error) {}
+  };
   return (
     <Layout>
       <section className="cart">
         <div className="container">
           <div className="cart__intro">
             <h3 className="cart__title">Edit Product</h3>
-            <CheckoutStatus step="checkout" />
+            <div>
+              <a
+                onClick={onClickBack}
+                style={{ cursor: "pointer" }}
+                className="cart__btn-back"
+              >
+                <i className="icon-left"></i> Back
+              </a>
+            </div>
           </div>
 
           <div className="checkout-content">
@@ -825,6 +869,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                           type="checkbox"
                           name="keepSigned"
                           id="check-signed-in"
+                          checked={useProfileAddress}
                           value={useProfileAddress}
                           onChange={(e) => onClickUseProfileAddress(e)}
                         />
@@ -858,32 +903,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                               Enter valid phone number
                             </p>
                           )}
-                      </div>
-                    </div>
-                    <div className="form__input-row">
-                      <div className="form__col">
-                        <input
-                          disabled={addingProduct}
-                          className="form__input form__input--sm"
-                          placeholder="Email (optional)"
-                          type="text"
-                          name="email"
-                          {...register("email", {
-                            pattern:
-                              /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                            maxLength: 50,
-                          })}
-                        />
-                        {errors.email && errors.email.type === "maxLength" && (
-                          <p className="message message--error">
-                            Email is too long!
-                          </p>
-                        )}
-                        {errors.email && errors.email.type === "pattern" && (
-                          <p className="message message--error">
-                            Please write a valid email
-                          </p>
-                        )}
                       </div>
                     </div>
                     <div className="form__input-row">
@@ -926,6 +945,35 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                           )}
                       </div>
                     </div>
+
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="Facebook url"
+                          type="text"
+                          name="facebook"
+                          {...register("facebook", {
+                            maxLength: 100,
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <div className="form__input-row">
+                      <div className="form__col">
+                        <input
+                          disabled={addingProduct}
+                          className="form__input form__input--sm"
+                          placeholder="whatsapp number"
+                          type="text"
+                          name="whatsapp"
+                          {...register("whatsapp", {
+                            maxLength: 100,
+                          })}
+                        />
+                      </div>
+                    </div>
                   </form>
                 </div>
                 <h3 className="block__title">Post type</h3>
@@ -942,6 +990,7 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                         id="check-signed-in2"
                         value={isFeachered}
                         onChange={(e) => setIsFeachered(e.target.checked)}
+                        checked={isFeachered}
                       />
                       <span className="checkbox__check"></span>
                       <p>Add as featured product</p>
@@ -949,36 +998,6 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   </div>
                 </form>
               </div>
-
-              {/* <div className="block">
-                <h3 className="block__title">Tags</h3>
-                <ul className="round-options round-options--two">
-                  <li className="round-item round-item--bg">
-                    <p>New</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Used</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Slightly Used</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Sells</p>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="block">
-                <h3 className="block__title">Post type</h3>
-                <ul className="round-options round-options--two">
-                  <li className="round-item round-item--bg">
-                    <p>featured Post</p>
-                  </li>
-                  <li className="round-item round-item--bg">
-                    <p>Normal Post</p>
-                  </li>
-                </ul>
-              </div> */}
             </div>
 
             <div className="checkout__col-2">
@@ -1000,6 +1019,18 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
                   onSelectImageFile={onSelectImageFile}
                 />
               </div>
+
+              {oldProduct.postPayment == 0 && (
+                <div className="cart-actions__items-wrapper">
+                  <button
+                    type="button"
+                    className="btn btn--rounded btn--border btn--call"
+                    onClick={() => setShowModal(true)}
+                  >
+                    Pay post fee
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1027,6 +1058,16 @@ const AddProductPage = ({ oldProduct, onClickBack }) => {
           </div>
         </div>
       </section>
+      {showModal && (
+        <PaymentModal
+          category={selectedCategory.category}
+          payFor={payFor}
+          setPayFor={setPayFor}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          updateProductPaymentStatus={updateProductPaymentStatus}
+        />
+      )}
     </Layout>
   );
 };

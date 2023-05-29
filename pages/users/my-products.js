@@ -6,9 +6,7 @@ import Breadcrumb from "../../components/breadcrumb";
 import ProductsFilter from "../../components/products-filter";
 import ProductsContent from "../../components/products-content";
 
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
 import {
   clearProducts,
   setUserProducts,
@@ -17,7 +15,6 @@ import {
   clearCategories,
 } from "../../store/actions/productActions";
 
-import { server } from "../../utils/server";
 import EditProduct from "../../components/edit-product";
 
 import {
@@ -375,7 +372,7 @@ const Products = () => {
               addPriceFilter={addPriceFilter}
             />
             <ProductsContent
-              products={filteredProducts /* products */}
+              products={filteredProducts}
               productloading={productloading}
               loadProducts={loadProducts}
               addSortByFilter={addSortByFilter}
@@ -396,10 +393,10 @@ const Products = () => {
           title={"Delete Proudct"}
           content={"Are you sure you want to delete the product?"}
           confirming={deleteProductStatus.deleting}
-          confirmResult={{
-            message: deleteProductStatus.message,
-            state: deleteProductStatus.state,
-          }}
+          // confirmResult={{
+          //   message: deleteProductStatus.message,
+          //   state: deleteProductStatus.state,
+          // }}
         />
       )}
     </>
